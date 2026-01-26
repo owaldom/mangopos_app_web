@@ -1,0 +1,58 @@
+<div class="main-layout">
+    <app-sidebar #sidebar></app-sidebar>
+    <div class="content">
+        <mat-toolbar color="primary">
+            <button mat-icon-button (click)="sidebar.toggleCollapse()" class="menu-toggle-mobile">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <span>{{ title }}</span>
+            <span class="spacer"></span>
+
+            <div class="header-actions">
+                <div class="header-clock">
+                    <mat-icon>schedule</mat-icon>
+                    <span>{{ today | systemDate }}</span>
+                </div>
+
+                <button mat-icon-button (click)="themeService.toggleTheme()" [matTooltip]="'Cambiar Tema'">
+                    <mat-icon>{{ themeService.currentTheme() === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+                </button>
+            </div>
+            <div class="user-info" *ngIf="currentUser$ | async as user" [matMenuTriggerFor]="userMenu">
+                <span class="user-name">{{ user.name }}</span>
+                <button mat-icon-button>
+                    <img *ngIf="getImageSrc(user.image) as src; else defaultIcon" [src]="src" class="header-avatar">
+                    <ng-template #defaultIcon>
+                        <mat-icon>account_circle</mat-icon>
+                    </ng-template>
+                </button>
+            </div>
+
+            <mat-menu #userMenu="matMenu" xPosition="before" class="profile-menu">
+                <div class="menu-header" *ngIf="currentUser$ | async as user">
+                    <div class="user-details">
+                        <span class="name">{{ user.name }}</span>
+                        <span class="role">{{ user.role || 'Usuario' }}</span>
+                    </div>
+                </div>
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="goToChangePassword()">
+                    <mat-icon>vpn_key</mat-icon>
+                    <span>Cambiar Clave</span>
+                </button>
+                <button mat-menu-item (click)="themeService.toggleTheme()">
+                    <mat-icon>{{ themeService.currentTheme() === 'light' ? 'dark_mode' : 'light_mode' }}</mat-icon>
+                    <span>Modo {{ themeService.currentTheme() === 'light' ? 'Oscuro' : 'Claro' }}</span>
+                </button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="logout()" class="logout-item">
+                    <mat-icon>exit_to_app</mat-icon>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </mat-menu>
+        </mat-toolbar>
+        <div class="page-content">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

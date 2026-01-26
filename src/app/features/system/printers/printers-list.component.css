@@ -1,0 +1,92 @@
+.printers-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    margin-bottom: 24px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.subtitle {
+    margin: 8px 0 0;
+    color: #666;
+}
+
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    padding: 48px;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 48px;
+    color: #666;
+}
+
+.empty-state mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+table {
+    width: 100%;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: #eee;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-badge.ready {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* Roles Configuration Styles */
+.roles-section {
+    padding: 16px 0;
+}
+
+.roles-section h3 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+}
+
+.roles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.actions-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.spacer {
+    margin: 24px 0;
+}
+
+mat-form-field {
+    width: 100%;
+}

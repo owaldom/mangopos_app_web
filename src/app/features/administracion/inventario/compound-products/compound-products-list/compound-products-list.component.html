@@ -1,0 +1,77 @@
+<div class="container">
+    <div class="header">
+        <h1>Consulta de Productos Compuestos</h1>
+        <button mat-flat-button color="primary" routerLink="/dashboard/inventario/productos-compuestos">
+            <mat-icon>add</mat-icon> Crear Nuevo Producto Compuesto
+        </button>
+    </div>
+
+    <mat-card class="table-card">
+        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="full-width">
+
+            <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef> Código / Ref </th>
+                <td mat-cell *matCellDef="let element"> {{element.code || element.reference}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Nombre del Producto Compuesto </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="expand">
+                <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="row-actions">
+                        <button mat-icon-button (click)="toggleExpand(element, $event)"
+                            [matTooltip]="expandedElement === element ? 'Contraer' : 'Ver Detalles / Insumos'">
+                            <mat-icon>{{expandedElement === element ? 'expand_less' : 'expand_more'}}</mat-icon>
+                        </button>
+                        <button mat-icon-button color="primary" (click)="editCompound(element.id)"
+                            matTooltip="Editar Receta">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Expanded Content Column -->
+            <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                    <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <div class="detail-container">
+                            <h3>Insumos / Ingredientes</h3>
+                            <div class="components-grid" *ngIf="compoundDetailsMap[element.id]; else loading">
+                                <div class="component-header">
+                                    <span>Insumo</span>
+                                    <span>Cantidad</span>
+                                    <span>Unidad Insumo</span>
+                                    <span>Unidad Producto (Base)</span>
+                                </div>
+                                <div class="component-item" *ngFor="let detail of compoundDetailsMap[element.id]">
+                                    <span>{{detail.insumo_name}}</span>
+                                    <span>{{detail.cantidad}}</span>
+                                    <span>{{detail.unidad_insumo_name}}</span>
+                                    <span>{{detail.unidad_product_name}}</span>
+                                </div>
+                            </div>
+                            <ng-template #loading>
+                                <div class="loading-detail">Cargando insumos...</div>
+                            </ng-template>
+                        </div>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="element-row"
+                [class.expanded-row]="expandedElement === element" (click)="toggleExpand(element, $event)">
+            </tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+        </table>
+
+        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 100]"
+            (page)="onPageChange($event)" aria-label="Seleccionar página">
+        </mat-paginator>
+    </mat-card>
+</div>

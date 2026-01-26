@@ -1,0 +1,102 @@
+<div class="dialog-container">
+    <div class="dialog-header">
+        <h2>Calculadora de Venta Rápida</h2>
+        <button mat-icon-button (click)="onClose()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div class="dialog-content">
+        <!-- Search Section -->
+        <div class="search-section">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Buscar Producto (Nombre o Código)</mat-label>
+                <input type="text" matInput [formControl]="searchControl" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayProduct"
+                    (optionSelected)="onProductSelected($event)">
+                    <mat-option *ngFor="let prod of filteredProducts" [value]="prod">
+                        {{ prod.name }} ({{prod.code}})
+                    </mat-option>
+                </mat-autocomplete>
+                <button mat-icon-button matSuffix *ngIf="searchControl.value" (click)="clearSearch()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <div class="barcode-container">
+                <mat-icon class="barcode-icon">qr_code_scanner</mat-icon>
+                <input #barcodeInput type="text" [(ngModel)]="barcode" (keyup.enter)="onBarcodeEnter($event)"
+                    placeholder="Escanea..." class="barcode-input" autocomplete="off">
+            </div>
+        </div>
+
+        <!-- Product Info Display -->
+        <div class="product-info-card" *ngIf="selectedProduct">
+            <div class="product-name">{{ selectedProduct.name }}</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Precio (Bs)</span>
+                    <span class="info-value">{{ selectedProduct.pricesell * exchangeRate | currency:'VES':'Bs. ':'1.2-2'
+                        }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Precio ($)</span>
+                    <span class="info-value">{{ selectedProduct.pricesell | currency:'USD':'$ ':'1.2-2' }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Stock Actual</span>
+                    <span class="info-value" [style.color]="selectedProduct.stock <= 0 ? 'red' : 'inherit'">
+                        {{ selectedProduct.stock | number:settingsService.getDecimalFormat('quantity') }} {{
+                        getUnitName(selectedProduct.codeunit) }}
+                    </span>
+                </div>
+            </div>
+            <!-- Warnings -->
+            <div *ngIf="selectedProduct.typeproduct !== 'P'"
+                style="color: orange; font-weight: 500; font-size: 0.9rem;">
+                <mat-icon
+                    style="font-size: 16px; height: 16px; width: 16px; vertical-align: text-bottom;">warning</mat-icon>
+                Producto simple ({{selectedProduct.typeproduct}}). Verifique condiciones.
+            </div>
+        </div>
+
+        <!-- Calculation Section -->
+        <div class="calculation-section" *ngIf="selectedProduct">
+            <div class="currency-toggle">
+                <button [class.active]="currencyMode === 'Bs'" (click)="setCurrency('Bs')">Bolívares (Bs)</button>
+                <button [class.active]="currencyMode === 'USD'" (click)="setCurrency('USD')">Dólares ($)</button>
+            </div>
+
+            <div class="input-row">
+                <mat-form-field appearance="outline" style="flex: 1;">
+                    <mat-label>Monto a Comprar ({{ currencyMode }})</mat-label>
+                    <input matInput [(ngModel)]="amountToBuy" appMoneyInput decimalType="price"
+                        (keyup.enter)="calculate()" placeholder="0.00">
+                </mat-form-field>
+
+                <button mat-raised-button color="accent" (click)="calculate()"
+                    [disabled]="!amountToBuy || amountToBuy <= 0" style="height: 56px;">
+                    <mat-icon>calculate</mat-icon> CALCULAR
+                </button>
+            </div>
+
+            <div class="calculated-result" *ngIf="calculatedQuantity > 0">
+                <span class="result-label">Cantidad a Vender ({{ getUnitName(selectedProduct.codeunit) }}):</span>
+                <span class="result-value">{{ calculatedQuantity | number:settingsService.getDecimalFormat('quantity')
+                    }} </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dialog-actions">
+        <button mat-stroked-button color="warn" (click)="onClear()">
+            <mat-icon>refresh</mat-icon> LIMPIAR
+        </button>
+        <div class="spacer"></div>
+        <button mat-button (click)="onClose()">CERRAR</button>
+        <button mat-raised-button color="primary" (click)="onSelect()"
+            [disabled]="!selectedProduct || calculatedQuantity <= 0">
+            <mat-icon>check</mat-icon> SELECCIONAR
+        </button>
+    </div>
+</div>

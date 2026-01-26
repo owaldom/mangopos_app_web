@@ -1,0 +1,110 @@
+<div class="purchase-container">
+  <div class="purchase-header">
+    <div class="action-bar">
+      <button mat-raised-button color="primary" (click)="openSupplierSelector()">
+        <mat-icon>person</mat-icon>
+        {{ selectedSupplier ? selectedSupplier.name : 'Seleccionar Proveedor' }}
+      </button>
+      <div class="invoice-details">
+        <input type="text" [(ngModel)]="invoiceData.numberInvoice" placeholder="N° Factura" class="small-input"
+          (keypress)="allowOnlyNumbers($event)" (input)="filterInvoiceInput($event, 'numberInvoice')">
+        <input type="text" [(ngModel)]="invoiceData.numberControl" placeholder="N° Control" class="small-input"
+          (keypress)="allowOnlyNumbers($event)" (input)="filterInvoiceInput($event, 'numberControl')">
+        <input type="date" [ngModel]="invoiceData.dateInvoice | date:'yyyy-MM-dd'"
+          (ngModelChange)="invoiceData.dateInvoice = $event" class="small-input">
+      </div>
+    </div>
+  </div>
+
+  <div class="purchase-content">
+    <!-- Left: Ticket Lines -->
+    <div class="lines-area">
+      <div class="lines-header">
+        <span class="col-name">Producto</span>
+        <span class="col-qty">Cant</span>
+        <span class="col-price">Precio</span>
+        <span class="col-discount">Desc %</span>
+        <span class="col-total">Total</span>
+        <span class="col-actions"></span>
+      </div>
+      <div class="lines-list scrollable">
+        <div *ngFor="let line of currentLines; let i = index" class="line-item"
+          [class.selected]="selectedLineIndex === i" (click)="selectLine(i)">
+          <div class="col-name">
+            <div class="product-name">{{ line.product_name }}</div>
+          </div>
+          <div class="col-qty">
+            <input type="number" [ngModel]="line.units" (ngModelChange)="updateQuantity(i, $event)" class="qty-input">
+          </div>
+          <div class="col-price">
+            <input type="text" [ngModel]="line.price" (ngModelChange)="updatePrice(i, $event)" appMoneyInput
+              decimalType="price" class="price-input">
+          </div>
+          <div class="col-discount">
+            <input type="text" [ngModel]="line.discount" (ngModelChange)="updateDiscount(i, $event)" appMoneyInput
+              class="discount-input">
+          </div>
+          <div class="col-total text-right">
+            {{ (line.units * line.price * (1 - (line.discount || 0))) | currency:'USD ':'symbol':'1.2-2' }}
+          </div>
+          <div class="col-actions">
+            <button mat-icon-button color="warn" (click)="removeLine(i); $event.stopPropagation()">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Search and Totals -->
+    <div class="side-area">
+      <div class="barcode-search">
+        <mat-icon>qr_code_scanner</mat-icon>
+        <input #barcodeInput type="text" [(ngModel)]="barcode" (ngModelChange)="onBarcodeChange($event)"
+          placeholder="Escanear o buscar producto..." autofocus>
+        <button mat-icon-button color="primary" (click)="openProductSearch()" matTooltip="Buscar Producto (F2)">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+
+      <div class="totals-panel card">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <span>{{ subtotal | currency:'Bs. ':'symbol':'1.2-2' }}</span>
+        </div>
+        <div class="total-row discount-row">
+          <div class="discount-label">
+            <span>Descuento Global %</span>
+            <input type="text" [ngModel]="globalDiscount" (ngModelChange)="updateGlobalDiscount($event)" appMoneyInput
+              class="global-discount-input">
+          </div>
+          <span class="discount-amount">- {{ (discountTotalUSD * exchangeRate) | currency:'Bs. ':'symbol':'1.2-2'
+            }}</span>
+        </div>
+        <div class="total-row tax-selection-row">
+          <span>Impuesto General</span>
+          <select [ngModel]="globalTaxId" (ngModelChange)="updateGlobalTax($event)" class="tax-select-global">
+            <option *ngFor="let tax of taxesList" [value]="tax.id">{{ tax.name }} ({{ (tax.rate * 100).toFixed(0) }}%)
+            </option>
+          </select>
+        </div>
+        <div class="total-row">
+          <span>Total Impuestos</span>
+          <span>{{ taxes | currency:'Bs. ':'symbol':'1.2-2' }}</span>
+        </div>
+        <div class="total-main">
+          <span>TOTAL</span>
+          <div class="amount-container">
+            <span class="main-amount">{{ total | currency:'Bs. ':'symbol':'1.2-2' }}</span>
+            <span class="alt-amount">{{ totalUSD | currency:'USD ':'symbol':'1.2-2' }}</span>
+          </div>
+        </div>
+
+        <div class="btn-actions">
+          <button mat-flat-button color="warn" (click)="purchaseService.clearPurchase()">Limpiar</button>
+          <button mat-flat-button color="accent" class="save-btn" (click)="onSave()">PROCESAR COMPRA</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

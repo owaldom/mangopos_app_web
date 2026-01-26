@@ -1,0 +1,68 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.login-card {
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.login-header {
+  text-align: center;
+  width: 100%;
+  padding: 20px 0;
+  
+  h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #667eea;
+  }
+  
+  p {
+    margin: 10px 0 0;
+    color: #666;
+    font-size: 1.1rem;
+  }
+}
+
+mat-card-content {
+  padding: 20px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.forgot-password-btn {
+  align-self: center;
+}
+
+mat-spinner {
+  display: inline-block;
+  margin: 0 auto;
+}
+
+button[type="submit"] {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+::ng-deep .error-snackbar {
+  background-color: #f44336;
+  color: white;
+}

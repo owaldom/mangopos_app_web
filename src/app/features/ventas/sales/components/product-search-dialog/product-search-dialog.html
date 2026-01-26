@@ -1,0 +1,47 @@
+<div class="search-container">
+    <div class="search-header">
+        <div class="search-input-wrapper">
+            <mat-icon class="search-icon">search</mat-icon>
+            <input #searchInput type="text" [(ngModel)]="searchText" (ngModelChange)="onSearch($event)"
+                (keydown)="onKeyDown($event)" placeholder="Buscar producto (ESC para salir)..." autocomplete="off">
+        </div>
+    </div>
+
+    <div class="search-results">
+        <div class="product-list" *ngIf="filteredProducts.length > 0; else noResults">
+            <div *ngFor="let prod of filteredProducts; let i = index" class="product-item"
+                [class.selected]="i === selectedIndex" (click)="selectProduct(prod)" (mouseenter)="selectedIndex = i">
+
+                <img *ngIf="prod.image" [src]="'data:image/png;base64,' + prod.image" class="item-image">
+                <div *ngIf="!prod.image" class="item-image">
+                    <mat-icon>image</mat-icon>
+                </div>
+
+                <div class="item-details">
+                    <div class="item-name">{{ prod.name }}</div>
+                    <div class="item-meta">
+                        <span>Ref: {{ prod.reference }}</span>
+                        <div class="item-prices">
+                            <span class="item-price">{{ prod.pricesell * (1 + (prod.tax_rate - 0 || 0)) * exchangeRate |
+                                currency:'VES':'Bs. ':settingsService.getDecimalFormat('price') }}</span>
+                            <span class="item-price-alt">{{ prod.pricesell * (1 + (prod.tax_rate - 0|| 0)) |
+                                currency:'USD':'$ ':settingsService.getDecimalFormat('price') }}</span>
+                        </div>
+                        <span>Stock: {{ prod.stock | number:settingsService.getDecimalFormat('quantity') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ng-template #noResults>
+            <div class="no-results" *ngIf="searchText">
+                <mat-icon>search_off</mat-icon>
+                <span>No se encontraron productos</span>
+            </div>
+            <div class="no-results" *ngIf="!searchText">
+                <mat-icon>manage_search</mat-icon>
+                <span>Escriba para buscar...</span>
+            </div>
+        </ng-template>
+    </div>
+</div>

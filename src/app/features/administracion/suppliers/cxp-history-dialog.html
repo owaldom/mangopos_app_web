@@ -1,0 +1,81 @@
+<div class="history-container">
+    <div class="history-header">
+        <h2 mat-dialog-title>Historial de Pagos - {{data.supplier.name}}</h2>
+        <div class="header-actions">
+            <button mat-stroked-button color="primary" (click)="exportHistory()">
+                <mat-icon>picture_as_pdf</mat-icon> Exportar Todo
+            </button>
+            <button mat-icon-button mat-dialog-close>
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <mat-dialog-content>
+        <div class="table-container">
+            <table mat-table [dataSource]="payments" class="full-width-table">
+
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let element"> {{element.date | date:'dd/MM/yyyy HH:mm'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ticketNumber">
+                    <th mat-header-cell *matHeaderCellDef> Nro. Pago </th>
+                    <td mat-cell *matCellDef="let element"> #{{element.ticketNumber}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="invoicePaid">
+                    <th mat-header-cell *matHeaderCellDef> Factura </th>
+                    <td mat-cell *matCellDef="let element"> {{element.invoicePaid ? '#' + element.invoicePaid : '-'}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="method">
+                    <th mat-header-cell *matHeaderCellDef> Método </th>
+                    <td mat-cell *matCellDef="let element"> {{getMethodLabel(element.method)}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="details">
+                    <th mat-header-cell *matHeaderCellDef> Detalles </th>
+                    <td mat-cell *matCellDef="let element">
+                        <div class="details-col" *ngIf="element.bank || element.reference">
+                            <span *ngIf="element.bank"><strong>Bco:</strong> {{element.bank}}</span>
+                            <span *ngIf="element.reference"><strong>Ref:</strong> {{element.reference}}</span>
+                        </div>
+                        <span *ngIf="element.cedula"><strong>Cédula:</strong> {{element.cedula}}</span><br
+                            *ngIf="element.cedula && (element.bank || element.reference)" />
+                        <span *ngIf="!element.bank && !element.reference && !element.cedula">-</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef style="text-align: right;"> Monto </th>
+                    <td mat-cell *matCellDef="let element" style="text-align: right;">
+                        <strong>{{element.amountBs | number:settingsService.getDecimalFormat('total')}} Bs.</strong>
+                        <div class="usd-equiv" *ngIf="element.amountUSD">
+                            $ {{element.amountUSD | number:settingsService.getDecimalFormat('total')}}
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                    <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button color="primary" (click)="printPayment(element)"
+                            title="Imprimir Comprobante">
+                            <mat-icon>print</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+            <div class="empty-msg" *ngIf="payments.length === 0">
+                No hay historial de pagos registrados.
+            </div>
+        </div>
+    </mat-dialog-content>
+</div>

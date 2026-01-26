@@ -1,0 +1,193 @@
+.dialog-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    padding: 0;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.dialog-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.dialog-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.search-section {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.search-section mat-form-field {
+    flex: 1;
+}
+
+.barcode-container {
+    display: flex;
+    align-items: center;
+    background: #f0f2f5;
+    border-radius: 4px;
+    padding: 4px 12px;
+    border: 1px solid #ccc;
+    height: 52px;
+    /* Match standard mat-form-field height approx */
+    box-sizing: border-box;
+    width: 200px;
+}
+
+.barcode-container:focus-within {
+    border-color: #3f51b5;
+    background: #fff;
+}
+
+.barcode-icon {
+    color: #666;
+    margin-right: 8px;
+}
+
+.barcode-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 1rem;
+    color: #333;
+}
+
+.product-info-card {
+    background-color: #e3f2fd;
+    border: 1px solid #bbdefb;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.product-name {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #0d47a1;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    color: #546e7a;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #263238;
+}
+
+.calculation-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: #fafafa;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.currency-toggle {
+    display: flex;
+    gap: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    width: fit-content;
+    align-self: center;
+}
+
+.currency-toggle button {
+    padding: 8px 24px;
+    border: none;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.currency-toggle button.active {
+    background: #3f51b5;
+    color: white;
+}
+
+.currency-toggle button:not(:last-child) {
+    border-right: 1px solid #ccc;
+}
+
+.input-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.calculated-result {
+    margin-top: 16px;
+    text-align: center;
+    padding: 16px;
+    background: #e8f5e9;
+    border-radius: 8px;
+    border: 1px solid #c8e6c9;
+}
+
+.result-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #2e7d32;
+    margin-bottom: 8px;
+}
+
+.result-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1b5e20;
+}
+
+.dialog-actions {
+    padding: 16px 24px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.spacer {
+    flex: 1;
+}

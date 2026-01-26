@@ -1,0 +1,98 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { SettingsService, AppSettings } from '../../../core/services/settings.service';
+import { MoneyInputDirective } from '../../../shared/directives/money-input.directive';
+
+@Component({
+    selector: 'app-settings',
+    standalone: true,
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSnackBarModule,
+        MatSlideToggleModule,
+        MoneyInputDirective
+    ],
+    templateUrl: './settings.html',
+    styleUrl: './settings.css'
+})
+export class SettingsComponent implements OnInit {
+    settings: AppSettings = {
+        price_decimals: 2,
+        total_decimals: 2,
+        quantity_decimals: 3,
+        currency_symbol: 'Bs.',
+        currency_code: 'VES',
+        company_name: '',
+        company_address: '',
+        enable_pdf_ticket: false
+    };
+
+    currencies: any[] = [];
+    loading = true;
+
+    constructor(
+        private settingsService: SettingsService,
+        private snackBar: MatSnackBar
+    ) { }
+
+    ngOnInit(): void {
+        this.loadSettings();
+    }
+
+    async loadSettings() {
+        try {
+            const data = await this.settingsService.loadSettings();
+            if (data) {
+                this.settings = { ...data };
+            }
+            this.loadCurrencies();
+        } catch (error) {
+            this.snackBar.open('Error al cargar configuración', 'Cerrar', { duration: 3000 });
+        } finally {
+            this.loading = false;
+        }
+    }
+
+    loadCurrencies() {
+        this.settingsService.getCurrencies().subscribe(res => {
+            this.currencies = res;
+        });
+    }
+
+    async saveCurrency(currency: any) {
+        try {
+            await this.settingsService.updateCurrency(currency.id, {
+                exchange_rate: currency.exchange_rate,
+                symbol: currency.symbol,
+                name: currency.name,
+                active: currency.active
+            });
+            this.snackBar.open(`Moneda ${currency.code} actualizada`, 'Cerrar', { duration: 2000 });
+        } catch (error) {
+            this.snackBar.open('Error al actualizar moneda', 'Cerrar', { duration: 3000 });
+        }
+    }
+
+    async saveSettings() {
+        try {
+            await this.settingsService.updateSettings(this.settings);
+            this.snackBar.open('Configuración guardada exitosamente', 'Cerrar', { duration: 3000 });
+        } catch (error) {
+            this.snackBar.open('Error al guardar configuración', 'Cerrar', { duration: 3000 });
+        }
+    }
+}

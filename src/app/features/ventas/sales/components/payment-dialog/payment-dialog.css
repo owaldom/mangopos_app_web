@@ -1,0 +1,363 @@
+.payment-container {
+    padding: 16px 24px;
+    max-width: 1000px;
+    width: 95%;
+    max-height: 95vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.scrollable-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+    margin-bottom: 16px;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.totals-summary {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.customer-credit-info {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e1effe 100%);
+    border: 1px solid #c3ddfd;
+    padding: 12px 16px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.customer-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #1a56db;
+}
+
+.customer-name mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.credit-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.credit-stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.credit-stat .label {
+    font-size: 0.75rem;
+    color: #4b5563;
+    text-transform: uppercase;
+}
+
+.credit-stat .value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.credit-stat .value.debt {
+    color: #e02424;
+}
+
+.credit-stat .value.available {
+    color: #057a55;
+}
+
+.method-btn.disabled {
+    opacity: 0.5;
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1rem;
+}
+
+.total-row.main {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #3875D5;
+    border-top: 1px solid #ddd;
+    padding-top: 12px;
+    margin-top: 4px;
+}
+
+.input-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-section label {
+    font-weight: 500;
+    color: #666;
+}
+
+.amount-input {
+    font-size: 2rem;
+    font-family: 'Roboto Mono', monospace;
+    width: 100%;
+    text-align: right;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.amount-input:focus {
+    border-color: #3875D5;
+}
+
+.currency-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.currency-tabs button {
+    flex: 1;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.currency-tabs button.active {
+    background: #3875D5;
+    color: white;
+    border-color: #3875D5;
+}
+
+.change-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #e8f5e9;
+    border-radius: 8px;
+    color: #2e7d32;
+}
+
+.change-label {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.change-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.methods-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.method-btn {
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid #dadce0;
+    background: white;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.method-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #3875D5;
+}
+
+.method-btn.active {
+    background-color: #e8f0fe;
+    border-color: #1967d2;
+    color: #1967d2;
+}
+
+.method-btn mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.btn-cancel {
+    flex: 1;
+}
+
+.btn-confirm {
+    flex: 2;
+    background-color: #4caf50;
+    color: white;
+}
+
+/* New Material Layout Styles */
+.single-input-wrapper {
+    margin-top: 10px;
+}
+
+.multi-row-mat {
+    display: grid;
+    grid-template-columns: 32px 80px repeat(5, minmax(0, 1fr));
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.method-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.method-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: #334155;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Material Field Overrides for Mixed Mode */
+::ng-deep .multi-payment-list .mat-mdc-text-field-wrapper {
+    background-color: #fff !important;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    .payment-container {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .title {
+        font-size: 1.25rem;
+        text-align: center;
+    }
+
+    .totals-summary {
+        padding: 16px;
+    }
+
+    .total-row {
+        font-size: 1rem;
+    }
+
+    .total-row.main {
+        font-size: 1.5rem;
+    }
+
+    /* Stack currency tabs buttons if needed or keep them side-by-side but smaller */
+    .currency-tabs button {
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    /* Adjust inputs */
+    .amount-input {
+        font-size: 1.5rem;
+        padding: 10px;
+    }
+
+    /* Methods Grid: 1 column on very small screens, or 3 is fine if icons are small.
+       Let's allow 3 but reduce padding/height */
+    .methods-grid {
+        gap: 8px;
+    }
+
+    .method-btn {
+        height: 70px;
+    }
+
+    .method-btn mat-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+    }
+
+    /* Change Display */
+    .change-display {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .change-display>div {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+    }
+
+    .change-label {
+        font-size: 1rem;
+    }
+
+    .change-value {
+        font-size: 1.5rem;
+    }
+
+    /* Actions */
+    .actions {
+        flex-direction: column-reverse;
+        /* Put Confirm on top or Cancel on bottom? usually Cancel bottom on mobile modals */
+    }
+
+    .btn-confirm,
+    .btn-cancel {
+        width: 100%;
+        height: 48px;
+        /* Touch target size */
+    }
+}

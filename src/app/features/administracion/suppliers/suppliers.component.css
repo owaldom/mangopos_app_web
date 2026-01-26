@@ -1,0 +1,70 @@
+.container {
+    padding: 20px;
+}
+
+.main-card {
+    min-height: 500px;
+}
+
+mat-card-header {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.spacer {
+    flex: 1 1 auto;
+}
+
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar mat-form-field {
+    width: 100%;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+}
+
+.name-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-name {
+    color: #757575;
+    font-size: 0.85em;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    color: #757575;
+}
+
+.empty-state mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 10px;
+}
+
+.debt-cell {
+    color: #d32f2f;
+    font-weight: bold;
+    text-align: right;
+}
+
+.paid-cell {
+    color: #2e7d32;
+    font-weight: bold;
+    text-align: right;
+}

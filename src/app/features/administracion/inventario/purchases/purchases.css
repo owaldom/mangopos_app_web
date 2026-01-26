@@ -1,0 +1,275 @@
+.purchase-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
+  padding: 20px;
+  background-color: #f5f7fa;
+  color: #2c3e50;
+  font-family: 'Inter', sans-serif;
+}
+
+.purchase-header {
+  margin-bottom: 20px;
+}
+
+.action-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.invoice-details {
+  display: flex;
+  gap: 10px;
+}
+
+.small-input {
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 150px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.small-input:focus {
+  border-color: #409eff;
+}
+
+.purchase-content {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+}
+
+.lines-area {
+  background: white;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.lines-header {
+  display: grid;
+  grid-template-columns: 1fr 80px 110px 90px 120px 60px;
+  padding: 15px 20px;
+  background: #f8f9fb;
+  font-weight: 600;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.lines-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.line-item {
+  display: grid;
+  grid-template-columns: 1fr 80px 110px 90px 120px 60px;
+  padding: 12px 20px;
+  align-items: center;
+  border-bottom: 1px solid #ebeef5;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.line-item:hover {
+  background: #f0f4f8;
+}
+
+.line-item.selected {
+  background: #eef5ff;
+}
+
+.qty-input,
+.price-input {
+  width: 80%;
+  border: 1px solid transparent;
+  background: #f4f6f8;
+  border-radius: 6px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.qty-input:focus,
+.price-input:focus,
+.discount-input:focus {
+  background: white;
+  border-color: #409eff;
+  outline: none;
+}
+
+.discount-input {
+  width: 70%;
+  border: 1px solid transparent;
+  background: #f4f6f8;
+  border-radius: 6px;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.tax-select {
+  width: 95%;
+  border: 1px solid transparent;
+  background: #f4f6f8;
+  border-radius: 6px;
+  padding: 6px 4px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+
+.tax-select:focus {
+  background: white;
+  border-color: #409eff;
+}
+
+.side-area {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.barcode-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.barcode-search input {
+  flex: 1;
+  border: none;
+  font-size: 16px;
+  outline: none;
+}
+
+.totals-panel {
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  color: #606266;
+}
+
+.discount-row {
+  color: #f56c6c;
+}
+
+.discount-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.global-discount-input {
+  width: 60px;
+  border: 1px solid #dcdfe6;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.discount-amount {
+  font-weight: 600;
+}
+
+.total-main {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px dashed #ebeef5;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.total-main span:first-child {
+  font-weight: 800;
+  font-size: 20px;
+  color: #1a1a1a;
+}
+
+.amount-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.main-amount {
+  font-size: 32px;
+  font-weight: 900;
+  color: #2b52e1;
+}
+
+.alt-amount {
+  font-size: 18px;
+  color: #67c23a;
+  font-weight: 600;
+}
+
+.btn-actions {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.save-btn {
+  height: 50px;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.scrollable {
+  overflow-y: auto;
+}
+
+.tax-select-global {
+  width: 180px;
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
+  background-color: white;
+  cursor: pointer;
+}
+
+.tax-select-global:focus {
+  border-color: #409eff;
+}
+
+.tax-selection-row {
+  background: #f8f9fb;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 5px -10px;
+}

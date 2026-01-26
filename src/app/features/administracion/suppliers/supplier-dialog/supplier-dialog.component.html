@@ -1,0 +1,178 @@
+<h2 mat-dialog-title>
+    {{ form.disabled ? 'Detalle del Proveedor' : (isEdit ? 'Editar Proveedor' : 'Nuevo Proveedor') }}
+</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="form" class="supplier-form">
+        <mat-tab-group>
+            <!-- Tab 1: Datos Generales -->
+            <mat-tab label="General">
+                <div class="tab-padding">
+                    <!-- Row 1: Tipo Persona y RIF -->
+                    <div class="form-row two-cols">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Tipo Persona</mat-label>
+                            <mat-select formControlName="persontype" autofocus>
+                                <mat-option value="Persona Natural Residente">Persona Natural Residente</mat-option>
+                                <mat-option value="Persona Jurídica domiciliada">Persona Jurídica
+                                    domiciliada</mat-option>
+                                <mat-option value="Persona Natural no domiciliada">Persona Natural no
+                                    domiciliada</mat-option>
+                                <mat-option value="Persona Jurídica no domiciliada">Persona Jurídica no
+                                    domiciliada</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>RIF / CIF</mat-label>
+                            <input matInput formControlName="cif" placeholder="J-12345678-9" required>
+                            <mat-error *ngIf="form.get('cif')?.hasError('required')">Requerido</mat-error>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Row 2: Nombre y Tipo Proveedor -->
+                    <div class="form-row two-cols">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nombre / Razón Social</mat-label>
+                            <input matInput formControlName="name" placeholder="Empresa S.A." required>
+                            <mat-error *ngIf="form.get('name')?.hasError('required')">Requerido</mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Tipo Proveedor</mat-label>
+                            <mat-select formControlName="typesupplier">
+                                <mat-option value="Nacional">Nacional</mat-option>
+                                <mat-option value="Extranjero">Extranjero</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-row">
+                        <mat-checkbox formControlName="visible">Activo / Visible</mat-checkbox>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- Tab 2: Contacto -->
+            <mat-tab label="Contacto">
+                <div class="tab-padding">
+                    <!-- Contactos -->
+                    <div class="form-row two-cols">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Contacto Comercial</mat-label>
+                            <input matInput formControlName="contactcomm">
+                            <mat-icon matSuffix>person</mat-icon>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Contacto Facturación</mat-label>
+                            <input matInput formControlName="contactfact">
+                            <mat-icon matSuffix>assignment_ind</mat-icon>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Telefonos -->
+                    <div class="form-row three-cols">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Tlf. Comercial</mat-label>
+                            <input matInput formControlName="phonecomm" appPhoneFormat>
+                            <mat-icon matSuffix>phone</mat-icon>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Tlf. Facturación</mat-label>
+                            <input matInput formControlName="phonefact" appPhoneFormat>
+                            <mat-icon matSuffix>phone</mat-icon>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Fax</mat-label>
+                            <input matInput formControlName="faxnumber">
+                            <mat-icon matSuffix>print</mat-icon>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Email y Web -->
+                    <div class="form-row two-cols">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Email</mat-label>
+                            <input matInput formControlName="email" type="email">
+                            <mat-icon matSuffix>email</mat-icon>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Página Web</mat-label>
+                            <input matInput formControlName="webpage">
+                            <mat-icon matSuffix>language</mat-icon>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- Tab 3: Finanzas -->
+            <mat-tab label="Finanzas">
+                <div class="tab-padding">
+                    <!-- Crédito y Pago -->
+                    <div class="form-row three-cols">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Forma de Pago</mat-label>
+                            <mat-select formControlName="payrule">
+                                <mat-option value="Contado">Contado</mat-option>
+                                <mat-option value="Credito">Crédito</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Días Crédito</mat-label>
+                            <input matInput formControlName="creditdays" type="number">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Límite de Crédito (USD)</mat-label>
+                            <input matInput formControlName="creditlimit" type="text" appMoneyInput decimalType="price">
+                            <span matPrefix>$&nbsp;</span>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-row two-cols" *ngIf="isEdit || form.disabled">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Deuda Actual (USD)</mat-label>
+                            <input matInput formControlName="balance" type="text" appMoneyInput>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Total Abonado (USD) (Pagos)</mat-label>
+                            <input matInput formControlName="total_paid" type="text" appMoneyInput>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-tab>
+
+            <!-- Tab 4: Dirección y Notas -->
+            <mat-tab label="Dirección y Notas">
+                <div class="tab-padding">
+                    <!-- Dirección -->
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Dirección</mat-label>
+                            <textarea matInput formControlName="address" rows="3"></textarea>
+                            <mat-icon matSuffix>place</mat-icon>
+                        </mat-form-field>
+                    </div>
+
+                    <div class="form-row">
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Notas</mat-label>
+                            <textarea matInput formControlName="notes" rows="4"></textarea>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">{{ form.disabled ? 'Cerrar' : 'Cancelar' }}</button>
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid || loading"
+        *ngIf="!form.disabled">
+        <mat-icon>save</mat-icon>
+        {{ isEdit ? 'Actualizar' : 'Guardar' }}
+    </button>
+</mat-dialog-actions>

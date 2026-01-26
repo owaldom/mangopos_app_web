@@ -1,0 +1,42 @@
+<div class="numpad-container">
+    <div class="display">
+        {{ value || '0' }}
+    </div>
+
+    <div class="grid">
+        <!-- Fila 1 -->
+        <button (click)="onNumber('7')" class="btn-number">7</button>
+        <button (click)="onNumber('8')" class="btn-number">8</button>
+        <button (click)="onNumber('9')" class="btn-number">9</button>
+        <button (click)="setMode('qty')" [class.active-mode]="mode === 'qty'" class="btn-action" matTooltip="Cantidad">
+            <mat-icon>shopping_basket</mat-icon>
+        </button>
+
+        <!-- Fila 2 -->
+        <button (click)="onNumber('4')" class="btn-number">4</button>
+        <button (click)="onNumber('5')" class="btn-number">5</button>
+        <button (click)="onNumber('6')" class="btn-number">6</button>
+        <button (click)="setMode('disc_percent')" [class.active-mode]="mode.startsWith('disc_')" class="btn-action"
+            [matTooltip]="mode === 'disc_fixed' ? 'Descuento ($)' : (mode === 'disc_ves' ? 'Descuento (Bs.)' : 'Descuento (%)')">
+            <mat-icon>{{ mode === 'disc_fixed' ? 'attach_money' : (mode === 'disc_ves' ? 'payments' : 'percent')
+                }}</mat-icon>
+        </button>
+
+        <!-- Fila 3 -->
+        <button (click)="onNumber('1')" class="btn-number">1</button>
+        <button (click)="onNumber('2')" class="btn-number">2</button>
+        <button (click)="onNumber('3')" class="btn-number">3</button>
+        <button (click)="setMode('price')" [class.active-mode]="mode === 'price'" class="btn-action"
+            matTooltip="Precio">
+            <mat-icon>attach_money</mat-icon>
+        </button>
+
+        <!-- Fila 4 -->
+        <button (click)="onClear()" class="btn-operator">C</button>
+        <button (click)="onNumber('0')" class="btn-number">0</button>
+        <button (click)="onNumber('.')" class="btn-number">.</button>
+        <button (click)="onEnter()" class="btn-enter" matTooltip="Aceptar">
+            <mat-icon>check</mat-icon>
+        </button>
+    </div>
+</div>

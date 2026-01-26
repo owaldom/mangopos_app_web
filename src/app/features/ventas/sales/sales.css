@@ -1,0 +1,307 @@
+.ticket-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 0 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.ticket-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.ticket-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #e0e0e0;
+    border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 140px;
+    max-width: 200px;
+    border-bottom: 2px solid transparent;
+    user-select: none;
+    position: relative;
+}
+
+.ticket-tab.active {
+    background: white;
+    color: #3875D5;
+    font-weight: 600;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ticket-tab .tab-label {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.85rem;
+}
+
+.ticket-tab mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.close-tab {
+    width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+    margin-right: -8px;
+    opacity: 0.5;
+}
+
+.close-tab:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.close-tab mat-icon {
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+}
+
+.add-tab {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50% !important;
+    margin-left: 4px;
+}
+
+.add-tab:hover {
+    background: white;
+    color: #3875D5;
+}
+
+.sales-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+    gap: 12px;
+    padding: 12px;
+    background-color: #f0f2f5;
+}
+
+.sales-content {
+    display: flex;
+    flex: 1;
+    gap: 16px;
+    overflow: hidden;
+}
+
+.left-panel {
+    flex: 3.5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 600px;
+    min-height: 0;
+}
+
+.right-panel {
+    flex: 6.5;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 8px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sale-actions {
+    display: flex;
+    align-items: center;
+}
+
+.rate-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f8f9fa;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+    margin-right: 12px;
+}
+
+.rate-display .label {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.rate-input {
+    width: 70px;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    color: #3875D5;
+    font-size: 0.95rem;
+    outline: none;
+    text-align: center;
+}
+
+.customer-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.barcode-container {
+    display: flex;
+    align-items: center;
+    background: #f0f2f5;
+    border-radius: 8px;
+    padding: 4px 12px;
+    border: 1px solid #ddd;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    width: 250px;
+}
+
+.barcode-container:focus-within {
+    border-color: #3875D5;
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(98, 0, 238, 0.1);
+}
+
+.barcode-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #666;
+    margin-right: 8px;
+}
+
+.barcode-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 0.9rem;
+    color: #333;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.barcode-input::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+.totals-panel {
+    background: #2c3e50;
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-label {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 8px;
+}
+
+.discount-label {
+    color: #ff5252;
+    font-weight: 700;
+    opacity: 1;
+}
+
+.dual-totals {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.total-alt {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.total-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'Roboto Mono', monospace;
+}
+
+.btn-pay {
+    background-color: #4caf50;
+    color: white;
+    height: 50px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+}
+
+.btn-pay:hover {
+    background-color: #43a047;
+    transform: scale(1.02);
+}
+
+.btn-pay:active {
+    transform: scale(0.98);
+}
+
+.customer-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.catalog-area {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.catalog-area app-catalog {
+    flex: 1;
+    height: 100%;
+}
+
+.numpad-area {
+    width: 100%;
+    align-content: baseline;
+}
+
+/* Responsive fixes */
+@media (max-width: 1200px) {
+    .sales-content {
+        flex-direction: column;
+    }
+
+    .left-panel,
+    .right-panel {
+        flex: none;
+        width: 100%;
+        height: auto;
+    }
+}

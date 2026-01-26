@@ -1,0 +1,166 @@
+.scale-dialog {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+}
+
+.dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.dialog-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.product-info {
+    font-size: 1.1rem;
+}
+
+.product-info .value {
+    color: #666;
+    margin-right: 8px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    /*border-left: 4px solid #3b82f6;*/
+
+    .label {
+        font-size: 0.875rem;
+        color: #64748b;
+        font-weight: 600;
+        margin-right: 8px;
+    }
+
+    .value {
+        color: #64748b;
+        margin-right: 8px;
+        font-size: 1.125rem;
+        font-weight: 800;
+        color: #1e293b;
+    }
+}
+
+.display-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.weight-display-card {
+    position: relative;
+    width: 90%;
+    background: #0f172a;
+    border-radius: 16px;
+    padding: 40px 20px;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    border: 4px solid transparent;
+
+    &.stable {
+        border-color: #22c55e;
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+    }
+
+    .stability-light {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 12px;
+        height: 12px;
+        background: #334155;
+        border-radius: 50%;
+        transition: all 0.2s;
+
+        &.active {
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+        }
+    }
+
+    .weight-value {
+        font-family: 'Digital-7', 'Courier New', Courier, monospace;
+        font-size: 4rem;
+        font-weight: 800;
+        color: #22c55e;
+        letter-spacing: 2px;
+        line-height: 1;
+    }
+
+    .unit {
+        font-size: 1.0rem;
+        font-weight: 700;
+        color: #acb5bd;
+    }
+}
+
+.btn-connect {
+    width: 100%;
+    height: 48px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.manual-input-section {
+    .subtitle {
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        letter-spacing: 0.05em;
+    }
+}
+
+.numpad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+
+    button {
+        height: 54px;
+        border: none;
+        background: #f1f5f9;
+        border-radius: 10px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #334155;
+        cursor: pointer;
+        transition: all 0.1s;
+
+        &:active {
+            background: #e2e8f0;
+            transform: scale(0.95);
+        }
+
+        &.btn-clear {
+            color: #ef4444;
+            background: #fef2f2;
+        }
+    }
+}
+
+.actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 16px;
+
+    button {
+        flex: 1;
+        height: 56px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 800;
+    }
+}

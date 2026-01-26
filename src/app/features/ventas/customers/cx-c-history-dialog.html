@@ -1,0 +1,117 @@
+<div class="history-container">
+    <div class="header">
+        <h2 mat-dialog-title>Historial de Pagos - {{data.customer.name}}</h2>
+
+        <!-- Filters -->
+        <div class="filters-container">
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Factura #</mat-label>
+                <input matInput [(ngModel)]="filterInvoice" (keyup.enter)="loadHistory()" placeholder="Ej: 123">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Método</mat-label>
+                <mat-select [(ngModel)]="filterMethod" (selectionChange)="loadHistory()">
+                    <mat-option *ngFor="let m of paymentMethods" [value]="m.value">{{ m.label }}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="filter-field">
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="filterDate" (dateChange)="loadHistory()">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <button mat-icon-button (click)="loadHistory()" color="primary" matTooltip="Buscar">
+                <mat-icon>search</mat-icon>
+            </button>
+            <button mat-icon-button (click)="clearFilters()" matTooltip="Limpiar filtros">
+                <mat-icon>filter_alt_off</mat-icon>
+            </button>
+        </div>
+
+        <div class="header-actions">
+            <button mat-stroked-button color="primary" (click)="exportHistory()" *ngIf="payments.length > 0">
+                <mat-icon>picture_as_pdf</mat-icon> Exportar
+            </button>
+            <button mat-icon-button (click)="dialogRef.close()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+
+    <mat-dialog-content>
+        <div class="table-container" *ngIf="payments.length > 0; else empty">
+            <table mat-table [dataSource]="payments">
+
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                    <td mat-cell *matCellDef="let p"> {{p.date | date:'dd/MM/yyyy HH:mm'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="ticketNumber">
+                    <th mat-header-cell *matHeaderCellDef> Pago # </th>
+                    <td mat-cell *matCellDef="let p"> #{{p.ticketNumber}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="invoicePaid">
+                    <th mat-header-cell *matHeaderCellDef> Factura # </th>
+                    <td mat-cell *matCellDef="let p">
+                        <span *ngIf="p.invoicePaid">#{{p.invoicePaid}}</span>
+                        <span *ngIf="!p.invoicePaid" style="color: #999;">-</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="method">
+                    <th mat-header-cell *matHeaderCellDef> Método </th>
+                    <td mat-cell *matCellDef="let p">
+                        {{ getMethodLabel(p.method) }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="details">
+                    <th mat-header-cell *matHeaderCellDef> Detalles </th>
+                    <td mat-cell *matCellDef="let p" class="details-cell">
+                        <span *ngIf="p.bank"><strong>Banco:</strong> {{p.bank}}</span><br />
+                        <span *ngIf="p.reference"><strong>Ref:</strong> {{p.reference}}</span><br />
+                        <span *ngIf="p.cedula"><strong>Cédula:</strong> {{p.cedula}}</span>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <th mat-header-cell *matHeaderCellDef> Monto </th>
+                    <td mat-cell *matCellDef="let p" style="text-align: right;">
+                        <strong>{{p.amountBs | number:settingsService.getDecimalFormat('total')}} Bs.</strong>
+                        <div class="amount-usd" *ngIf="p.amount !== p.amountBs">
+                            $ {{p.amount | number:settingsService.getDecimalFormat('total')}}
+                        </div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                    <td mat-cell *matCellDef="let p">
+                        <button mat-icon-button color="primary" (click)="printPayment(p)" title="Imprimir Comprobante">
+                            <mat-icon>print</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+
+        <ng-template #empty>
+            <div class="empty-msg">
+                <mat-icon style="font-size: 48px; width: 48px; height: 48px;">history_toggle_off</mat-icon>
+                <p>No se registran pagos para este cliente.</p>
+            </div>
+        </ng-template>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-button (click)="dialogRef.close()">CERRAR</button>
+    </mat-dialog-actions>
+</div>

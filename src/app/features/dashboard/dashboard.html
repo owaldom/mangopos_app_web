@@ -1,0 +1,114 @@
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div class="header-text">
+            <h1>Panel de Control</h1>
+            <p>Resumen general de operaciones de Sun Market 2020 C.A.</p>
+        </div>
+    </header>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        @for (stat of stats; track stat.label) {
+        <mat-card class="stat-card">
+            <mat-card-content>
+                <div class="stat-icon" [style.background-color]="stat.color + '20'" [style.color]="stat.color">
+                    <mat-icon>{{ stat.icon }}</mat-icon>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">{{ stat.label }}</span>
+                    <h2 class="stat-value">{{ stat.value }}</h2>
+                    <span class="stat-trend" [class.positive]="stat.trend.startsWith('+')">
+                        {{ stat.trend }}
+                    </span>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        }
+    </div>
+
+    <div class="dashboard-content">
+        <!-- Recent Sales -->
+        <mat-card class="recent-sales-card">
+            <mat-card-header>
+                <mat-card-title>Ventas Recientes</mat-card-title>
+                <button mat-button color="primary" (click)="navigateTo('/dashboard/consultar-ventas')">Ver
+                    todas</button>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="table-container">
+                    <table mat-table [dataSource]="recentSales" class="recent-sales-table">
+                        <!-- ID Column -->
+                        <ng-container matColumnDef="id">
+                            <th mat-header-cell *matHeaderCellDef> ID </th>
+                            <td mat-cell *matCellDef="let sale"> {{sale.id}} </td>
+                        </ng-container>
+
+                        <!-- Customer Column -->
+                        <ng-container matColumnDef="customer">
+                            <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                            <td mat-cell *matCellDef="let sale"> {{sale.customer}} </td>
+                        </ng-container>
+
+                        <!-- Total Column -->
+                        <ng-container matColumnDef="total">
+                            <th mat-header-cell *matHeaderCellDef> Total </th>
+                            <td mat-cell *matCellDef="let sale"> {{sale.total}} </td>
+                        </ng-container>
+
+                        <!-- Time Column -->
+                        <ng-container matColumnDef="time">
+                            <th mat-header-cell *matHeaderCellDef> Hora </th>
+                            <td mat-cell *matCellDef="let sale"> {{sale.time | systemDate }} </td>
+                        </ng-container>
+
+                        <!-- Status Column -->
+                        <ng-container matColumnDef="status">
+                            <th mat-header-cell *matHeaderCellDef> Estado </th>
+                            <td mat-cell *matCellDef="let sale">
+                                <span class="status-badge">{{sale.status}}</span>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+
+                    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
+                        aria-label="Select page of recent sales">
+                    </mat-paginator>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <!-- Quick Actions -->
+        <mat-card class="quick-actions-card">
+            <mat-card-header>
+                <mat-card-title>Accesos Rápidos</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="actions-grid">
+                    <button class="action-btn" (click)="navigateTo('/dashboard/ventas/pos')">
+                        <mat-icon>point_of_sale</mat-icon>
+                        <span>Punto de Venta</span>
+                    </button>
+                    <button class="action-btn" (click)="navigateTo('/dashboard/inventario/productos')">
+                        <mat-icon>inventory</mat-icon>
+                        <span>Inventario</span>
+                    </button>
+                    <button class="action-btn" (click)="navigateTo('/dashboard/clientes')">
+                        <mat-icon>people</mat-icon>
+                        <span>Clientes</span>
+                    </button>
+                    <button class="action-btn" (click)="navigateTo('/dashboard/cierre-caja')">
+                        <mat-icon>lock</mat-icon>
+                        <span>Cierre Caja</span>
+                    </button>
+                    <button class="action-btn" (click)="navigateTo('/dashboard/inventario/compras')">
+                        <mat-icon>shopping_basket</mat-icon>
+                        <span>Factura Compras</span>
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

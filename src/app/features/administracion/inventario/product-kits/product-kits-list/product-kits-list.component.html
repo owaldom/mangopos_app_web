@@ -1,0 +1,87 @@
+<div class="container">
+    <div class="header">
+        <h1>Consulta de Kits de Productos</h1>
+        <button mat-flat-button color="primary" routerLink="/dashboard/inventario/kits-productos">
+            <mat-icon>add</mat-icon> Crear Nuevo Kit
+        </button>
+    </div>
+
+    <mat-card class="table-card">
+        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="full-width">
+
+            <ng-container matColumnDef="code">
+                <th mat-header-cell *matHeaderCellDef> Código </th>
+                <td mat-cell *matCellDef="let element"> {{element.code}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Nombre del Kit </th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="pricesell">
+                <th mat-header-cell *matHeaderCellDef> Precio Venta </th>
+                <td mat-cell *matCellDef="let element"> {{element.pricesell | currency:'VES':'Bs. '}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="expand">
+                <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="row-actions">
+                        <button mat-icon-button (click)="toggleExpand(element, $event)"
+                            [matTooltip]="expandedElement === element ? 'Contraer' : 'Ver Detalles'">
+                            <mat-icon>{{expandedElement === element ? 'expand_less' : 'expand_more'}}</mat-icon>
+                        </button>
+                        <button mat-icon-button color="primary" (click)="editKit(element.id)" matTooltip="Editar Kit">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Expanded Content Column - The detail row is made up of this one column that spans all columns -->
+            <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                    <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <div class="detail-container">
+                            <h3>Componentes del Kit</h3>
+                            <div class="components-grid" *ngIf="kitComponentsMap[element.id]; else loading">
+                                <div class="component-header">
+                                    <span>Producto</span>
+                                    <span>Cantidad</span>
+                                    <span>Grupo</span>
+                                    <span>Oblig.</span>
+                                </div>
+                                <div class="component-item" *ngFor="let comp of kitComponentsMap[element.id]">
+                                    <span>{{comp.component_name}}</span>
+                                    <span>{{comp.quantity}}</span>
+                                    <span class="group-label" [class.flexible]="comp.group_id">
+                                        {{comp.group_name || 'Fijo'}}
+                                    </span>
+                                    <span>
+                                        <mat-icon [color]="comp.is_mandatory ? 'primary' : 'warn'">
+                                            {{comp.is_mandatory ? 'check_circle' : 'cancel'}}
+                                        </mat-icon>
+                                    </span>
+                                </div>
+                            </div>
+                            <ng-template #loading>
+                                <div class="loading-detail">Cargando componentes...</div>
+                            </ng-template>
+                        </div>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="element-row"
+                [class.expanded-row]="expandedElement === element" (click)="toggleExpand(element, $event)">
+            </tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+        </table>
+
+        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 100]"
+            (page)="onPageChange($event)" aria-label="Seleccionar página">
+        </mat-paginator>
+    </mat-card>
+</div>

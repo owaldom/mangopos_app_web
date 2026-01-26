@@ -1,0 +1,36 @@
+.supplier-form {
+    display: flex;
+    flex-direction: column;
+    padding-top: 0;
+}
+
+.tab-padding {
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-row {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.two-cols mat-form-field {
+    flex: 1;
+}
+
+.three-cols mat-form-field {
+    flex: 1;
+}
+
+mat-dialog-content {
+    width: 100%;
+    min-height: 450px;
+    /* Minimum height for better tab appearance */
+}

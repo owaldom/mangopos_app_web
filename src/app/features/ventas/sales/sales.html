@@ -1,0 +1,109 @@
+<div class="sales-container">
+    <!-- Ticket Tabs -->
+    <div class="ticket-tabs">
+        <div *ngFor="let ticket of tickets; let i = index" class="ticket-tab" [class.active]="i === activeTicketIndex"
+            (click)="selectTicket(i)">
+            <mat-icon>receipt</mat-icon>
+            <span class="tab-label">
+                {{ ticket.selectedCustomer ? ticket.selectedCustomer.name : 'Ticket ' + (i + 1) }}
+            </span>
+            <button mat-icon-button class="close-tab" (click)="removeTicket($event, i)" *ngIf="tickets.length > 1">
+                <mat-icon ripple="false">close</mat-icon>
+            </button>
+        </div>
+        <button mat-icon-button class="add-tab" (click)="addTicket()" matTooltip="Nuevo Ticket (+)"
+            *ngIf="tickets.length < 10">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+
+    <!-- Top Bar: Cliente y Acciones rápidas -->
+    <header class="top-bar">
+        <div class="customer-info">
+            <mat-icon color="primary">account_circle</mat-icon>
+            <span style="font-weight: 500;">
+                {{ selectedCustomer ? selectedCustomer.name : 'Cliente General' }}
+            </span>
+            <button mat-button color="primary" (click)="openCustomerSelector()"
+                style="margin-right: 12px;">Cambiar</button>
+
+            <div class="barcode-container">
+                <mat-icon class="barcode-icon">qr_code_scanner</mat-icon>
+                <input #barcodeInput type="text" [(ngModel)]="barcode" (ngModelChange)="onBarcodeChange($event)"
+                    (keyup.enter)="onBarcodeEnter($event)" placeholder="Escanear Código..." class="barcode-input">
+            </div>
+        </div>
+
+        <div class="sale-actions">
+            <div class="rate-display">
+                <span class="label">Tasa: </span>
+                <input type="text" [(ngModel)]="exchangeRate" (ngModelChange)="updateRate($event)" class="rate-input"
+                    appMoneyInput decimalType="price">
+                <span class="currency">Bs/$</span>
+            </div>
+            <button mat-icon-button (click)="syncAll()" matTooltip="Sincronizar precios y tasa">
+                <mat-icon>sync</mat-icon>
+            </button>
+            <button mat-icon-button (click)="openProductSearch()" matTooltip="Buscador de productos (F2)">
+                <mat-icon>search</mat-icon>
+            </button>
+            <button mat-icon-button (click)="openCalculator()" matTooltip="Calculadora (F4)">
+                <mat-icon>calculate</mat-icon>
+            </button>
+            <button mat-icon-button (click)="openNotesDialog()" matTooltip="Notas al ticket">
+                <mat-icon>note_add</mat-icon>
+            </button>
+        </div>
+    </header>
+
+    <div class="sales-content">
+        <!-- Panel Izquierdo: Ticket y Totales -->
+        <aside class="left-panel">
+            <div style="flex: 1; overflow: hidden;">
+                <app-ticket-lines></app-ticket-lines>
+            </div>
+
+            <div class="totals-panel">
+                <div class="total-info">
+                    <div class="total-label">Sub Total: {{ subtotal | currency:'VES':'Bs.
+                        ':settingsService.getDecimalFormat('total') }}</div>
+                    <div class="total-label">Impuestos: {{ taxes | currency:'VES':'Bs.
+                        ':settingsService.getDecimalFormat('total') }}</div>
+                    <div class="total-label discount-label" *ngIf="salesService.getGlobalDiscount() > 0">
+                        Descuento Global:
+                        <ng-container [ngSwitch]="salesService.getGlobalDiscountType()">
+                            <span *ngSwitchCase="'FIXED'">{{ salesService.getGlobalDiscount() | currency:'USD':'$
+                                ':settingsService.getDecimalFormat('price')
+                                }}</span>
+                            <span *ngSwitchCase="'FIXED_VES'">{{ salesService.getGlobalDiscount() | currency:'VES':'Bs.
+                                ':settingsService.getDecimalFormat('price') }}</span>
+                            <span *ngSwitchDefault>{{ salesService.getGlobalDiscount() * 100 | number:'1.0-0' }}%</span>
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="dual-totals">
+                    <div class="total-alt">{{ totalAlt | currency:'USD':'$ ':settingsService.getDecimalFormat('total')
+                        }}</div>
+                    <div class="total-value">{{ total | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total')
+                        }}</div>
+                </div>
+            </div>
+
+            <button class="btn-pay" (click)="onPay()" [disabled]="linesCount === 0">
+                <mat-icon>payments</mat-icon>
+                PAGAR
+            </button>
+        </aside>
+
+        <!-- Panel Derecho: Catálogo y Numpad -->
+        <main class="right-panel">
+            <div class="catalog-area">
+                <app-catalog (productSelected)="addToTicket($event.product, $event.units)"></app-catalog>
+            </div>
+
+            <div class="numpad-area">
+                <app-sales-numpad (action)="handleNumpadAction($event)"></app-sales-numpad>
+            </div>
+        </main>
+    </div>
+</div>

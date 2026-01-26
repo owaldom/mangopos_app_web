@@ -1,0 +1,64 @@
+@use '@angular/material' as mat;
+@import 'material-design-icons-iconfont/dist/material-design-icons.css';
+@import '@fontsource/roboto/300.css';
+@import '@fontsource/roboto/400.css';
+@import '@fontsource/roboto/500.css';
+
+:root {
+  /* Default Theme (Light / Brand) */
+  --sidebar-bg: #3875D5;
+  --sidebar-text: #ffffff;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.1);
+  --sidebar-active-bg: #ffffff;
+  --sidebar-active-text: #3875D5;
+  --sidebar-divider: rgba(255, 255, 255, 0.12);
+  --sidebar-submenu-bg: rgba(0, 0, 0, 0.2);
+
+  --header-bg: #3875D5;
+  --header-text: #ffffff;
+  --content-bg: var(--mat-sys-surface);
+  --card-bg: #ffffff;
+}
+
+body.theme-dark {
+  --sidebar-bg: #1e1e1e;
+  --sidebar-text: #e0e0e0;
+  --sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+  --sidebar-active-bg: #3875D5;
+  --sidebar-active-text: #ffffff;
+  --sidebar-divider: rgba(255, 255, 255, 0.08);
+  --sidebar-submenu-bg: rgba(0, 0, 0, 0.3);
+
+  --header-bg: #252525;
+  --header-text: #e0e0e0;
+  --content-bg: #121212;
+  --card-bg: #1e1e1e;
+
+  --mat-sys-surface: #1e1e1e;
+  --mat-sys-on-surface: #e0e0e0;
+}
+
+body.theme-brand {
+  --sidebar-bg: #1a237e;
+  /* Navy blue */
+  --header-bg: #1a237e;
+}
+
+html {
+  height: 100%;
+  @include mat.theme((color: (primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    ));
+}
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: var(--content-bg);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+}

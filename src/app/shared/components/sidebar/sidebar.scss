@@ -1,0 +1,235 @@
+:host {
+    display: block;
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+    flex: 0 0 280px;
+    flex-shrink: 0;
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+
+    /* Modern Scrollbar */
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--sidebar-hover-bg);
+        border-radius: 10px;
+    }
+
+    &.is-collapsed {
+        width: 76px;
+        min-width: 76px;
+        max-width: 76px;
+        flex: 0 0 76px;
+
+        .sidebar-content {
+            .sidebar-header {
+                padding: 20px 0;
+                justify-content: center;
+                min-height: 90px;
+
+                .logo-container {
+                    justify-content: center;
+
+                    .logo-img {
+                        height: 36px;
+                    }
+                }
+            }
+
+            mat-nav-list {
+                a[mat-list-item] {
+                    margin: 8px 12px;
+                    padding: 0;
+                    height: 52px;
+
+                    ::ng-deep .mdc-list-item__content {
+                        justify-content: center;
+                    }
+
+                    mat-icon {
+                        margin: 0;
+                        font-size: 24px;
+                    }
+                }
+            }
+
+            .toggle-btn {
+                display: none;
+                /* Hide toggle when collapsed, or move it */
+            }
+        }
+    }
+
+    .sidebar-content {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        .sidebar-header {
+            padding: 20px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 100px;
+            transition: all 0.3s ease;
+
+            .logo-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                cursor: pointer;
+
+                .logo-img {
+                    height: 60px;
+                    width: auto;
+                    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+                }
+            }
+
+            .toggle-btn {
+                color: var(--sidebar-text);
+                opacity: 0.8;
+
+                &:hover {
+                    opacity: 1;
+                    background: var(--sidebar-hover-bg);
+                }
+            }
+        }
+
+        h3[mat-subheader] {
+            color: var(--sidebar-text);
+            opacity: 0.6;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            padding: 24px 24px 8px;
+            font-weight: 700;
+        }
+
+        mat-nav-list {
+            padding: 0;
+
+            a[mat-list-item] {
+                color: var(--sidebar-text);
+                margin: 6px 16px;
+                border-radius: 12px;
+                height: 48px;
+                transition: all 0.25s ease;
+
+                &:hover {
+                    background-color: var(--sidebar-hover-bg);
+                    transform: translateX(5px);
+                }
+
+                &.mdc-list-item--activated {
+                    background-color: var(--sidebar-active-bg);
+                    color: var(--sidebar-active-text);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+                    mat-icon {
+                        color: var(--sidebar-active-text);
+                    }
+                }
+
+                mat-icon {
+                    color: inherit;
+                    font-size: 22px;
+                }
+            }
+        }
+
+        .submenu-panel {
+            background-color: transparent;
+            margin: 0 16px;
+            border-radius: 12px !important;
+            overflow: hidden;
+
+            ::ng-deep {
+                .mat-expansion-panel-header {
+                    height: 48px !important;
+                    padding: 0 16px;
+                    border-radius: 12px;
+
+                    &:hover {
+                        background-color: var(--sidebar-hover-bg) !important;
+                    }
+
+                    .mat-content {
+                        align-items: center;
+                        gap: 12px;
+                    }
+                }
+
+                .mat-expansion-panel-body {
+                    padding: 0 0 8px 0;
+                    background-color: var(--sidebar-submenu-bg);
+                }
+            }
+
+            mat-panel-title {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                color: var(--sidebar-text);
+
+                mat-icon {
+                    color: inherit;
+                    font-size: 22px;
+                }
+
+                span {
+                    font-size: 14px;
+                    font-weight: 500;
+                }
+            }
+        }
+
+        .submenu-list {
+            .submenu-item {
+                margin: 4px 8px 4px 16px;
+                height: 40px;
+                border-radius: 8px;
+                font-size: 13.5px;
+
+                &:hover {
+                    background-color: var(--sidebar-hover-bg);
+                }
+            }
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            margin-bottom: 20px;
+            color: #ff5252 !important;
+
+            mat-icon {
+                color: #ff5252 !important;
+            }
+
+            &:hover {
+                background-color: rgba(255, 82, 82, 0.1) !important;
+            }
+        }
+    }
+}
+
+mat-divider {
+    border-top-color: var(--sidebar-divider);
+    margin: 8px 24px;
+}

@@ -1,0 +1,105 @@
+<div class="settings-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>Configuración General</mat-card-title>
+            <mat-card-subtitle>Ajustes regionales y visuales de la aplicación</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content *ngIf="!loading">
+            <div class="settings-section">
+                <h3>Decimales y Precisión</h3>
+                <div class="grid-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Decimales en Precios</mat-label>
+                        <input matInput type="number" [(ngModel)]="settings.price_decimals" min="0" max="6">
+                        <mat-hint>Ej: 2 -> 1,23 | 3 -> 1,234</mat-hint>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Decimales en Totales</mat-label>
+                        <input matInput type="number" [(ngModel)]="settings.total_decimals" min="0" max="6">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Decimales en Cantidades</mat-label>
+                        <input matInput type="number" [(ngModel)]="settings.quantity_decimals" min="0" max="6">
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Moneda y Empresa</h3>
+                <div class="grid-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Símbolo de Moneda</mat-label>
+                        <input matInput [(ngModel)]="settings.currency_symbol" placeholder="Bs.">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Código de Moneda</mat-label>
+                        <input matInput [(ngModel)]="settings.currency_code" placeholder="VES">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Nombre de la Empresa</mat-label>
+                        <input matInput [(ngModel)]="settings.company_name">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Dirección</mat-label>
+                        <textarea matInput [(ngModel)]="settings.company_address" rows="2"></textarea>
+                    </mat-form-field>
+
+                    <div class="toggle-container" style="margin-top: 10px;">
+                        <mat-slide-toggle [(ngModel)]="settings.enable_pdf_ticket" color="primary">
+                            Mostrar ticket PDF si falla impresora térmica
+                        </mat-slide-toggle>
+                        <mat-hint class="toggle-hint"
+                            style="display: block; margin-top: 5px; font-size: 12px; color: #666;">
+                            Si se activa, se mostrará el diálogo de impresión del navegador cuando la impresora térmica
+                            no esté conectada.
+                        </mat-hint>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section currencies-section">
+                <h3>Monedas y Tasas de Cambio (Basado en Bs.)</h3>
+                <div class="currency-item" *ngFor="let curr of currencies">
+                    <div class="curr-header">
+                        <strong>{{ curr.code }}</strong> - {{ curr.name }}
+                    </div>
+                    <div class="grid-row">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Nombre</mat-label>
+                            <input matInput [(ngModel)]="curr.name">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Símbolo</mat-label>
+                            <input matInput [(ngModel)]="curr.symbol">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline">
+                            <mat-label>Tasa de Cambio (1 {{curr.code}} = ? Bs.)</mat-label>
+                            <input matInput type="text" [(ngModel)]="curr.exchange_rate" [disabled]="curr.is_base"
+                                appMoneyInput decimalType="price">
+                            <mat-hint *ngIf="curr.is_base">Moneda Base (Fija)</mat-hint>
+                        </mat-form-field>
+
+                        <button mat-stroked-button color="accent" (click)="saveCurrency(curr)">
+                            ACTUALIZAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+            <button mat-flat-button color="primary" (click)="saveSettings()">
+                <mat-icon>save</mat-icon>
+                GUARDAR CAMBIOS
+            </button>
+        </mat-card-actions>
+    </mat-card>
+</div>

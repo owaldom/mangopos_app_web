@@ -1,0 +1,77 @@
+<div class="container">
+    <mat-card class="expense-card">
+        <mat-card-header>
+            <div mat-card-avatar class="header-icon">
+                <mat-icon>monetization_on</mat-icon>
+            </div>
+            <mat-card-title>Registrar Gasto de Caja</mat-card-title>
+            <mat-card-subtitle>Registre salidas de efectivo por compras o pagos</mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-divider></mat-divider>
+
+        <mat-card-content>
+            <div class="status-alert" *ngIf="!isCashOpened && !loading">
+                <mat-icon>error_outline</mat-icon>
+                <span>La caja está cerrada. Debe abrir una sesión de caja para registrar gastos.</span>
+            </div>
+
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="expense-form">
+
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Concepto / Razón del Gasto</mat-label>
+                        <input matInput formControlName="concept" placeholder="Ej. Compra de insumos de limpieza"
+                            required>
+                        <mat-icon matSuffix>description</mat-icon>
+                        <mat-error *ngIf="form.get('concept')?.hasError('required')">El concepto es
+                            requerido</mat-error>
+                        <mat-error *ngIf="form.get('concept')?.hasError('minlength')">Debe tener al menos 3
+                            caracteres</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row two-cols">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Moneda</mat-label>
+                        <mat-select formControlName="currencyId">
+                            <mat-option *ngFor="let currency of currencies" [value]="currency.id">
+                                {{ currency.name }} ({{ currency.symbol }})
+                            </mat-option>
+                        </mat-select>
+                        <mat-icon matPrefix>paid</mat-icon>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Monto</mat-label>
+                        <input matInput formControlName="amount" appMoneyInput decimalType="price" placeholder="0.00">
+                        <span matPrefix *ngIf="form.get('currencyId')?.value === 1">Bs.&nbsp;</span>
+                        <span matPrefix *ngIf="form.get('currencyId')?.value === 2">$&nbsp;</span>
+                        <mat-error *ngIf="form.get('amount')?.hasError('required')">El monto es requerido</mat-error>
+                        <mat-error *ngIf="form.get('amount')?.hasError('min')">El monto debe ser mayor a 0</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Nota Adicional / Receptor (Opcional)</mat-label>
+                        <input matInput formControlName="person" placeholder="Nombre de quien recibe el dinero">
+                        <mat-icon matSuffix>person</mat-icon>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-actions">
+                    <button mat-raised-button color="primary" type="submit"
+                        [disabled]="form.invalid || loading || !isCashOpened" class="submit-btn">
+                        <mat-icon>save</mat-icon>
+                        Registrar Gasto
+                    </button>
+                </div>
+            </form>
+
+            <div class="loading-overlay" *ngIf="loading">
+                <mat-spinner diameter="40"></mat-spinner>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>
