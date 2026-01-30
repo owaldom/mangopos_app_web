@@ -1,0 +1,128 @@
+<h2 mat-dialog-title>
+    <mat-icon>receipt_long</mat-icon>
+    Movimientos de {{ bank.name }}
+</h2>
+
+<mat-dialog-content>
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+        <mat-card class="summary-card balance">
+            <mat-card-content>
+                <div class="label">Saldo Actual</div>
+                <div class="value">{{ formatCurrency(bank.current_balance) }}</div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="summary-card income">
+            <mat-card-content>
+                <div class="label">Total Ingresos</div>
+                <div class="value">{{ formatCurrency(totalIncome) }}</div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="summary-card expense">
+            <mat-card-content>
+                <div class="label">Total Egresos</div>
+                <div class="value">{{ formatCurrency(totalExpense) }}</div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Filters -->
+    <form [formGroup]="filterForm" class="filters">
+        <mat-form-field appearance="outline">
+            <mat-label>Fecha Inicio</mat-label>
+            <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+            <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Fecha Fin</mat-label>
+            <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+            <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+            <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" (click)="loadTransactions()">
+            <mat-icon>search</mat-icon>
+            Filtrar
+        </button>
+    </form>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading-container">
+        <mat-spinner></mat-spinner>
+    </div>
+
+    <!-- No Data -->
+    <div *ngIf="!loading && transactions.length === 0" class="no-data">
+        <mat-icon>receipt_long</mat-icon>
+        <p>No hay transacciones en el período seleccionado</p>
+    </div>
+
+    <!-- Transactions Table -->
+    <table mat-table [dataSource]="transactions" *ngIf="!loading && transactions.length > 0" class="transactions-table">
+        <!-- Date Column -->
+        <ng-container matColumnDef="transaction_date">
+            <th mat-header-cell *matHeaderCellDef>Fecha</th>
+            <td mat-cell *matCellDef="let transaction">{{ formatDate(transaction.transaction_date) }}</td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef>Tipo</th>
+            <td mat-cell *matCellDef="let transaction">
+                <mat-chip [class.income]="transaction.transaction_type === 'INCOME'"
+                    [class.expense]="transaction.transaction_type === 'EXPENSE'">
+                    {{ getTransactionTypeLabel(transaction.transaction_type) }}
+                </mat-chip>
+            </td>
+        </ng-container>
+
+        <!-- Amount Column -->
+        <ng-container matColumnDef="amount">
+            <th mat-header-cell *matHeaderCellDef>Monto</th>
+            <td mat-cell *matCellDef="let transaction" class="amount-cell">
+                <strong [class.income]="transaction.transaction_type === 'INCOME'"
+                    [class.expense]="transaction.transaction_type === 'EXPENSE'">
+                    {{ formatCurrency(transaction.amount) }}
+                </strong>
+            </td>
+        </ng-container>
+
+        <!-- Balance After Column -->
+        <ng-container matColumnDef="balance_after">
+            <th mat-header-cell *matHeaderCellDef>Saldo Después</th>
+            <td mat-cell *matCellDef="let transaction">{{ formatCurrency(transaction.balance_after) }}</td>
+        </ng-container>
+
+        <!-- Reference Column -->
+        <ng-container matColumnDef="reference">
+            <th mat-header-cell *matHeaderCellDef>Referencia</th>
+            <td mat-cell *matCellDef="let transaction">
+                <span *ngIf="transaction.reference_type">{{ transaction.reference_type }}</span>
+                <span *ngIf="!transaction.reference_type">-</span>
+            </td>
+        </ng-container>
+
+        <!-- Payment Method Column -->
+        <ng-container matColumnDef="payment_method">
+            <th mat-header-cell *matHeaderCellDef>Método de Pago</th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.payment_method || '-' }}</td>
+        </ng-container>
+
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef>Descripción</th>
+            <td mat-cell *matCellDef="let transaction">{{ transaction.description || '-' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

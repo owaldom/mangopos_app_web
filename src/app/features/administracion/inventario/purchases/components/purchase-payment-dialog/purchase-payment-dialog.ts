@@ -6,7 +6,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { SettingsService } from '../../../../../../core/services/settings.service';
+import { BanksService } from '../../../../../../core/services/banks.service';
+import { Bank } from '../../../../../../core/models/bank.model';
 import { MoneyInputDirective } from '../../../../../../shared/directives/money-input.directive';
 
 @Component({
@@ -20,6 +23,7 @@ import { MoneyInputDirective } from '../../../../../../shared/directives/money-i
         MatButtonModule,
         MatFormFieldModule,
         MatInputModule,
+        MatSelectModule,
         MoneyInputDirective
     ],
     templateUrl: './purchase-payment-dialog.html',
@@ -37,12 +41,15 @@ export class PurchasePaymentDialogComponent implements OnInit {
     payments: { [key: string]: number } = { cash: 0, card: 0, paper: 0, Credito: 0 };
     paymentsAlt: { [key: string]: number } = { cash: 0, card: 0, paper: 0, Credito: 0 };
 
-    paymentDetails: { [key: string]: { reference: string, bank: string, cedula?: string } } = {
-        card: { reference: '', bank: '' },
-        paper: { reference: '', bank: '', cedula: '' },
-        cash: { reference: '', bank: '' },
-        Credito: { reference: '', bank: '' }
+    paymentDetails: { [key: string]: { reference: string, bank: string, cedula?: string, bank_id?: string } } = {
+        card: { reference: '', bank: '', bank_id: '' },
+        paper: { reference: '', bank: '', cedula: '', bank_id: '' },
+        cash: { reference: '', bank: '', bank_id: '' },
+        Credito: { reference: '', bank: '', bank_id: '' }
     };
+
+    banks: Bank[] = [];
+    selectedBankId: string = '';
 
     remaining: number = 0;
     remainingAlt: number = 0;
@@ -57,13 +64,32 @@ export class PurchasePaymentDialogComponent implements OnInit {
             totalUSD: number,
             supplier?: any
         },
-        public settingsService: SettingsService
+        public settingsService: SettingsService,
+        private banksService: BanksService
     ) { }
 
     ngOnInit(): void {
         // Initialize with the total in foreign currency (Alt) and calculate the local currency (Base)
         this.receivedAmountAlt = this.data.totalUSD;
         this.calculateChange(this.receivedAmountAlt, 'alt');
+
+        // Load active banks
+        this.loadBanks();
+    }
+
+    loadBanks(): void {
+        this.banksService.getBanks(true).subscribe({
+            next: (banks) => {
+                this.banks = banks;
+            },
+            error: (error) => {
+                console.error('Error loading banks:', error);
+            }
+        });
+    }
+
+    requiresBank(method: string): boolean {
+        return ['card', 'paper', 'Debito', 'Credito', 'transfer', 'cheque'].includes(method);
     }
 
     toggleMultiPayment(): void {
@@ -178,6 +204,7 @@ export class PurchasePaymentDialogComponent implements OnInit {
             change: this.change,
             currency_id: this.selectedCurrency === 'base' ? 1 : 2,
             exchange_rate: this.data.exchangeRate,
+            bank_id: this.selectedBankId || null,
             multiparams: this.isMultiPayment ? {
                 payments: this.payments,
                 paymentsAlt: this.paymentsAlt

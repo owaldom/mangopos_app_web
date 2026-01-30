@@ -4,48 +4,55 @@
             <img src="/LogoSMCreativos.png" alt="SMCreativos" class="logo-img">
         </div>
     </div>
-
-    @for (section of filteredMenuSections; track section.name) {
-    <mat-nav-list>
-        <h3 mat-subheader *ngIf="!ui.isSidebarCollapsed()">
-            <mat-icon>{{ section.icon }}</mat-icon>
-            {{ section.name }}
-        </h3>
-        <mat-divider *ngIf="ui.isSidebarCollapsed()"></mat-divider>
-
-        @for (item of section.items; track item.name) {
-        @if (item.children && item.children.length > 0) {
-        <!-- Item con submenú (Deshabilitado o simplificado cuando colapsado) -->
-        <mat-expansion-panel class="submenu-panel" [disabled]="ui.isSidebarCollapsed()"
-            [class.collapsed-panel]="ui.isSidebarCollapsed()">
-            <mat-expansion-panel-header [matTooltip]="ui.isSidebarCollapsed() ? item.name : ''"
-                matTooltipPosition="right">
-                <mat-panel-title>
-                    <mat-icon>{{ item.icon }}</mat-icon>
-                    <span *ngIf="!ui.isSidebarCollapsed()">{{ item.name }}</span>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-
-            <mat-nav-list class="submenu-list" *ngIf="!ui.isSidebarCollapsed()">
-                @for (subitem of item.children; track subitem.name) {
-                <a mat-list-item [routerLink]="subitem.route" routerLinkActive="mdc-list-item--activated"
-                    class="submenu-item">
-                    <mat-icon matListItemIcon>{{ subitem.icon }}</mat-icon>
-                    <span matListItemTitle>{{ subitem.name }}</span>
-                </a>
-                }
-            </mat-nav-list>
-        </mat-expansion-panel>
-        } @else {
-        <!-- Item sin submenú -->
-        <a mat-list-item [routerLink]="item.route" routerLinkActive="mdc-list-item--activated"
-            [matTooltip]="ui.isSidebarCollapsed() ? item.name : ''" matTooltipPosition="right">
-            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-            <span matListItemTitle *ngIf="!ui.isSidebarCollapsed()">{{ item.name }}</span>
-        </a>
-        }
-        }
-    </mat-nav-list>
     <mat-divider *ngIf="!ui.isSidebarCollapsed()"></mat-divider>
-    }
+
+    <div class="sidebar-menu">
+        @for (section of filteredMenuSections; track section.name) {
+        <mat-nav-list>
+            <h3 mat-subheader *ngIf="!ui.isSidebarCollapsed()">
+                <mat-icon>{{ section.icon }}</mat-icon>
+                {{ section.name }}
+            </h3>
+            <mat-divider *ngIf="ui.isSidebarCollapsed()"></mat-divider>
+
+            @for (item of section.items; track item.name) {
+            @if (item.children && item.children.length > 0) {
+            <!-- Item con submenú (Deshabilitado o simplificado cuando colapsado) -->
+            <mat-expansion-panel class="submenu-panel" [disabled]="ui.isSidebarCollapsed()"
+                [class.collapsed-panel]="ui.isSidebarCollapsed()">
+                <mat-expansion-panel-header [matTooltip]="ui.isSidebarCollapsed() ? item.name : ''"
+                    matTooltipPosition="right">
+                    <mat-panel-title>
+                        <mat-icon>{{ item.icon }}</mat-icon>
+                        <span *ngIf="!ui.isSidebarCollapsed()">{{ item.name }}</span>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <mat-nav-list class="submenu-list" *ngIf="!ui.isSidebarCollapsed()">
+                    @for (subitem of item.children; track subitem.name) {
+                    <a mat-list-item [routerLink]="subitem.route" routerLinkActive="mdc-list-item--activated"
+                        class="submenu-item">
+                        <mat-icon matListItemIcon>{{ subitem.icon }}</mat-icon>
+                        <span matListItemTitle>{{ subitem.name }}</span>
+                    </a>
+                    }
+                </mat-nav-list>
+            </mat-expansion-panel>
+            } @else {
+            <!-- Item sin submenú -->
+            <a mat-list-item [routerLink]="item.route" routerLinkActive="mdc-list-item--activated"
+                [matTooltip]="ui.isSidebarCollapsed() ? item.name : ''" matTooltipPosition="right">
+                <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+                <span matListItemTitle *ngIf="!ui.isSidebarCollapsed()">{{ item.name }}</span>
+            </a>
+            }
+            }
+        </mat-nav-list>
+        <!--<mat-divider *ngIf="!ui.isSidebarCollapsed()"></mat-divider>-->
+        }
+    </div>
+
+    <div class="sidebar-footer">
+        <!-- Footer content can be added here later -->
+    </div>
 </div>

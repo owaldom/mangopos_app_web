@@ -21,6 +21,16 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/dashboard/dashboard').then(m => m.DashboardComponent),
                 data: { title: 'Panel de Control' }
             },
+            {
+                path: 'reportes',
+                loadComponent: () => import('./features/reports/reports').then(m => m.ReportsComponent),
+                data: { title: 'Reportes por Módulos', description: 'Consulta de informes' }
+            },
+            {
+                path: 'bancos',
+                loadComponent: () => import('./features/banks/banks').then(m => m.BanksComponent),
+                data: { title: 'Gestión de Bancos', description: 'Administración de cuentas bancarias' }
+            },
             // Sección Ventas
             {
                 path: 'ventas/pos',

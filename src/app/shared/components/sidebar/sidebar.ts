@@ -95,6 +95,8 @@ export class SidebarComponent {
           ]
         },
         { name: 'Ventas', route: '/dashboard/admin-ventas', icon: 'trending_up', permission: 'sales.history' },
+        { name: 'Reportes por Módulos', route: '/dashboard/reportes', icon: 'analytics' },
+        { name: 'Gestión de Bancos', route: '/dashboard/bancos', icon: 'account_balance' },
         { name: 'Configuración', route: '/dashboard/configuracion', icon: 'settings' }
       ]
     },
