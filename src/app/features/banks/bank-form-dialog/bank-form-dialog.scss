@@ -1,0 +1,29 @@
+mat-dialog-content {
+    min-width: 500px;
+    padding: 20px;
+
+    .bank-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        mat-form-field {
+            width: 100%;
+        }
+
+        mat-checkbox {
+            margin-top: 8px;
+        }
+    }
+}
+
+mat-dialog-actions {
+    padding: 16px 20px;
+    border-top: 1px solid #e0e0e0;
+}

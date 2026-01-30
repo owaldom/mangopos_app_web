@@ -1,0 +1,72 @@
+<h2 mat-dialog-title>{{ mode === 'create' ? 'Nuevo Banco' : 'Editar Banco' }}</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="bankForm" class="bank-form">
+        <mat-form-field appearance="outline">
+            <mat-label>Nombre del Banco *</mat-label>
+            <input matInput formControlName="name" placeholder="Ej: Cuenta Principal">
+            <mat-error *ngIf="bankForm.get('name')?.hasError('required')">
+                El nombre es requerido
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Entidad Bancaria</mat-label>
+            <mat-select formControlName="bank_entity">
+                <mat-option value="">Ninguno</mat-option>
+                <mat-option *ngFor="let entity of bankEntities" [value]="entity">
+                    {{ entity }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Número de Cuenta</mat-label>
+            <input matInput formControlName="account_number" placeholder="0000-0000-00-0000000000">
+        </mat-form-field>
+
+        <div class="form-row">
+            <mat-form-field appearance="outline">
+                <mat-label>Tipo de Cuenta *</mat-label>
+                <mat-select formControlName="account_type">
+                    <mat-option *ngFor="let type of accountTypes" [value]="type.value">
+                        {{ type.label }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Moneda *</mat-label>
+                <mat-select formControlName="currency">
+                    <mat-option *ngFor="let curr of currencies" [value]="curr.value">
+                        {{ curr.label }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" *ngIf="mode === 'create'">
+            <mat-label>Saldo Inicial</mat-label>
+            <input matInput type="number" formControlName="initial_balance" step="0.01" min="0">
+            <mat-error *ngIf="bankForm.get('initial_balance')?.hasError('min')">
+                El saldo debe ser mayor o igual a 0
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Notas</mat-label>
+            <textarea matInput formControlName="notes" rows="3" placeholder="Notas adicionales..."></textarea>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="active" *ngIf="mode === 'edit'">
+            Banco Activo
+        </mat-checkbox>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="saving">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="saving || bankForm.invalid">
+        {{ saving ? 'Guardando...' : (mode === 'create' ? 'Crear' : 'Actualizar') }}
+    </button>
+</mat-dialog-actions>

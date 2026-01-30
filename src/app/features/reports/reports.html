@@ -1,0 +1,112 @@
+<div class="reports-container">
+    <div class="sidebar-reports">
+        <mat-accordion multi>
+            <mat-expansion-panel *ngFor="let module of modules" [expanded]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-icon>{{ module.icon }}</mat-icon>
+                        <span class="module-name">{{ module.name }}</span>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="report-list">
+                    <button mat-button *ngFor="let report of module.reports"
+                        [class.active]="selectedReport?.id === report.id" (click)="selectReport(report)">
+                        {{ report.name }}
+                    </button>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+
+    <div class="main-reports">
+        <mat-card *ngIf="!selectedReport" class="no-selection">
+            <mat-card-content>
+                <mat-icon>analytics</mat-icon>
+                <p>Seleccione un reporte del menú lateral para comenzar.</p>
+            </mat-card-content>
+        </mat-card>
+
+        <ng-container *ngIf="selectedReport">
+            <mat-card class="report-params">
+                <mat-card-header>
+                    <mat-card-title>{{ selectedReport.name }}</mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <div class="params-row">
+                        <ng-container *ngIf="selectedReport.hasDates">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Fecha Inicio</mat-label>
+                                <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate">
+                                <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #startPicker></mat-datepicker>
+                            </mat-form-field>
+
+                            <mat-form-field appearance="outline">
+                                <mat-label>Fecha Fin</mat-label>
+                                <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate">
+                                <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+                                <mat-datepicker #endPicker></mat-datepicker>
+                            </mat-form-field>
+                        </ng-container>
+
+                        <button mat-raised-button color="primary" (click)="generateReport()" [disabled]="loading">
+                            <span *ngIf="!loading">Generar Reporte</span>
+                            <mat-spinner diameter="20" *ngIf="loading"></mat-spinner>
+                        </button>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="chart-container" *ngIf="selectedReport.id === 'sales-chart' && barChartData"
+                style="margin-top: 20px;">
+                <mat-card-content>
+                    <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType"
+                        style="height: 400px; width: 100%;">
+                    </canvas>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="report-results" *ngIf="reportData.length > 0 && selectedReport.id !== 'sales-chart'">
+                <mat-card-content>
+                    <div class="table-container">
+                        <table mat-table [dataSource]="reportData">
+                            <ng-container *ngFor="let column of columns" [matColumnDef]="column">
+                                <th mat-header-cell *matHeaderCellDef> {{ formatHeader(column) }} </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <ng-container [ngSwitch]="column">
+                                        <span *ngSwitchCase="'total_base'">{{ element[column] |
+                                            currency:'VES':'symbol-narrow' }}</span>
+                                        <span *ngSwitchCase="'total_tax'">{{ element[column] |
+                                            currency:'VES':'symbol-narrow' }}</span>
+                                        <span *ngSwitchCase="'total_with_tax'">{{ element[column] |
+                                            currency:'VES':'symbol-narrow' }}</span>
+                                        <span *ngSwitchCase="'base_amount'">{{ element[column] |
+                                            currency:'VES':'symbol-narrow' }}</span>
+                                        <span *ngSwitchCase="'tax_amount'">{{ element[column] |
+                                            currency:'VES':'symbol-narrow' }}</span>
+                                        <span *ngSwitchCase="'total_purchased'">{{ element[column] |
+                                            currency:'VES':'symbol-narrow' }}</span>
+                                        <span *ngSwitchCase="'tax_rate'">{{ element[column] | percent:'1.0-2' }}</span>
+                                        <span *ngSwitchCase="'first_sale'">{{ element[column] | date:'short' }}</span>
+                                        <span *ngSwitchCase="'last_sale'">{{ element[column] | date:'short' }}</span>
+                                        <span *ngSwitchDefault>{{ element[column] }}</span>
+                                    </ng-container>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+                        </table>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="no-data" *ngIf="!loading && reportData.length === 0">
+                <mat-card-content>
+                    <p>No se encontraron datos para este reporte y rango de fechas.</p>
+                </mat-card-content>
+            </mat-card>
+        </ng-container>
+    </div>
+</div>
