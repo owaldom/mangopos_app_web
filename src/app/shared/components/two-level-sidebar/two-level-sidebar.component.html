@@ -1,0 +1,7 @@
+<div class="two-level-sidebar-container">
+    <app-primary-sidebar [categories]="filteredCategories" [activeCategory]="activeCategoryId"
+        (categorySelected)="onCategorySelected($event)"></app-primary-sidebar>
+
+    <app-secondary-sidebar [category]="activeCategory" [isOpen]="isSecondaryOpen"
+        (close)="onSecondaryClose()"></app-secondary-sidebar>
+</div>

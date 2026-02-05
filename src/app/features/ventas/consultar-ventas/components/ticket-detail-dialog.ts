@@ -352,6 +352,7 @@ export class TicketDetailDialogComponent implements OnInit {
           ticket.date += 'Z';
         }
         this.ticket = ticket;
+        console.log('Ticket details loaded:', ticket);
         this.loading = false;
       },
       error: (error) => {
@@ -378,12 +379,15 @@ export class TicketDetailDialogComponent implements OnInit {
       'cash': 'Efectivo',
       'CARD': 'Tarjeta',
       'card': 'Tarjeta',
-      'TRANSFER': 'Pago Móvil',
-      'transfer': 'Pago Móvil',
-      'CASH_REFUND': 'Devolución en Efectivo',
-      'cash_refund': 'Devolución en Efectivo',
+      'TRANSFER': 'Transferencia',
+      'transfer': 'Transferencia',
+      'CASH_REFUND': 'Devolución',
+      'cash_refund': 'Devolución',
       'paper': 'Pago Móvil',
-      'PAPER': 'Pago Móvil'
+      'PAPER': 'Pago Móvil',
+      'PagoMovil': 'Pago Móvil',
+      'debt': 'Crédito',
+      'Credito': 'Crédito'
     };
     return methods[method] || methods[method?.toUpperCase()] || method;
   }

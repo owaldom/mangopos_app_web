@@ -12,6 +12,9 @@ export interface AppSettings {
     company_name: string;
     company_address: string;
     enable_pdf_ticket: boolean;
+    percentage_decimals: number;
+    pos_layout: 'classic' | 'modern';
+    print_server_url: string;
 }
 
 @Injectable({
@@ -37,7 +40,10 @@ export class SettingsService {
                 currency_code: data.currency_code || 'VES',
                 company_name: data.company_name || 'MANGOPOS',
                 company_address: data.company_address || '',
-                enable_pdf_ticket: data.enable_pdf_ticket === 'true'
+                enable_pdf_ticket: data.enable_pdf_ticket === 'true',
+                percentage_decimals: parseInt(data.percentage_decimals) || 0,
+                pos_layout: (data.pos_layout as 'classic' | 'modern') || 'classic',
+                print_server_url: data.print_server_url || 'http://localhost:3001/api'
             };
             this.settingsSubject.next(settings);
             return settings;
@@ -64,7 +70,7 @@ export class SettingsService {
         await firstValueFrom(this.http.put(`${this.apiUrl}/currency/${id}`, currency));
     }
 
-    getDecimalFormat(type: 'price' | 'total' | 'quantity'): string {
+    getDecimalFormat(type: 'price' | 'total' | 'quantity' | 'percent'): string {
         const s = this.getSettings();
         if (!s) return '1.2-2';
 
@@ -72,6 +78,7 @@ export class SettingsService {
         if (type === 'price') decimals = s.price_decimals;
         if (type === 'total') decimals = s.total_decimals;
         if (type === 'quantity') decimals = s.quantity_decimals;
+        if (type === 'percent') decimals = s.percentage_decimals;
 
         return `1.${decimals}-${decimals}`;
     }

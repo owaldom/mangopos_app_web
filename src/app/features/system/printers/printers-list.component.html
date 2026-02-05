@@ -21,38 +21,68 @@
                 <div class="roles-section" *ngIf="printers.length > 0">
                     <h3>Asignación de Roles</h3>
                     <div class="roles-grid">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Comandas / Tickets</mat-label>
-                            <mat-select [(ngModel)]="settings.roles.TICKET">
-                                <mat-option value="">-- Predeterminada --</mat-option>
-                                <mat-option *ngFor="let p of printers" [value]="p.name">
-                                    {{p.name}}
-                                </mat-option>
-                            </mat-select>
-                            <mat-icon matSuffix>receipt</mat-icon>
-                        </mat-form-field>
+                        <div class="role-item">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Comandas / Tickets</mat-label>
+                                <mat-select [(ngModel)]="settings.roles.TICKET.name">
+                                    <mat-option value="">-- Predeterminada --</mat-option>
+                                    <mat-option *ngFor="let p of printers" [value]="p.name">
+                                        {{p.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-icon matSuffix>receipt</mat-icon>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="width-select">
+                                <mat-label>Ancho</mat-label>
+                                <mat-select [(ngModel)]="settings.roles.TICKET.width">
+                                    <mat-option [value]="58">58mm</mat-option>
+                                    <mat-option [value]="76">76mm</mat-option>
+                                    <mat-option [value]="80">80mm</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
 
-                        <mat-form-field appearance="outline">
-                            <mat-label>Facturas Fiscales</mat-label>
-                            <mat-select [(ngModel)]="settings.roles.FISCAL">
-                                <mat-option value="">-- Predeterminada --</mat-option>
-                                <mat-option *ngFor="let p of printers" [value]="p.name">
-                                    {{p.name}}
-                                </mat-option>
-                            </mat-select>
-                            <mat-icon matSuffix>gavel</mat-icon>
-                        </mat-form-field>
+                        <div class="role-item">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Facturas Fiscales</mat-label>
+                                <mat-select [(ngModel)]="settings.roles.FISCAL.name">
+                                    <mat-option value="">-- Predeterminada --</mat-option>
+                                    <mat-option *ngFor="let p of printers" [value]="p.name">
+                                        {{p.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-icon matSuffix>gavel</mat-icon>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="width-select">
+                                <mat-label>Ancho</mat-label>
+                                <mat-select [(ngModel)]="settings.roles.FISCAL.width">
+                                    <mat-option [value]="58">58mm</mat-option>
+                                    <mat-option [value]="76">76mm</mat-option>
+                                    <mat-option [value]="80">80mm</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
 
-                        <mat-form-field appearance="outline">
-                            <mat-label>Reportes / Cierre</mat-label>
-                            <mat-select [(ngModel)]="settings.roles.REPORT">
-                                <mat-option value="">-- Predeterminada --</mat-option>
-                                <mat-option *ngFor="let p of printers" [value]="p.name">
-                                    {{p.name}}
-                                </mat-option>
-                            </mat-select>
-                            <mat-icon matSuffix>assessment</mat-icon>
-                        </mat-form-field>
+                        <div class="role-item">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Reportes / Cierre</mat-label>
+                                <mat-select [(ngModel)]="settings.roles.REPORT.name">
+                                    <mat-option value="">-- Predeterminada --</mat-option>
+                                    <mat-option *ngFor="let p of printers" [value]="p.name">
+                                        {{p.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-icon matSuffix>assessment</mat-icon>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" class="width-select">
+                                <mat-label>Ancho</mat-label>
+                                <mat-select [(ngModel)]="settings.roles.REPORT.width">
+                                    <mat-option [value]="58">58mm</mat-option>
+                                    <mat-option [value]="76">76mm</mat-option>
+                                    <mat-option [value]="80">80mm</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
                     </div>
 
                     <div class="actions-row">

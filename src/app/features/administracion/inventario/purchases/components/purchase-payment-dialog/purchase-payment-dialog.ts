@@ -34,16 +34,17 @@ export class PurchasePaymentDialogComponent implements OnInit {
     receivedAmountAlt: number = 0;
     change: number = 0;
     changeAlt: number = 0;
-    selectedMethod: string = 'cash';
+    selectedMethod: 'cash' | 'card' | 'paper' | 'transfer' | 'Credito' | 'mixed' = 'cash';
     selectedCurrency: 'base' | 'alt' = 'base';
 
     isMultiPayment: boolean = false;
-    payments: { [key: string]: number } = { cash: 0, card: 0, paper: 0, Credito: 0 };
-    paymentsAlt: { [key: string]: number } = { cash: 0, card: 0, paper: 0, Credito: 0 };
+    payments: { [key: string]: number } = { cash: 0, card: 0, paper: 0, transfer: 0, Credito: 0 };
+    paymentsAlt: { [key: string]: number } = { cash: 0, card: 0, paper: 0, transfer: 0, Credito: 0 };
 
-    paymentDetails: { [key: string]: { reference: string, bank: string, cedula?: string, bank_id?: string } } = {
+    paymentDetails: { [key: string]: { reference: string, bank: string, cedula?: string, bank_id?: string, account?: string, is_pago_movil?: boolean } } = {
         card: { reference: '', bank: '', bank_id: '' },
-        paper: { reference: '', bank: '', cedula: '', bank_id: '' },
+        paper: { reference: '', bank: '', cedula: '', bank_id: '', is_pago_movil: true },
+        transfer: { reference: '', bank: '', bank_id: '', account: '' },
         cash: { reference: '', bank: '', bank_id: '' },
         Credito: { reference: '', bank: '', bank_id: '' }
     };
@@ -89,7 +90,14 @@ export class PurchasePaymentDialogComponent implements OnInit {
     }
 
     requiresBank(method: string): boolean {
-        return ['card', 'paper', 'Debito', 'Credito', 'transfer', 'cheque'].includes(method);
+        return ['card', 'paper', 'Debito', 'Credito', 'transfer', 'cheque', 'PagoMovil'].includes(method);
+    }
+
+    getFilteredBanks(method: string): Bank[] {
+        if (method === 'paper' || method === 'PagoMovil') {
+            return this.banks.filter(b => b.allows_pago_movil);
+        }
+        return this.banks;
     }
 
     toggleMultiPayment(): void {
@@ -198,7 +206,7 @@ export class PurchasePaymentDialogComponent implements OnInit {
 
     onConfirm(): void {
         const paymentData = {
-            method: this.isMultiPayment ? 'mixed' : this.selectedMethod,
+            method: this.isMultiPayment ? 'mixed' : (this.selectedMethod === 'paper' ? 'PagoMovil' : this.selectedMethod),
             amount: this.selectedCurrency === 'base' ? this.receivedAmount : this.receivedAmountAlt,
             total: this.data.total,
             change: this.change,
@@ -209,7 +217,7 @@ export class PurchasePaymentDialogComponent implements OnInit {
                 payments: this.payments,
                 paymentsAlt: this.paymentsAlt
             } : null,
-            paymentDetails: (this.selectedMethod === 'card' || this.selectedMethod === 'paper' || this.selectedMethod === 'Credito' || this.isMultiPayment) ? this.paymentDetails : null
+            paymentDetails: (this.selectedMethod === 'card' || this.selectedMethod === 'paper' || this.selectedMethod === 'transfer' || this.selectedMethod === 'Credito' || this.isMultiPayment) ? this.paymentDetails : null
         };
 
         this.dialogRef.close(paymentData);

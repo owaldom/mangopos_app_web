@@ -9,7 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BanksService } from '../../../core/services/banks.service';
-import { Bank } from '../../../core/models/bank.model';
+import { Bank, BankEntity, BankAccountType } from '../../../core/models/bank.model';
+import { MoneyInputDirective } from '../../../shared/directives/money-input.directive';
+import { forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-bank-form-dialog',
@@ -23,7 +25,8 @@ import { Bank } from '../../../core/models/bank.model';
         MatSelectModule,
         MatButtonModule,
         MatCheckboxModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MoneyInputDirective
     ],
     templateUrl: './bank-form-dialog.html',
     styleUrls: ['./bank-form-dialog.scss']
@@ -34,34 +37,8 @@ export class BankFormDialogComponent implements OnInit {
     bank?: Bank;
     saving = false;
 
-    bankEntities = [
-        'Banco de Venezuela',
-        'Banesco',
-        'Banco Mercantil',
-        'BBVA Provincial',
-        'Banco Bicentenario',
-        'Banco del Tesoro',
-        'Bancaribe',
-        'Banco Exterior',
-        'Banco Nacional de Crédito (BNC)',
-        'Banco Plaza',
-        'Mi Banco',
-        'Banco Sofitasa',
-        'Banco Activo',
-        'Bancrecer',
-        'Banco Caroni',
-        'Banco Fondo Común',
-        'Bangente',
-        'Banplus',
-        'Banco Venezolano de Crédito',
-        'Otro'
-    ];
-
-    accountTypes = [
-        { value: 'CORRIENTE', label: 'Corriente' },
-        { value: 'AHORRO', label: 'Ahorro' },
-        { value: 'CREDITO', label: 'Crédito' }
-    ];
+    bankEntities: BankEntity[] = [];
+    accountTypes: BankAccountType[] = [];
 
     currencies = [
         { value: 'VES', label: 'Bolívares (VES)' },
@@ -80,22 +57,41 @@ export class BankFormDialogComponent implements OnInit {
 
         this.bankForm = this.fb.group({
             name: ['', Validators.required],
-            bank_entity: [''],
-            account_number: [''],
-            account_type: ['CORRIENTE', Validators.required],
+            bank_entity_id: [null],
+            account_number: ['', [Validators.pattern('^[0-9]{20}$')]],
+            account_type_id: [null, Validators.required],
             currency: ['VES', Validators.required],
             initial_balance: [0, [Validators.required, Validators.min(0)]],
             notes: [''],
-            active: [true]
+            active: [true],
+            allows_pago_movil: [false]
         });
     }
 
     ngOnInit(): void {
-        if (this.mode === 'edit' && this.bank) {
-            this.bankForm.patchValue(this.bank);
-            // Disable initial_balance for edit mode
-            this.bankForm.get('initial_balance')?.disable();
-        }
+        this.loadInitialData();
+    }
+
+    loadInitialData(): void {
+        forkJoin({
+            entities: this.banksService.getBankEntities(),
+            types: this.banksService.getBankAccountTypes()
+        }).subscribe({
+            next: (data) => {
+                this.bankEntities = data.entities;
+                this.accountTypes = data.types;
+
+                if (this.mode === 'edit' && this.bank) {
+                    this.bankForm.patchValue(this.bank);
+                    // Disable initial_balance for edit mode
+                    this.bankForm.get('initial_balance')?.disable();
+                }
+            },
+            error: (error) => {
+                console.error('Error loading initial data:', error);
+                this.snackBar.open('Error al cargar datos iniciales', 'Cerrar', { duration: 3000 });
+            }
+        });
     }
 
     onSubmit(): void {

@@ -1,85 +1,119 @@
-<div class="ticket-container">
+<div class="ticket-container" [class.modern-layout]="settingsService.getSettings()?.pos_layout === 'modern'">
     <div class="ticket-header">
-        <h3>Ticket #{{ ticketNumber }}</h3>
-        <button mat-icon-button (click)="clearTicket()" matTooltip="Limpiar Ticket">
+        <h3>{{ settingsService.getSettings()?.pos_layout === 'modern' ? 'Orden Actual' : 'Ticket #' + ticketNumber }}
+        </h3>
+        <button mat-icon-button (click)="clearTicket()" matTooltip="Limpiar Ticket" class="btn-clear">
             <mat-icon>delete_sweep</mat-icon>
         </button>
     </div>
 
     <div class="ticket-table-container">
-        <table *ngIf="lines.length > 0; else emptyState">
-            <thead>
-                <tr>
-                    <th>Artículo</th>
-                    <th class="col-price">Precio</th>
-                    <th class="col-units">Cant.</th>
-                    <th class="col-total">Total</th>
-                    <th class="col-actions"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let line of lines; let i = index" class="ticket-row" [class.selected]="selectedIndex === i"
-                    (click)="selectLine(i)">
-                    <td>
-                        <div class="product-info">
-                            <span class="product-name">{{ line.product_name }}</span>
-                            <span class="product-discount" *ngIf="line.discount">
-                                Dto:
-                                <ng-container [ngSwitch]="line.discount_type">
-                                    <span *ngSwitchCase="'FIXED'">{{ line.discount | currency:'USD':'$
-                                        ':settingsService.getDecimalFormat('price') }}</span>
-                                    <span *ngSwitchCase="'FIXED_VES'">{{ line.discount | currency:'VES':'Bs.
-                                        ':settingsService.getDecimalFormat('price') }}</span>
-                                    <span *ngSwitchDefault>{{ (line.discount || 0) * 100 | number:'1.0-0' }}%</span>
-                                </ng-container>
+        <div *ngIf="lines.length > 0; else emptyState" class="scrollable-content">
+            <!-- Modern Item Cards -->
+            <div *ngIf="settingsService.getSettings()?.pos_layout === 'modern'" class="modern-lines-list">
+                <div *ngFor="let line of lines; let i = index" class="modern-line-item"
+                    [class.selected]="selectedIndex === i" (click)="selectLine(i)">
+                    <div class="item-main">
+                        <div class="item-info">
+                            <span class="name">{{ line.product_name }}</span>
+                            <span class="price-calc">
+                                {{ line.units | number:settingsService.getDecimalFormat('quantity') }} x
+                                {{ line.price * exchangeRate | currency:'VES':'Bs.
+                                ':settingsService.getDecimalFormat('price') }}
                             </span>
                         </div>
-                    </td>
-                    <td class="col-price">
-                        <div class="price-container">
-                            <!--<span [class.strikethrough]="line.discount">
-                                {{ line.price * (1 + (line.tax_rate - 0 || 0)) * exchangeRate |
-                                currency:'VES':'Bs. ':settingsService.getDecimalFormat('price') }}
-                            </span>-->
-                            <!--calculo Precio sin iva-->
-                            <span [class.strikethrough]="line.discount">
-                                {{ line.price * exchangeRate |
-                                currency:'VES':'Bs. ':settingsService.getDecimalFormat('price') }}
-                            </span>
-                            <span class="discounted-price" *ngIf="line.discount">
-                                {{ (line.discount_type === 'FIXED' ? (line.price - (line.discount || 0)) :
-                                (line.discount_type === 'FIXED_VES' ? (line.price - (line.discount || 0)/exchangeRate) :
-                                (line.price * (1 - (line.discount || 0))))) * (1 + (line.tax_rate - 0 || 0)) *
-                                exchangeRate |
-                                currency:'VES':'Bs. ':settingsService.getDecimalFormat('price') }}
-                            </span>
+                        <div class="item-total">
+                            {{ (line.discount_type === 'FIXED' ? (line.price - (line.discount || 0)) :
+                            (line.discount_type === 'FIXED_VES' ? (line.price - (line.discount || 0)/exchangeRate) :
+                            (line.price))) * line.units * exchangeRate |
+                            currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}
                         </div>
-                    </td>
-                    <td class="col-units">
-                        <div class="units-control">
+                    </div>
+
+                    <div class="item-controls" *ngIf="selectedIndex === i">
+                        <div class="qty-stepper">
                             <button (click)="updateQuantity(i, -1, $event)">-</button>
-                            <span>{{ line.units | number:settingsService.getDecimalFormat('quantity') }}</span>
+                            <span class="qty">{{ line.units | number:settingsService.getDecimalFormat('quantity')
+                                }}</span>
                             <button (click)="updateQuantity(i, 1, $event)">+</button>
                         </div>
-                    </td>
-                    <!--Caluclo de total sin IVA-->
-                    <!--<td class="col-total">{{ (line.discount_type === 'FIXED' ? (line.price - (line.discount || 0)) :
-                        (line.discount_type === 'FIXED_VES' ? (line.price - (line.discount || 0)/exchangeRate) :
-                        (line.price * (1 - (line.discount || 0))))) * (1 + (line.tax_rate - 0 || 0))
-                        * line.units * exchangeRate |
-                        currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</td>-->
-                    <td class="col-total">{{ (line.discount_type === 'FIXED' ? (line.price - (line.discount || 0)) :
-                        (line.discount_type === 'FIXED_VES' ? (line.price - (line.discount || 0)/exchangeRate) :
-                        (line.price * (1 - (line.discount || 0))))) * line.units * exchangeRate |
-                        currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</td>
-                    <td class="col-actions">
-                        <button class="btn-delete" (click)="removeLine(i)">
-                            <mat-icon>delete_outline</mat-icon>
+                        <button class="btn-remove" (click)="removeLine(i)">
+                            <mat-icon>delete</mat-icon>
                         </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                    </div>
+
+                    <div class="item-discount" *ngIf="line.discount">
+                        <mat-icon>label</mat-icon>
+                        <span>Descuento aplicado</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Classic Table -->
+            <table *ngIf="settingsService.getSettings()?.pos_layout === 'classic'">
+                <thead>
+                    <tr>
+                        <th>Artículo</th>
+                        <th class="col-price">Precio</th>
+                        <th class="col-units">Cant.</th>
+                        <th class="col-total">Total</th>
+                        <th class="col-actions"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let line of lines; let i = index" class="ticket-row"
+                        [class.selected]="selectedIndex === i" (click)="selectLine(i)">
+                        <td>
+                            <div class="product-info">
+                                <span class="product-name">{{ line.product_name }}</span>
+                                <span class="product-discount" *ngIf="line.discount">
+                                    Dto:
+                                    <ng-container [ngSwitch]="line.discount_type">
+                                        <span *ngSwitchCase="'FIXED'">{{ line.discount | currency:'USD':'$
+                                            ':settingsService.getDecimalFormat('price') }}</span>
+                                        <span *ngSwitchCase="'FIXED_VES'">{{ line.discount | currency:'VES':'Bs.
+                                            ':settingsService.getDecimalFormat('price') }}</span>
+                                        <span *ngSwitchDefault>{{ (line.discount || 0) * 100 | number:'1.0-0' }}%</span>
+                                    </ng-container>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="col-price">
+                            <div class="price-container">
+                                <span [class.strikethrough]="line.discount">
+                                    {{ line.price * exchangeRate |
+                                    currency:'VES':'Bs. ':settingsService.getDecimalFormat('price') }}
+                                </span>
+                                <span class="discounted-price" *ngIf="line.discount">
+                                    {{ (line.discount_type === 'FIXED' ? (line.price - (line.discount || 0)) :
+                                    (line.discount_type === 'FIXED_VES' ? (line.price - (line.discount ||
+                                    0)/exchangeRate) :
+                                    (line.price * (1 - (line.discount || 0))))) * (1 + (line.tax_rate - 0 || 0)) *
+                                    exchangeRate |
+                                    currency:'VES':'Bs. ':settingsService.getDecimalFormat('price') }}
+                                </span>
+                            </div>
+                        </td>
+                        <td class="col-units">
+                            <div class="units-control">
+                                <button (click)="updateQuantity(i, -1, $event)">-</button>
+                                <span>{{ line.units | number:settingsService.getDecimalFormat('quantity') }}</span>
+                                <button (click)="updateQuantity(i, 1, $event)">+</button>
+                            </div>
+                        </td>
+                        <td class="col-total">{{ (line.discount_type === 'FIXED' ? (line.price - (line.discount || 0)) :
+                            (line.discount_type === 'FIXED_VES' ? (line.price - (line.discount || 0)/exchangeRate) :
+                            (line.price * (1 - (line.discount || 0))))) * line.units * exchangeRate |
+                            currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</td>
+                        <td class="col-actions">
+                            <button class="btn-delete" (click)="removeLine(i)">
+                                <mat-icon>delete_outline</mat-icon>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
         <ng-template #emptyState>
             <div class="empty-state">

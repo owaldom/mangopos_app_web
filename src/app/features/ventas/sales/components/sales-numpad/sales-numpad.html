@@ -16,10 +16,8 @@
         <button (click)="onNumber('4')" class="btn-number">4</button>
         <button (click)="onNumber('5')" class="btn-number">5</button>
         <button (click)="onNumber('6')" class="btn-number">6</button>
-        <button (click)="setMode('disc_percent')" [class.active-mode]="mode.startsWith('disc_')" class="btn-action"
-            [matTooltip]="mode === 'disc_fixed' ? 'Descuento ($)' : (mode === 'disc_ves' ? 'Descuento (Bs.)' : 'Descuento (%)')">
-            <mat-icon>{{ mode === 'disc_fixed' ? 'attach_money' : (mode === 'disc_ves' ? 'payments' : 'percent')
-                }}</mat-icon>
+        <button (click)="onBackspace()" class="btn-action" matTooltip="Borrar">
+            <mat-icon>backspace</mat-icon>
         </button>
 
         <!-- Fila 3 -->

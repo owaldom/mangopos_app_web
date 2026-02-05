@@ -1,7 +1,7 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
-import { SidebarComponent } from '../../components/sidebar/sidebar';
+import { TwoLevelSidebarComponent } from '../../components/two-level-sidebar/two-level-sidebar.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +19,7 @@ import { SystemDatePipe } from '../../../shared/pipes/system-date.pipe';
   imports: [
     CommonModule,
     RouterOutlet,
-    SidebarComponent,
+    TwoLevelSidebarComponent,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
@@ -35,8 +35,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   public themeService = inject(ThemeService);
-
-  @ViewChild(SidebarComponent) sidebar!: SidebarComponent;
 
   title = 'Sun Market 2020 C.A.';
 

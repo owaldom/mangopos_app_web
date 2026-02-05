@@ -72,9 +72,25 @@ table {
 
 .roles-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
+}
+
+.role-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.role-item mat-form-field {
+    flex: 2;
+}
+
+.role-item .width-select {
+    flex: 1;
+    min-width: 100px;
 }
 
 .actions-row {

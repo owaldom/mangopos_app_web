@@ -104,9 +104,35 @@ export class BankTransactionsDialogComponent implements OnInit {
         return types[type] || type;
     }
 
-    formatCurrency(amount: number): string {
+    getPaymentMethodLabel(method: string): string {
+        const methods: any = {
+            'card': 'Tarjeta',
+            'transfer': 'Transferencia',
+            'cash': 'Efectivo',
+            'debt': 'Crédito',
+            'PagoMovil': 'Pago Móvil',
+            'Debito': 'Tarjeta Débito',
+            'Credito': 'Tarjeta Crédito'
+        };
+        return methods[method] || method;
+    }
+
+    getReferenceTypeLabel(type: string): string {
+        const types: any = {
+            'PURCHASE': 'Compra',
+            'SALE': 'Venta',
+            'TRANSFER': 'Transferencia',
+            'INITIAL': 'Saldo Inicial',
+            'DEBT_PAYMENT': 'Pago de Deuda',
+            'MANUAL': 'Manual'
+        };
+        return types[type] || type;
+    }
+
+    formatCurrency(amount: any): string {
         const symbol = this.bank.currency === 'USD' ? '$' : 'Bs.';
-        return `${symbol} ${amount.toFixed(2)}`;
+        const value = Number(amount) || 0;
+        return `${symbol} ${value.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
     formatDate(date: Date): string {

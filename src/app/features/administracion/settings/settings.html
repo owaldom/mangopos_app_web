@@ -24,6 +24,12 @@
                         <mat-label>Decimales en Cantidades</mat-label>
                         <input matInput type="number" [(ngModel)]="settings.quantity_decimals" min="0" max="6">
                     </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Decimales en Porcentaje</mat-label>
+                        <input matInput type="number" [(ngModel)]="settings.percentage_decimals" min="0" max="6">
+                        <mat-hint>Ej: 0 -> 10% | 2 -> 10,00%</mat-hint>
+                    </mat-form-field>
                 </div>
             </div>
 
@@ -60,6 +66,26 @@
                             no esté conectada.
                         </mat-hint>
                     </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Apariencia y POS</h3>
+                <div class="grid-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Diseño del Punto de Venta</mat-label>
+                        <mat-select [(ngModel)]="settings.pos_layout">
+                            <mat-option value="classic">Clásico (Tablas y Listas)</mat-option>
+                            <mat-option value="modern">Moderno (Cuadrícula y Visual)</mat-option>
+                        </mat-select>
+                        <mat-hint>Cambia la apariencia de la pantalla de ventas</mat-hint>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Servidor de Impresión (Thermal)</mat-label>
+                        <input matInput [(ngModel)]="settings.print_server_url" placeholder="http://localhost:3001/api">
+                        <mat-hint>URL del servidor de impresión térmica (ej: http://localhost:3001/api)</mat-hint>
+                    </mat-form-field>
                 </div>
             </div>
 

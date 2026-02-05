@@ -210,8 +210,15 @@ import { MoneyInputDirective } from '../../../shared/directives/money-input.dire
                     </div>
                     <div class="physical-field">
                         <mat-form-field appearance="outline" class="full-width">
-                            <mat-label>Pago Móvil (Bs.)</mat-label>
+                            <mat-label>Transferencia (Bs.)</mat-label>
                             <input matInput type="text" [(ngModel)]="countedAmounts.transfer_ves" appMoneyInput decimalType="total" placeholder="0.00">
+                            <span matPrefix>Bs. &nbsp;</span>
+                        </mat-form-field>
+                    </div>
+                    <div class="physical-field">
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Pago Móvil (Bs.)</mat-label>
+                            <input matInput type="text" [(ngModel)]="countedAmounts.pagomovil_ves" appMoneyInput decimalType="total" placeholder="0.00">
                             <span matPrefix>Bs. &nbsp;</span>
                         </mat-form-field>
                     </div>
@@ -302,6 +309,7 @@ export class CashClosingComponent implements OnInit {
     cash_ves: 0,
     cash_usd: 0,
     transfer_ves: 0,
+    pagomovil_ves: 0,
     card_ves: 0,
     debt_ves: 0
   };
@@ -350,6 +358,9 @@ export class CashClosingComponent implements OnInit {
       'CASH_MONEY': 'Efectivo',
       'card': 'Tarjeta',
       'paper': 'Pago Móvil',
+      'PagoMovil': 'Pago Móvil',
+      'transfer': 'Transferencia',
+      'transferencia': 'Transferencia',
       'Vale': 'Pago Móvil',
       'vale': 'Pago Móvil',
       'mixed': 'Mixto / Otros',
@@ -368,6 +379,7 @@ export class CashClosingComponent implements OnInit {
     const required = [
       { key: 'Efectivo_1', label: 'Efectivo en Bs.', symbol: 'Bs. ' },
       { key: 'Efectivo_2', label: 'Efectivo en USD', symbol: '$ ' },
+      { key: 'Transferencia_1', label: 'Transferencia en Bs.', symbol: 'Bs. ' },
       { key: 'Pago Móvil_1', label: 'Pago Móvil en Bs.', symbol: 'Bs. ' },
       { key: 'Tarjeta_1', label: 'Tarjeta en Bs.', symbol: 'Bs. ' },
       { key: 'Crédito_1', label: 'Crédito en Bs.', symbol: 'Bs. ' }
@@ -460,7 +472,8 @@ export class CashClosingComponent implements OnInit {
     const diffs = [
       { name: 'Efectivo en Bs.', diff: Math.abs(Number(this.countedAmounts.cash_ves) - findExpected('Efectivo en Bs.')) },
       { name: 'Efectivo en USD', diff: Math.abs(Number(this.countedAmounts.cash_usd) - findExpected('Efectivo en USD')) },
-      { name: 'Pago Móvil en Bs.', diff: Math.abs(Number(this.countedAmounts.transfer_ves) - findExpected('Pago Móvil en Bs.')) },
+      { name: 'Transferencia en Bs.', diff: Math.abs(Number(this.countedAmounts.transfer_ves) - findExpected('Transferencia en Bs.')) },
+      { name: 'Pago Móvil en Bs.', diff: Math.abs(Number(this.countedAmounts.pagomovil_ves) - findExpected('Pago Móvil en Bs.')) },
       { name: 'Tarjeta en Bs.', diff: Math.abs(Number(this.countedAmounts.card_ves) - findExpected('Tarjeta en Bs.')) },
       { name: 'Crédito en Bs.', diff: Math.abs(Number(this.countedAmounts.debt_ves) - findExpected('Crédito en Bs.')) }
     ].filter(d => d.diff > 0.01);

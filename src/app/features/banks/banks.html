@@ -6,6 +6,10 @@
                 Gestión de Bancos
             </mat-card-title>
             <div class="header-actions">
+                <button mat-stroked-button color="primary" class="me-2" (click)="openTransferDialog()">
+                    <mat-icon>swap_horiz</mat-icon>
+                    Transferir
+                </button>
                 <button mat-raised-button color="primary" (click)="openCreateDialog()">
                     <mat-icon>add</mat-icon>
                     Nuevo Banco
@@ -33,7 +37,8 @@
                     <td mat-cell *matCellDef="let bank">
                         <div class="bank-name">
                             <strong>{{ bank.name }}</strong>
-                            <small *ngIf="bank.bank_entity">{{ bank.bank_entity }}</small>
+                            <small *ngIf="bank.bank_entity_name">{{ bank.bank_entity_name }}</small>
+                            <small *ngIf="!bank.bank_entity_name && bank.bank_entity">{{ bank.bank_entity }}</small>
                         </div>
                     </td>
                 </ng-container>
@@ -48,7 +53,7 @@
                 <ng-container matColumnDef="account_type">
                     <th mat-header-cell *matHeaderCellDef>Tipo</th>
                     <td mat-cell *matCellDef="let bank">
-                        <mat-chip>{{ getAccountTypeLabel(bank.account_type) }}</mat-chip>
+                        <mat-chip>{{ bank.account_type_name || getAccountTypeLabel(bank.account_type) }}</mat-chip>
                     </td>
                 </ng-container>
 
@@ -82,17 +87,21 @@
 
                 <!-- Actions Column -->
                 <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <th mat-header-cell *matHeaderCellDef class="actions-header">Acciones</th>
                     <td mat-cell *matCellDef="let bank">
-                        <button mat-icon-button [matTooltip]="'Ver Movimientos'" (click)="openTransactionsDialog(bank)">
-                            <mat-icon>receipt_long</mat-icon>
-                        </button>
-                        <button mat-icon-button [matTooltip]="'Editar'" (click)="openEditDialog(bank)">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                        <button mat-icon-button [matTooltip]="'Eliminar'" color="warn" (click)="deleteBank(bank)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
+                        <div class="actions-container">
+                            <button mat-icon-button color="accent" [matTooltip]="'Ver Movimientos'"
+                                (click)="openTransactionsDialog(bank)">
+                                <mat-icon>receipt_long</mat-icon>
+                            </button>
+                            <button mat-icon-button color="primary" [matTooltip]="'Editar'"
+                                (click)="openEditDialog(bank)">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button mat-icon-button color="warn" [matTooltip]="'Eliminar'" (click)="deleteBank(bank)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
                     </td>
                 </ng-container>
 

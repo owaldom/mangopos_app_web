@@ -26,7 +26,13 @@ export interface PrintResponse {
 })
 export class ThermalPrinterService {
     // URL del backend de impresión - puede configurarse desde settings
-    private baseUrl = 'http://localhost:3000/api';
+    // URL del backend de impresión - obtenido de settings o default
+    private _baseUrlOverride: string | null = null;
+    private get baseUrl(): string {
+        if (this._baseUrlOverride) return this._baseUrlOverride;
+        const settings = this.settingsService.getSettings();
+        return settings?.print_server_url || 'http://localhost:3001/api';
+    }
     private requestTimeout = 10000; // 10 segundos
     private settingsService = inject(SettingsService);
 
@@ -36,7 +42,7 @@ export class ThermalPrinterService {
      * Configura la URL del backend de impresión
      */
     setBackendUrl(url: string): void {
-        this.baseUrl = url;
+        this._baseUrlOverride = url;
     }
 
     /**
@@ -51,6 +57,20 @@ export class ThermalPrinterService {
      */
     testConnection(): Observable<PrintResponse> {
         return this.http.get<PrintResponse>(`${this.baseUrl}/print/test`).pipe(
+            timeout(this.requestTimeout),
+            catchError(this.handleError)
+        );
+    }
+
+    /**
+     * Envía una prueba de impresión a una impresora específica
+     */
+    testPrinter(printerName: string, width: number = 80): Observable<PrintResponse> {
+        const payload = {
+            printerName: printerName,
+            width: width
+        };
+        return this.http.post<PrintResponse>(`${this.baseUrl}/print/test`, payload).pipe(
             timeout(this.requestTimeout),
             catchError(this.handleError)
         );
@@ -108,7 +128,9 @@ export class ThermalPrinterService {
      * Verifica si el backend de impresión está disponible
      */
     isBackendAvailable(): Observable<boolean> {
-        return this.http.get(`${this.baseUrl}/print/test`).pipe(
+        // Usar la raíz para un health check simple que no dispare una impresión
+        const rootUrl = this.baseUrl.replace('/api', '');
+        return this.http.get(rootUrl, { responseType: 'text' }).pipe(
             timeout(3000),
             map(() => true),
             catchError(() => of(false))

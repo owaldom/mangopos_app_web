@@ -32,6 +32,10 @@ export class CatalogComponent implements OnInit {
   @Output() productSelected = new EventEmitter<{ product: any, units?: number }>();
   private subscription = new Subscription();
 
+  get topLevelCategories(): any[] {
+    return this.categories.filter(c => c.parentid === null || c.parentid === undefined);
+  }
+
   constructor(
     private salesService: SalesService,
     private dialog: MatDialog,
@@ -61,14 +65,20 @@ export class CatalogComponent implements OnInit {
       const search = this.searchText.toLowerCase();
 
       if (!this.selectedCategory) {
-        // EN RAÍZ: Búsqueda global de categorías solamente
+        // EN RAÍZ: Búsqueda global de categorías y PRODUCTOS
         this.displayedCategories = this.categories.filter(c =>
           c.name.toLowerCase().includes(search)
         );
-        // No mostramos productos en la raíz de búsqueda del catálogo
-        this.filteredProducts = [];
+
+        this.filteredProducts = this.products.filter(p =>
+          p.incatalog && p.marketable && (
+            p.name.toLowerCase().includes(search) ||
+            p.code?.toLowerCase().includes(search) ||
+            p.reference?.toLowerCase().includes(search)
+          )
+        );
       } else {
-        // DENTRO DE CATEGORÍA: Búsqueda local (solo hijos directos)
+        // DENTRO DE CATEGORÍA: Búsqueda local (solo hijos directos de la categoría seleccionada)
         this.displayedCategories = this.categories.filter(c =>
           c.parentid === this.currentParentId &&
           c.name.toLowerCase().includes(search)
@@ -91,7 +101,8 @@ export class CatalogComponent implements OnInit {
           p.category === this.selectedCategory.id && p.incatalog && p.marketable
         );
       } else {
-        this.filteredProducts = [];
+        // MOSTRAR TODOS los productos cuando no hay categoría seleccionada
+        this.filteredProducts = this.products.filter(p => p.incatalog && p.marketable);
       }
     }
   }
@@ -109,10 +120,26 @@ export class CatalogComponent implements OnInit {
 
   selectCategory(category: any): void {
     this.searchText = '';
-    this.navigationHistory.push(category);
+    this.buildCategoryPath(category);
     this.currentParentId = category.id;
     this.selectedCategory = category;
     this.updateDisplay();
+  }
+
+  private buildCategoryPath(category: any): void {
+    const path = [];
+    let current = category;
+
+    while (current) {
+      path.unshift(current);
+      if (current.parentid) {
+        current = this.categories.find(c => c.id === current.parentid);
+      } else {
+        current = null;
+      }
+    }
+
+    this.navigationHistory = path;
   }
 
   back(): void {
@@ -128,13 +155,10 @@ export class CatalogComponent implements OnInit {
 
   navigateTo(category: any): void {
     this.searchText = '';
-    const index = this.navigationHistory.findIndex(n => n.id === category.id);
-    if (index !== -1) {
-      this.navigationHistory = this.navigationHistory.slice(0, index + 1);
-      this.currentParentId = category.id;
-      this.selectedCategory = category;
-      this.updateDisplay();
-    }
+    this.buildCategoryPath(category);
+    this.currentParentId = category.id;
+    this.selectedCategory = category;
+    this.updateDisplay();
   }
 
   addToTicket(product: any): void {

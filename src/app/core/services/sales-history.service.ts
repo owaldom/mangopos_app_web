@@ -26,8 +26,10 @@ export interface Payment {
     exchange_rate: number;
     amount_base_currency: number;
     bank?: string;
+    bank_id?: string;
     reference?: string;
     cedula?: string;
+    account_number?: string;
 }
 
 export interface TaxSummary {
