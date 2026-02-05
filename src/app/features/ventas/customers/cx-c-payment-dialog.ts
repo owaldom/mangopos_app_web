@@ -14,6 +14,8 @@ import { LoadingButtonDirective } from '../../../shared/directives/loading-butto
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SalesService } from '../../../core/services/sales.service';
 import { CashService } from '../../../core/services/cash.service';
+import { BanksService } from '../../../core/services/banks.service';
+import { Bank } from '../../../core/models/bank.model';
 
 @Component({
     selector: 'app-cx-c-payment-dialog',
@@ -42,6 +44,7 @@ export class CxCPaymentDialogComponent implements OnInit {
     private snackBar = inject(MatSnackBar);
     private salesService = inject(SalesService);
     private cashService = inject(CashService);
+    private banksService = inject(BanksService);
 
     isLoading = false;
 
@@ -52,8 +55,12 @@ export class CxCPaymentDialogComponent implements OnInit {
     paymentMethod: string = 'cash';
     numDocument: string = ''; // Used for reference internally or combined? Let's use specific fields.
     bank: string = '';
+    selectedBankId: string = '';
+    banks: Bank[] = [];
     cedula: string = '';
     reference: string = '';
+    account: string = '';
+    is_pago_movil: boolean = false;
     selectedCurrency: 'base' | 'alt' = 'base';
 
     totalFormat: string = '1.2-2';
@@ -70,6 +77,14 @@ export class CxCPaymentDialogComponent implements OnInit {
     ngOnInit(): void {
         this.totalFormat = this.settingsService.getDecimalFormat('total');
         this.loadInvoices();
+        this.loadBanks();
+    }
+
+    loadBanks(): void {
+        this.banksService.getBanks(true).subscribe(banks => {
+            this.banks = banks;
+            this.cdr.markForCheck();
+        });
     }
 
     loadInvoices(): void {
@@ -106,7 +121,15 @@ export class CxCPaymentDialogComponent implements OnInit {
 
     setPaymentMethod(method: string): void {
         this.paymentMethod = method;
+        this.is_pago_movil = (method === 'paper' || method === 'PagoMovil');
         this.cdr.markForCheck();
+    }
+
+    getFilteredBanks(): Bank[] {
+        if (this.paymentMethod === 'paper' || this.paymentMethod === 'PagoMovil') {
+            return this.banks.filter(b => b.allows_pago_movil);
+        }
+        return this.banks;
     }
 
 
@@ -122,12 +145,15 @@ export class CxCPaymentDialogComponent implements OnInit {
         const paymentData = {
             customer_id: this.data.customer.id,
             payments: [{
-                method: this.paymentMethod,
+                method: this.paymentMethod === 'paper' ? 'PagoMovil' : (this.paymentMethod === 'transfer' ? 'transfer' : this.paymentMethod),
                 total: this.selectedCurrency === 'alt' ? this.amountUsd : this.amountBs,
                 currency_id: this.selectedCurrency === 'alt' ? 2 : 1,
-                bank: this.bank,
+                bank: this.banks.find(b => b.id === this.selectedBankId)?.name || this.bank,
+                bank_id: this.selectedBankId,
                 cedula: this.cedula,
                 reference: this.reference,
+                account_number: this.account,
+                is_pago_movil: this.is_pago_movil,
                 invoice_number: this.selectedInvoice.numberInvoice,
                 amount_base: this.amountBs
             }],

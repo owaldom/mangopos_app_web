@@ -16,6 +16,7 @@ interface MenuItem {
   icon: string;
   permission?: string;
   children?: MenuItem[];
+  exact?: boolean;
 }
 
 interface MenuSection {
@@ -96,7 +97,6 @@ export class SidebarComponent {
         },
         { name: 'Ventas', route: '/dashboard/admin-ventas', icon: 'trending_up', permission: 'sales.history' },
         { name: 'Reportes por Módulos', route: '/dashboard/reportes', icon: 'analytics' },
-        { name: 'Gestión de Bancos', route: '/dashboard/bancos', icon: 'account_balance' },
         { name: 'Configuración', route: '/dashboard/configuracion', icon: 'settings' }
       ]
     },
@@ -108,6 +108,23 @@ export class SidebarComponent {
         { name: 'Roles', route: '/dashboard/system/roles', icon: 'badge', permission: 'system.roles' },
         { name: 'Configuración', route: '/dashboard/config-sistema', icon: 'tune', permission: 'system.config' },
         { name: 'Impresoras', route: '/dashboard/impresoras', icon: 'print', permission: 'system.printers' }
+      ]
+    },
+    {
+      name: 'Bancos',
+      icon: 'account_balance',
+      items: [
+        { name: 'Resumen', route: '/dashboard/bancos/resumen', icon: 'dashboard', permission: 'banks.view' },
+        { name: 'Cuentas Bancarias', route: '/dashboard/bancos', icon: 'account_balance', permission: 'banks.view', exact: true },
+        { name: 'Conciliación', route: '/dashboard/bancos/conciliacion', icon: 'fact_check', permission: 'banks.reconcile' },
+        {
+          name: 'Configuración',
+          icon: 'settings',
+          children: [
+            { name: 'Entidades Bancarias', route: '/dashboard/bancos/entidades', icon: 'business', permission: 'banks.config' },
+            { name: 'Tipos de Cuenta', route: '/dashboard/bancos/tipos', icon: 'list_alt', permission: 'banks.config' }
+          ]
+        }
       ]
     }
   ];

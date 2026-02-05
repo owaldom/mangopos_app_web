@@ -1,0 +1,21 @@
+<div class="primary-sidebar">
+  <div class="sidebar-header">
+    <mat-icon class="logo-icon">storefront</mat-icon>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div *ngFor="let category of categories" class="nav-item" [class.active]="isActive(category.id)"
+      [matTooltip]="category.name" matTooltipPosition="right" matRipple [matRippleColor]="category.color + '33'"
+      (click)="onCategoryClick(category)">
+      <mat-icon [style.color]="isActive(category.id) ? category.color : 'white'">
+        {{ category.icon }}
+      </mat-icon>
+
+      <div class="active-indicator" [style.background-color]="category.color" *ngIf="isActive(category.id)"></div>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <!-- Espacio para futuras acciones (ej: configuración rápida) -->
+  </div>
+</div>

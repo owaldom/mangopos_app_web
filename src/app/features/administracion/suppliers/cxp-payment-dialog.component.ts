@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { SupplierService } from '../../../core/services/supplier.service';
 import { SettingsService } from '../../../core/services/settings.service';
+import { BanksService } from '../../../core/services/banks.service';
+import { Bank } from '../../../core/models/bank.model';
 import { MoneyInputDirective } from '../../../shared/directives/money-input.directive';
 
 @Component({
@@ -32,6 +34,7 @@ export class CxPPaymentDialogComponent implements OnInit {
     private supplierService = inject(SupplierService);
     public settingsService = inject(SettingsService);
     private cdr = inject(ChangeDetectorRef);
+    private banksService = inject(BanksService);
 
     invoices: any[] = [];
     selectedInvoice: any = null;
@@ -40,8 +43,12 @@ export class CxPPaymentDialogComponent implements OnInit {
     paymentMethod: string = 'cash';
     numDocument: string = '';
     bank: string = '';
+    selectedBankId: string = '';
+    banks: Bank[] = [];
     cedula: string = '';
     reference: string = '';
+    account: string = '';
+    is_pago_movil: boolean = false;
     selectedCurrency: 'base' | 'alt' = 'base';
 
     totalFormat: string = '1.2-2';
@@ -56,6 +63,14 @@ export class CxPPaymentDialogComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadInvoices();
+        this.loadBanks();
+    }
+
+    loadBanks(): void {
+        this.banksService.getBanks(true).subscribe(banks => {
+            this.banks = banks;
+            this.cdr.markForCheck();
+        });
     }
 
     loadInvoices(): void {
@@ -66,7 +81,15 @@ export class CxPPaymentDialogComponent implements OnInit {
 
     selectMethod(method: string): void {
         this.paymentMethod = method;
+        this.is_pago_movil = (method === 'paper' || method === 'PagoMovil');
         this.cdr.detectChanges();
+    }
+
+    getFilteredBanks(): Bank[] {
+        if (this.paymentMethod === 'paper' || this.paymentMethod === 'PagoMovil') {
+            return this.banks.filter(b => b.allows_pago_movil);
+        }
+        return this.banks;
     }
 
     onInvoiceChange(invoice: any): void {
@@ -113,11 +136,14 @@ export class CxPPaymentDialogComponent implements OnInit {
         const paymentData = {
             supplier_id: this.data.supplier.id,
             payments: [{
-                method: this.paymentMethod,
+                method: this.paymentMethod === 'paper' ? 'PagoMovil' : (this.paymentMethod === 'transfer' ? 'transfer' : this.paymentMethod),
                 total: this.selectedCurrency === 'base' ? this.amountBs : this.amountUsd,
-                bank: this.bank,
+                bank: this.banks.find(b => b.id === this.selectedBankId)?.name || this.bank,
+                bank_id: this.selectedBankId,
                 numdocument: this.cedula,
                 reference: this.reference,
+                account_number: this.account,
+                is_pago_movil: this.is_pago_movil,
                 invoice_number: this.selectedInvoice.numberInvoice,
                 amount_base: this.amountBs,
                 currency_id: this.selectedCurrency === 'base' ? 1 : 2,

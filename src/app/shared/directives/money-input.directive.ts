@@ -14,7 +14,7 @@ import { SettingsService } from '../../core/services/settings.service';
     ]
 })
 export class MoneyInputDirective implements ControlValueAccessor, OnChanges {
-    @Input() decimalType: 'price' | 'quantity' | 'total' = 'total';
+    @Input() decimalType: 'price' | 'quantity' | 'total' | 'percent' = 'total';
 
     private settingsService = inject(SettingsService);
     private _value: number | null = null;
@@ -48,6 +48,7 @@ export class MoneyInputDirective implements ControlValueAccessor, OnChanges {
         if (!settings) return 2;
         if (this.decimalType === 'price') return settings.price_decimals;
         if (this.decimalType === 'quantity') return settings.quantity_decimals;
+        if (this.decimalType === 'percent') return settings.percentage_decimals;
         return settings.total_decimals;
     }
 

@@ -71,13 +71,23 @@
                 <mat-icon>smartphone</mat-icon>
                 Pago Móvil
             </button>
+            <button type="button" mat-stroked-button color="primary" class="method-btn"
+                [class.active]="paymentMethod === 'transfer'" (click)="selectMethod('transfer')">
+                <mat-icon>account_balance</mat-icon>
+                Transferencia
+            </button>
         </div>
 
-        <div class="payment-details" *ngIf="paymentMethod === 'card' || paymentMethod === 'paper'">
-            <mat-form-field appearance="outline" *ngIf="paymentMethod === 'paper'"
+        <div class="payment-details" [hidden]="paymentMethod === 'cash'">
+            <mat-form-field appearance="outline" [hidden]="paymentMethod !== 'paper'"
                 style="width: 100%; margin-bottom: 8px;">
-                <mat-label>Cédula / RIF</mat-label>
-                <input matInput [(ngModel)]="cedula" placeholder="V-12345678">
+                <mat-label>Cédula/Telf (Pago Móvil)</mat-label>
+                <input matInput [(ngModel)]="cedula" placeholder="V-12345678 / 0412...">
+            </mat-form-field>
+            <mat-form-field appearance="outline" [hidden]="paymentMethod !== 'transfer'"
+                style="width: 100%; margin-bottom: 8px;">
+                <mat-label>Cuenta de Destino</mat-label>
+                <input matInput [(ngModel)]="account" placeholder="Últimos 4 dígitos o cuenta completa">
             </mat-form-field>
             <div style="display: flex; gap: 8px;">
                 <mat-form-field appearance="outline" style="flex: 1;">
@@ -86,7 +96,12 @@
                 </mat-form-field>
                 <mat-form-field appearance="outline" style="flex: 1;">
                     <mat-label>Banco</mat-label>
-                    <input matInput [(ngModel)]="bank" placeholder="Nombre Banco">
+                    <mat-select [(ngModel)]="selectedBankId">
+                        <mat-option value="">Ninguno</mat-option>
+                        <mat-option *ngFor="let bank of getFilteredBanks()" [value]="bank.id">
+                            {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
+                        </mat-option>
+                    </mat-select>
                 </mat-form-field>
             </div>
         </div>

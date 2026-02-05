@@ -1,10 +1,7 @@
 <div class="main-layout">
-    <app-sidebar #sidebar></app-sidebar>
+    <app-two-level-sidebar></app-two-level-sidebar>
     <div class="content">
         <mat-toolbar color="primary">
-            <button mat-icon-button (click)="sidebar.toggleCollapse()" class="menu-toggle-mobile">
-                <mat-icon>menu</mat-icon>
-            </button>
             <span>{{ title }}</span>
             <span class="spacer"></span>
 

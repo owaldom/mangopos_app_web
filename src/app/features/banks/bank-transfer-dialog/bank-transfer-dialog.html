@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>Transferencia entre Cuentas</h2>
+
+<mat-dialog-content>
+    <form [formGroup]="transferForm" class="transfer-form">
+        <mat-form-field appearance="outline">
+            <mat-label>Cuenta Origen</mat-label>
+            <mat-select formControlName="origin_bank_id">
+                <mat-option *ngFor="let bank of banks" [value]="bank.id">
+                    {{ bank.name }} ({{ bank.currency }} - {{ bank.current_balance | number:'1.2-2' }})
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Cuenta Destino</mat-label>
+            <mat-select formControlName="destination_bank_id">
+                <mat-option *ngFor="let bank of banks" [value]="bank.id">
+                    {{ bank.name }} ({{ bank.currency }} - {{ bank.current_balance | number:'1.2-2' }})
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Monto a Transferir (Moneda Origen)</mat-label>
+            <input matInput type="text" formControlName="amount" appMoneyInput decimalType="total">
+        </mat-form-field>
+
+        <div *ngIf="currenciesDifferent" class="rate-info">
+            <mat-icon inline>info</mat-icon> Las cuentas tienen monedas diferentes. Por favor especifique la tasa de
+            cambio.
+            <br>
+            <strong>1 {{ originBank?.currency }} = ? {{ destinationBank?.currency }}</strong>
+        </div>
+
+        <mat-form-field appearance="outline" *ngIf="currenciesDifferent">
+            <mat-label>Tasa de Cambio</mat-label>
+            <input matInput type="text" formControlName="exchange_rate" appMoneyInput decimalType="total">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Notas / Referencia</mat-label>
+            <textarea matInput formControlName="notes" rows="2"></textarea>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="transferForm.invalid || saving">
+        {{ saving ? 'Procesando...' : 'Transferir' }}
+    </button>
+</mat-dialog-actions>

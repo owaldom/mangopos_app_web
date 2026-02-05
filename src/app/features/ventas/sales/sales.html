@@ -1,8 +1,8 @@
-<div class="sales-container">
-    <!-- Ticket Tabs -->
-    <div class="ticket-tabs">
-        <div *ngFor="let ticket of tickets; let i = index" class="ticket-tab" [class.active]="i === activeTicketIndex"
-            (click)="selectTicket(i)">
+<div class="sales-container" [class.modern-layout]="isModernLayout">
+    <!-- Top Bar (Modern integration) -->
+    <div class="modern-ticket-tabs" *ngIf="isModernLayout">
+        <div *ngFor="let ticket of tickets; let i = index" class="ticket-tab modern"
+            [class.active]="i === activeTicketIndex" (click)="selectTicket(i)">
             <mat-icon>receipt</mat-icon>
             <span class="tab-label">
                 {{ ticket.selectedCustomer ? ticket.selectedCustomer.name : 'Ticket ' + (i + 1) }}
@@ -11,99 +11,239 @@
                 <mat-icon ripple="false">close</mat-icon>
             </button>
         </div>
-        <button mat-icon-button class="add-tab" (click)="addTicket()" matTooltip="Nuevo Ticket (+)"
+        <button mat-icon-button class="add-tab modern" (click)="addTicket()" matTooltip="Nuevo Ticket (+)"
             *ngIf="tickets.length < 10">
             <mat-icon>add</mat-icon>
         </button>
     </div>
 
-    <!-- Top Bar: Cliente y Acciones rápidas -->
-    <header class="top-bar">
-        <div class="customer-info">
-            <mat-icon color="primary">account_circle</mat-icon>
-            <span style="font-weight: 500;">
-                {{ selectedCustomer ? selectedCustomer.name : 'Cliente General' }}
-            </span>
-            <button mat-button color="primary" (click)="openCustomerSelector()"
-                style="margin-right: 12px;">Cambiar</button>
+    <div class="sales-top-bar" *ngIf="isModernLayout">
+        <div class="customer-pill" (click)="openCustomerSelector()">
+            <mat-icon>person</mat-icon>
+            <span class="name">{{ selectedCustomer?.name || 'Cliente General' }}</span>
+            <span class="action">Cambiar</span>
+        </div>
 
-            <div class="barcode-container">
-                <mat-icon class="barcode-icon">qr_code_scanner</mat-icon>
-                <input #barcodeInput type="text" [(ngModel)]="barcode" (ngModelChange)="onBarcodeChange($event)"
-                    (keyup.enter)="onBarcodeEnter($event)" placeholder="Escanear Código..." class="barcode-input">
+        <div class="exchange-pill">
+            <span class="label">Tasa:</span>
+            <span class="value">{{ exchangeRate | number:settingsService.getDecimalFormat('price') }} Bs/$</span>
+        </div>
+
+        <div class="search-main">
+            <mat-icon>qr_code_scanner</mat-icon>
+            <input #barcodeInput type="text" [(ngModel)]="barcode" placeholder="Escanear Código..."
+                (keyup.enter)="onBarcodeEnter($event)">
+        </div>
+
+        <div class="utility-actions">
+            <button mat-icon-button (click)="catalog.refresh()"
+                matTooltip="Refrescar catálogo"><mat-icon>sync</mat-icon></button>
+            <button mat-icon-button (click)="openProductSearch()"
+                matTooltip="Búsqueda avanzada"><mat-icon>search</mat-icon></button>
+            <button mat-icon-button (click)="openCalculator()"
+                matTooltip="Calculadora"><mat-icon>calculate</mat-icon></button>
+            <button mat-icon-button (click)="openNotesDialog()"
+                matTooltip="Notas de venta"><mat-icon>note_add</mat-icon></button>
+        </div>
+    </div>
+
+    <!-- Classic Header -->
+    <div class="classic-header" *ngIf="!isModernLayout">
+        <!-- Ticket Tabs -->
+        <div class="ticket-tabs">
+            <div *ngFor="let ticket of tickets; let i = index" class="ticket-tab"
+                [class.active]="i === activeTicketIndex" (click)="selectTicket(i)">
+                <mat-icon>receipt</mat-icon>
+                <span class="tab-label">
+                    {{ ticket.selectedCustomer ? ticket.selectedCustomer.name : 'Ticket ' + (i + 1) }}
+                </span>
+                <button mat-icon-button class="close-tab" (click)="removeTicket($event, i)" *ngIf="tickets.length > 1">
+                    <mat-icon ripple="false">close</mat-icon>
+                </button>
+            </div>
+            <button mat-icon-button class="add-tab" (click)="addTicket()" matTooltip="Nuevo Ticket (+)"
+                *ngIf="tickets.length < 10">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+
+        <!-- Top Bar: Cliente y Acciones rápidas -->
+        <header class="top-bar">
+            <div class="customer-info">
+                <mat-icon color="primary">account_circle</mat-icon>
+                <span style="font-weight: 500;">
+                    {{ selectedCustomer ? selectedCustomer.name : 'Cliente General' }}
+                </span>
+                <button mat-button color="primary" (click)="openCustomerSelector()"
+                    style="margin-right: 12px;">Cambiar</button>
+
+                <div class="barcode-container">
+                    <mat-icon class="barcode-icon">qr_code_scanner</mat-icon>
+                    <input #barcodeInput type="text" [(ngModel)]="barcode" (ngModelChange)="onBarcodeChange($event)"
+                        (keyup.enter)="onBarcodeEnter($event)" placeholder="Escanear Código..." class="barcode-input">
+                </div>
+            </div>
+
+            <div class="sale-actions">
+                <div class="rate-display">
+                    <span class="label">Tasa: </span>
+                    <input type="text" [(ngModel)]="exchangeRate" (ngModelChange)="updateRate($event)"
+                        class="rate-input" appMoneyInput decimalType="price">
+                    <span class="currency">Bs/$</span>
+                </div>
+                <button mat-icon-button (click)="syncAll()" matTooltip="Sincronizar precios y tasa">
+                    <mat-icon>sync</mat-icon>
+                </button>
+                <button mat-icon-button (click)="openProductSearch()" matTooltip="Buscador de productos (F2)">
+                    <mat-icon>search</mat-icon>
+                </button>
+                <button mat-icon-button (click)="openCalculator()" matTooltip="Calculadora (F4)">
+                    <mat-icon>calculate</mat-icon>
+                </button>
+                <button mat-icon-button (click)="openNotesDialog()" matTooltip="Notas al ticket">
+                    <mat-icon>note_add</mat-icon>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="sales-content-wrapper">
+        <!-- MODERN LAYOUT CONTENT -->
+        <div class="modern-main-content" *ngIf="isModernLayout">
+            <div class="main-split">
+                <aside class="ticket-sidebar">
+                    <div class="ticket-scroll">
+                        <app-ticket-lines></app-ticket-lines>
+                    </div>
+
+                    <div class="modern-totals">
+                        <div class="subtotals">
+                            <div class="total-row">
+                                <span>Sub Total:</span>
+                                <span>{{ subtotal | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total')
+                                    }}</span>
+                            </div>
+                            <div class="total-row">
+                                <span>Impuestos:</span>
+                                <span>{{ taxes | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total')
+                                    }}</span>
+                            </div>
+                            <div class="total-row discount" *ngIf="salesService.getGlobalDiscount() > 0">
+                                <span>Descuento:</span>
+                                <span>-{{ globalDiscountAmount | currency:'VES':'Bs.
+                                    ':settingsService.getDecimalFormat('total') }}</span>
+                            </div>
+                        </div>
+                        <div class="final-total">
+                            <span class="label">TOTAL A PAGAR</span>
+                            <div class="values">
+                                <span class="bs">{{ total | currency:'VES':'Bs.
+                                    ':settingsService.getDecimalFormat('total') }}</span>
+                                <span class="usd">{{ totalAlt | currency:'USD':'$
+                                    ':settingsService.getDecimalFormat('total') }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn-pay modern" (click)="onPay()" [disabled]="linesCount === 0">
+                        <mat-icon>payments</mat-icon>
+                        <span>PAGAR AHORA</span>
+                    </button>
+                </aside>
+
+                <main class="catalog-area modern">
+                    <app-catalog (productSelected)="addToTicket($event.product, $event.units)"></app-catalog>
+
+                    <!-- Floating Quick Actions (Modern) -->
+                    <div class="quick-discounts">
+                        <button class="fab-discount" (click)="requestDiscount('PERCENT')" matTooltip="Descuento %">
+                            <mat-icon>percent</mat-icon>
+                        </button>
+                        <button class="fab-discount" (click)="requestDiscount('FIXED')" matTooltip="Descuento $">
+                            <mat-icon>attach_money</mat-icon>
+                        </button>
+                        <button class="fab-discount" (click)="requestDiscount('FIXED_VES')" matTooltip="Descuento Bs">
+                            <mat-icon>payments</mat-icon>
+                        </button>
+                        <div class="divider"></div>
+                        <button class="fab-discount clear" (click)="removeDiscount()" matTooltip="Quitar Descuento">
+                            <mat-icon>money_off</mat-icon>
+                        </button>
+                    </div>
+                </main>
             </div>
         </div>
 
-        <div class="sale-actions">
-            <div class="rate-display">
-                <span class="label">Tasa: </span>
-                <input type="text" [(ngModel)]="exchangeRate" (ngModelChange)="updateRate($event)" class="rate-input"
-                    appMoneyInput decimalType="price">
-                <span class="currency">Bs/$</span>
-            </div>
-            <button mat-icon-button (click)="syncAll()" matTooltip="Sincronizar precios y tasa">
-                <mat-icon>sync</mat-icon>
-            </button>
-            <button mat-icon-button (click)="openProductSearch()" matTooltip="Buscador de productos (F2)">
-                <mat-icon>search</mat-icon>
-            </button>
-            <button mat-icon-button (click)="openCalculator()" matTooltip="Calculadora (F4)">
-                <mat-icon>calculate</mat-icon>
-            </button>
-            <button mat-icon-button (click)="openNotesDialog()" matTooltip="Notas al ticket">
-                <mat-icon>note_add</mat-icon>
-            </button>
-        </div>
-    </header>
+        <!-- CLASSIC LAYOUT CONTENT -->
+        <div class="sales-content classic" *ngIf="!isModernLayout">
+            <!-- Panel Izquierdo: Ticket y Totales -->
+            <aside class="left-panel">
+                <div style="flex: 1; overflow: hidden;">
+                    <app-ticket-lines></app-ticket-lines>
+                </div>
 
-    <div class="sales-content">
-        <!-- Panel Izquierdo: Ticket y Totales -->
-        <aside class="left-panel">
-            <div style="flex: 1; overflow: hidden;">
-                <app-ticket-lines></app-ticket-lines>
-            </div>
-
-            <div class="totals-panel">
-                <div class="total-info">
-                    <div class="total-label">Sub Total: {{ subtotal | currency:'VES':'Bs.
-                        ':settingsService.getDecimalFormat('total') }}</div>
-                    <div class="total-label">Impuestos: {{ taxes | currency:'VES':'Bs.
-                        ':settingsService.getDecimalFormat('total') }}</div>
-                    <div class="total-label discount-label" *ngIf="salesService.getGlobalDiscount() > 0">
-                        Descuento Global:
-                        <ng-container [ngSwitch]="salesService.getGlobalDiscountType()">
-                            <span *ngSwitchCase="'FIXED'">{{ salesService.getGlobalDiscount() | currency:'USD':'$
-                                ':settingsService.getDecimalFormat('price')
-                                }}</span>
-                            <span *ngSwitchCase="'FIXED_VES'">{{ salesService.getGlobalDiscount() | currency:'VES':'Bs.
-                                ':settingsService.getDecimalFormat('price') }}</span>
-                            <span *ngSwitchDefault>{{ salesService.getGlobalDiscount() * 100 | number:'1.0-0' }}%</span>
-                        </ng-container>
+                <div class="totals-panel">
+                    <div class="total-info">
+                        <div class="total-label">Sub Total: {{ subtotal | currency:'VES':'Bs.
+                            ':settingsService.getDecimalFormat('total') }}</div>
+                        <div class="total-label">Impuestos: {{ taxes | currency:'VES':'Bs.
+                            ':settingsService.getDecimalFormat('total') }}</div>
+                        <div class="total-label discount-label" *ngIf="salesService.getGlobalDiscount() > 0">
+                            Descuento Global: {{ globalDiscountAmount | currency:'VES':'Bs.
+                            ':settingsService.getDecimalFormat('total') }}
+                        </div>
+                    </div>
+                    <div class="dual-totals">
+                        <div class="total-alt">{{ totalAlt | currency:'USD':'$
+                            ':settingsService.getDecimalFormat('total') }}</div>
+                        <div class="total-value">{{ total | currency:'VES':'Bs.
+                            ':settingsService.getDecimalFormat('total') }}</div>
                     </div>
                 </div>
-                <div class="dual-totals">
-                    <div class="total-alt">{{ totalAlt | currency:'USD':'$ ':settingsService.getDecimalFormat('total')
-                        }}</div>
-                    <div class="total-value">{{ total | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total')
-                        }}</div>
+
+                <button class="btn-pay" (click)="onPay()" [disabled]="linesCount === 0">
+                    <mat-icon>payments</mat-icon>
+                    PAGAR
+                </button>
+            </aside>
+
+            <!-- Panel Derecho: Catálogo y Numpad -->
+            <main class="right-panel">
+                <div class="catalog-area">
+                    <app-catalog (productSelected)="addToTicket($event.product, $event.units)"></app-catalog>
                 </div>
-            </div>
 
-            <button class="btn-pay" (click)="onPay()" [disabled]="linesCount === 0">
-                <mat-icon>payments</mat-icon>
-                PAGAR
-            </button>
-        </aside>
+                <div class="discount-container">
+                    <div class="discount-card" (click)="requestDiscount('PERCENT')" matRipple>
+                        <div class="card-icon">
+                            <mat-icon>percent</mat-icon>
+                        </div>
+                        <div class="card-label">Porcentual</div>
+                    </div>
 
-        <!-- Panel Derecho: Catálogo y Numpad -->
-        <main class="right-panel">
-            <div class="catalog-area">
-                <app-catalog (productSelected)="addToTicket($event.product, $event.units)"></app-catalog>
-            </div>
+                    <div class="discount-card" (click)="requestDiscount('FIXED')" matRipple>
+                        <div class="card-icon">
+                            <mat-icon>attach_money</mat-icon>
+                        </div>
+                        <div class="card-label">Fijo ($)</div>
+                    </div>
 
-            <div class="numpad-area">
-                <app-sales-numpad (action)="handleNumpadAction($event)"></app-sales-numpad>
-            </div>
-        </main>
+                    <div class="discount-card" (click)="requestDiscount('FIXED_VES')" matRipple>
+                        <div class="card-icon">
+                            <mat-icon>payments</mat-icon>
+                        </div>
+                        <div class="card-label">Fijo (Bs.)</div>
+                    </div>
+
+                    <div class="discount-card remove-discount" (click)="removeDiscount()" matRipple>
+                        <div class="card-icon">
+                            <mat-icon color="warn">money_off</mat-icon>
+                        </div>
+                        <div class="card-label">Quitar Desc.</div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
 </div>

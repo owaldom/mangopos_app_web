@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TicketLinesComponent } from './components/ticket-lines/ticket-lines';
 import { CatalogComponent } from './components/catalog/catalog';
-import { SalesNumpadComponent } from './components/sales-numpad/sales-numpad';
+
 import { SalesService, TicketLine, Currency } from '../../../core/services/sales.service';
 import { KitComponent } from '../../../core/services/product-kit.model';
 import { AuthService } from '../../../core/services/auth';
@@ -30,6 +30,7 @@ import { ScaleWeightDialogComponent } from './components/scale-weight-dialog/sca
 import { SalesCalculatorDialogComponent } from './components/sales-calculator-dialog/sales-calculator-dialog';
 import { CompoundProductsService } from '../../administracion/inventario/compound-products/compound-products.service';
 import { StockValidation } from '../../administracion/inventario/compound-products/compound-products.model';
+import { DiscountDialogComponent } from './components/discount-dialog/discount-dialog';
 
 @Component({
   selector: 'app-sales',
@@ -43,8 +44,8 @@ import { StockValidation } from '../../administracion/inventario/compound-produc
     MatDialogModule,
     MatSnackBarModule,
     TicketLinesComponent,
+
     CatalogComponent,
-    SalesNumpadComponent,
     MoneyInputDirective
   ],
   templateUrl: './sales.html',
@@ -73,8 +74,28 @@ export class SalesComponent implements OnInit, OnDestroy {
   selectedLineIndex: number = -1;
   Math = Math;
 
+  get isModernLayout(): boolean {
+    return this.settingsService.getSettings()?.pos_layout === 'modern';
+  }
+
+  get globalDiscountAmount(): number {
+    const discount = this.salesService.getGlobalDiscount();
+    const type = this.salesService.getGlobalDiscountType();
+
+    if (type === 'FIXED') {
+      return discount * this.exchangeRate;
+    } else if (type === 'FIXED_VES') {
+      return discount;
+    } else {
+      // Porcentual
+      return this.subtotal * discount;
+    }
+  }
+
   barcode: string = '';
   private barcodeSubject = new Subject<string>();
+
+
 
   @ViewChild(CatalogComponent) catalog!: CatalogComponent;
   @ViewChild('barcodeInput') barcodeInput!: any;
@@ -344,31 +365,7 @@ export class SalesComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleNumpadAction(event: { mode: string, value: number }): void {
-    console.log('Numpad Action:', event);
-    if (this.selectedLineIndex >= 0 && this.selectedLineIndex < this.currentLines.length) {
-      if (event.mode === 'qty') {
-        this.salesService.updateLineQuantity(this.selectedLineIndex, event.value);
-      } else if (event.mode === 'price') {
-        this.salesService.updateLinePrice(this.selectedLineIndex, event.value);
-      } else if (event.mode === 'disc_percent') {
-        this.salesService.updateLineDiscount(this.selectedLineIndex, event.value, 'PERCENT');
-      } else if (event.mode === 'disc_fixed') {
-        this.salesService.updateLineDiscount(this.selectedLineIndex, event.value, 'FIXED');
-      } else if (event.mode === 'disc_ves') {
-        this.salesService.updateLineDiscount(this.selectedLineIndex, event.value, 'FIXED_VES');
-      }
-    } else if (event.mode === 'disc_percent') {
-      this.salesService.setGlobalDiscount(event.value, 'PERCENT');
-      this.snackBar.open(`Descuento global del ${event.value}% aplicado`, 'Cerrar', { duration: 2000 });
-    } else if (event.mode === 'disc_fixed') {
-      this.salesService.setGlobalDiscount(event.value, 'FIXED');
-      this.snackBar.open(`Descuento global de $${event.value} aplicado`, 'Cerrar', { duration: 2000 });
-    } else if (event.mode === 'disc_ves') {
-      this.salesService.setGlobalDiscount(event.value, 'FIXED_VES');
-      this.snackBar.open(`Descuento global de Bs. ${event.value} aplicado`, 'Cerrar', { duration: 2000 });
-    }
-  }
+
 
   onPay(): void {
     if (this.linesCount === 0) return;
@@ -427,7 +424,10 @@ export class SalesComponent implements OnInit, OnDestroy {
                 exchange_rate: 1,
                 bank: details[key]?.bank,
                 reference: details[key]?.reference,
-                cedula: details[key]?.cedula
+                cedula: details[key]?.cedula,
+                bank_id: details[key]?.bank_id,
+                account_number: details[key]?.account,
+                is_pago_movil: details[key]?.is_pago_movil
               });
             }
           }
@@ -445,7 +445,10 @@ export class SalesComponent implements OnInit, OnDestroy {
                 exchange_rate: this.exchangeRate,
                 bank: details[key]?.bank,
                 reference: details[key]?.reference,
-                cedula: details[key]?.cedula
+                cedula: details[key]?.cedula,
+                bank_id: details[key]?.bank_id,
+                account_number: details[key]?.account,
+                is_pago_movil: details[key]?.is_pago_movil
               });
             }
           }
@@ -461,7 +464,10 @@ export class SalesComponent implements OnInit, OnDestroy {
           exchange_rate: paymentData.exchange_rate,
           bank: d?.bank,
           reference: d?.reference,
-          cedula: d?.cedula
+          cedula: d?.cedula,
+          bank_id: paymentData.bank_id || d?.bank_id,
+          account_number: d?.account,
+          is_pago_movil: d?.is_pago_movil
         });
       }
 
@@ -716,6 +722,53 @@ export class SalesComponent implements OnInit, OnDestroy {
   private executeAdd(product: any, units: number, selectedComponents?: any[]): void {
     const customerId = this.selectedCustomer?.id;
     this.salesService.addLineWithDiscount(product, units, customerId, selectedComponents);
+  }
+
+  requestDiscount(type: 'PERCENT' | 'FIXED' | 'FIXED_VES'): void {
+    const dialogRef = this.dialog.open(DiscountDialogComponent, {
+      width: '350px',
+      data: { type }
+    });
+
+    dialogRef.afterClosed().subscribe(value => {
+      if (value !== undefined && value !== null) {
+        this.applyDiscount(type, value);
+      }
+    });
+  }
+
+  applyDiscount(type: string, value: number): void {
+    if (this.selectedLineIndex >= 0 && this.selectedLineIndex < this.currentLines.length) {
+      if (type === 'PERCENT') {
+        this.salesService.updateLineDiscount(this.selectedLineIndex, value, 'PERCENT');
+      } else if (type === 'FIXED') {
+        this.salesService.updateLineDiscount(this.selectedLineIndex, value, 'FIXED');
+      } else if (type === 'FIXED_VES') {
+        this.salesService.updateLineDiscount(this.selectedLineIndex, value, 'FIXED_VES');
+      }
+    } else {
+      if (type === 'PERCENT') {
+        this.salesService.setGlobalDiscount(value, 'PERCENT');
+        this.snackBar.open(`Descuento global del ${value}% aplicado`, 'Cerrar', { duration: 2000 });
+      } else if (type === 'FIXED') {
+        this.salesService.setGlobalDiscount(value, 'FIXED');
+        this.snackBar.open(`Descuento global de $${value} aplicado`, 'Cerrar', { duration: 2000 });
+      } else if (type === 'FIXED_VES') {
+        this.salesService.setGlobalDiscount(value, 'FIXED_VES');
+        this.snackBar.open(`Descuento global de Bs. ${value} aplicado`, 'Cerrar', { duration: 2000 });
+      }
+    }
+  }
+
+  removeDiscount(): void {
+    if (this.selectedLineIndex >= 0 && this.selectedLineIndex < this.currentLines.length) {
+      const line = this.currentLines[this.selectedLineIndex];
+      this.salesService.updateLineDiscount(this.selectedLineIndex, 0, 'PERCENT');
+      this.snackBar.open(`Descuento de línea eliminado`, 'Cerrar', { duration: 2000 });
+    } else {
+      this.salesService.setGlobalDiscount(0, 'PERCENT');
+      this.snackBar.open(`Descuento global eliminado`, 'Cerrar', { duration: 2000 });
+    }
   }
 
   // Multi-ticket actions

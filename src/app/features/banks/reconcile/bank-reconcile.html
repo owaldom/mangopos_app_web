@@ -1,0 +1,60 @@
+<div class="reconcile-container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title>
+                <mat-icon color="primary">fact_check</mat-icon>
+                Conciliación Bancaria
+            </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+            <div *ngIf="loading" class="loading-container">
+                <mat-spinner diameter="50"></mat-spinner>
+            </div>
+
+            <form [formGroup]="reconcileForm" (ngSubmit)="onSubmit()" class="reconcile-form" *ngIf="!loading">
+                <mat-form-field appearance="outline">
+                    <mat-label>Seleccionar Cuenta Bancaria</mat-label>
+                    <mat-select formControlName="bank_id">
+                        <mat-option *ngFor="let bank of banks" [value]="bank.id">
+                            {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <div class="balance-info" *ngIf="selectedBank">
+                    <div class="balance-item">
+                        <label>Saldo en Sistema</label>
+                        <span>{{ selectedBank.currency }} {{ selectedBank.current_balance | number:'1.2-2' }}</span>
+                    </div>
+                    <div class="balance-item">
+                        <label>Diferencia de Ajuste</label>
+                        <span class="difference" [ngClass]="{'positive': difference > 0, 'negative': difference < 0}">
+                            {{ selectedBank.currency }} {{ difference | number:'1.2-2' }}
+                        </span>
+                    </div>
+                </div>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Saldo según Estado de Cuenta</mat-label>
+                    <input matInput type="text" formControlName="new_balance" appMoneyInput decimalType="total">
+                    <mat-hint>Ingrese el saldo real que muestra el banco para generar el ajuste automático</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Notas / Motivo del ajuste</mat-label>
+                    <textarea matInput formControlName="notes" rows="3"
+                        placeholder="Ej: Corrección de saldo, comisiones no registradas..."></textarea>
+                </mat-form-field>
+
+                <div class="actions">
+                    <button mat-raised-button color="primary" type="submit"
+                        [disabled]="reconcileForm.invalid || saving">
+                        <mat-icon *ngIf="!saving">check_circle</mat-icon>
+                        {{ saving ? 'Procesando...' : 'Aplicar Conciliación' }}
+                    </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

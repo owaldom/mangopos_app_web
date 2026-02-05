@@ -28,8 +28,33 @@ export const routes: Routes = [
             },
             {
                 path: 'bancos',
+                canActivate: [permissionGuard],
                 loadComponent: () => import('./features/banks/banks').then(m => m.BanksComponent),
-                data: { title: 'Gestión de Bancos', description: 'Administración de cuentas bancarias' }
+                data: { title: 'Gestión de Bancos', description: 'Administración de cuentas bancarias', permission: 'banks.view' }
+            },
+            {
+                path: 'bancos/resumen',
+                canActivate: [permissionGuard],
+                loadComponent: () => import('./features/banks/summary/bank-summary').then(m => m.BankSummaryComponent),
+                data: { title: 'Resumen Bancario', description: 'Vista general', permission: 'banks.view' }
+            },
+            {
+                path: 'bancos/entidades',
+                canActivate: [permissionGuard],
+                loadComponent: () => import('./features/banks/config/bank-entities/bank-entities.component').then(m => m.BankEntitiesComponent),
+                data: { title: 'Entidades Bancarias', description: 'Configuración de bancos', permission: 'banks.config' }
+            },
+            {
+                path: 'bancos/tipos',
+                canActivate: [permissionGuard],
+                loadComponent: () => import('./features/banks/config/bank-account-types/bank-account-types.component').then(m => m.BankAccountTypesComponent),
+                data: { title: 'Tipos de Cuenta', description: 'Configuración de categorías', permission: 'banks.config' }
+            },
+            {
+                path: 'bancos/conciliacion',
+                canActivate: [permissionGuard],
+                loadComponent: () => import('./features/banks/reconcile/bank-reconcile').then(m => m.BankReconcileComponent),
+                data: { title: 'Conciliación Bancaria', description: 'Ajuste de saldos', permission: 'banks.reconcile' }
             },
             // Sección Ventas
             {

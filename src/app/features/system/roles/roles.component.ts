@@ -62,6 +62,16 @@ const PERMISSION_GROUPS = [
       { key: 'com.openbravo.pos.config.JPanelConfiguration', label: 'Configuración General' },
       { key: 'com.openbravo.pos.panels.JPanelPrinter', label: 'Configuración de Periféricos (Impresoras)' }
     ]
+  },
+  {
+    name: 'Gestión Bancaria',
+    icon: 'account_balance',
+    permissions: [
+      { key: 'com.openbravo.pos.panels.JPanelBanks', label: 'Cuentas Bancarias / Resumen' },
+      { key: 'com.openbravo.pos.panels.JPanelBankReconcile', label: 'Conciliación Bancaria' },
+      { key: 'com.openbravo.pos.panels.JPanelBankEntities', label: 'Configuración: Entidades' },
+      { key: 'com.openbravo.pos.panels.JPanelBankAccountTypes', label: 'Configuración: Tipos de Cuenta' }
+    ]
   }
 ];
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Bank, BankTransaction, BankMovementReport } from '../models/bank.model';
+import { Bank, BankTransaction, BankMovementReport, BankEntity, BankAccountType } from '../models/bank.model';
 
 @Injectable({
     providedIn: 'root'
@@ -110,5 +110,44 @@ export class BanksService {
             new_balance: newBalance,
             notes
         });
+    }
+
+    // ============ BANK ENTITIES OPERATIONS ============
+
+    getBankEntities(): Observable<BankEntity[]> {
+        return this.http.get<BankEntity[]>(`${environment.apiUrl}/bank-entities`);
+    }
+
+    createBankEntity(entity: Partial<BankEntity>): Observable<BankEntity> {
+        return this.http.post<BankEntity>(`${environment.apiUrl}/bank-entities`, entity);
+    }
+
+    // ============ BANK ACCOUNT TYPES OPERATIONS ============
+
+    getBankAccountTypes(): Observable<BankAccountType[]> {
+        return this.http.get<BankAccountType[]>(`${environment.apiUrl}/bank-account-types`);
+    }
+
+    createBankAccountType(type: Partial<BankAccountType>): Observable<BankAccountType> {
+        return this.http.post<BankAccountType>(`${environment.apiUrl}/bank-account-types`, type);
+    }
+
+    // ============ SUMMARY OPERATIONS ============
+
+    getBanksSummary(): Observable<{
+        totals: { currency: string; total_balance: number; account_count: number }[];
+        distribution: { entity_name: string; currency: string; total_balance: number }[];
+    }> {
+        return this.http.get<any>(`${this.apiUrl}/summary`);
+    }
+
+    transferFunds(transferData: {
+        origin_bank_id: string;
+        destination_bank_id: string;
+        amount: number;
+        exchange_rate: number;
+        notes?: string;
+    }): Observable<any> {
+        return this.http.post(`${this.apiUrl}/transfers`, transferData);
     }
 }

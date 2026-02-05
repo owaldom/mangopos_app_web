@@ -104,12 +104,19 @@ export class PrintService {
         // Generar pagos en Bs.
         const paymentsHtml = (ticket.payments || []).map(p => {
             // Use amount_base_currency if available (correct value in Bs), otherwise fallback to manual calc
-            const paymentBs = p.amount_base_currency || (p.total * exchangeRate);
+            const paymentBs = p.amount_base_currency || (p.total * (p.currency_id === 1 ? 1 : exchangeRate));
+            const bankInfo = p.bank ? `<div style="font-size: 10px; margin-left: 10px;">Banco: ${p.bank}</div>` : '';
+            const refInfo = p.reference ? `<div style="font-size: 10px; margin-left: 10px;">Ref: ${p.reference}</div>` : '';
+            const cedulaInfo = p.cedula ? `<div style="font-size: 10px; margin-left: 10px;">CI/Telf: ${p.cedula}</div>` : '';
+
             return `
             <div class="row">
                 <span>${this.getPaymentMethodName(p.payment)}:</span>
                 <span class="text-right">Bs. ${this.currencyPipe.transform(paymentBs, '', '', decimalFormat)}</span>
             </div>
+            ${bankInfo}
+            ${refInfo}
+            ${cedulaInfo}
         `}).join('');
 
         // Calcular totales en Bs. (Fallback seguro para evitar null)
@@ -438,10 +445,11 @@ export class PrintService {
             'cash': 'Efectivo',
             'CARD': 'Tarjeta',
             'card': 'Tarjeta',
-            'TRANSFER': 'Pago Móvil',
-            'transfer': 'Pago Móvil',
+            'TRANSFER': 'Transferencia',
+            'transfer': 'Transferencia',
             'CASH_REFUND': 'Devolución',
             'paper': 'Pago Móvil',
+            'PagoMovil': 'Pago Móvil',
             'PAPER': 'Pago Móvil',
             'Vale': 'Pago Móvil',
             'vale': 'Pago Móvil',

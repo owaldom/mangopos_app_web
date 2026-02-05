@@ -54,6 +54,12 @@ export class SalesNumpadComponent {
     this.value = '';
   }
 
+  onBackspace(): void {
+    if (this.value && this.value.length > 0) {
+      this.value = this.value.slice(0, -1);
+    }
+  }
+
   setMode(mode: 'qty' | 'disc_percent' | 'disc_fixed' | 'disc_ves' | 'price'): void {
     const isDiscountMode = (m: string) => m.startsWith('disc_');
     if (isDiscountMode(mode) && isDiscountMode(this.mode)) {

@@ -37,4 +37,8 @@ export class DashboardService {
     getRecentSales(): Observable<RecentSale[]> {
         return this.http.get<RecentSale[]>(`${this.apiUrl}/recent-sales`);
     }
+
+    getAdvancedStats(): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/advanced-stats`);
+    }
 }

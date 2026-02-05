@@ -1,0 +1,62 @@
+<div class="secondary-sidebar-backdrop" *ngIf="isOpen" (click)="onBackdropClick()" [@fadeIn]>
+</div>
+
+<div class="secondary-sidebar" *ngIf="isOpen" [@slideIn] [style.--category-color]="category?.color">
+    <div class="sidebar-header" *ngIf="category">
+        <div class="header-content">
+            <mat-icon [style.color]="category.color">{{ category.icon }}</mat-icon>
+            <h2>{{ category.name }}</h2>
+        </div>
+
+        <button class="close-btn" (click)="close.emit()" mat-icon-button>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div class="search-container" *ngIf="category">
+        <mat-form-field appearance="outline" class="search-field">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Buscar..." [(ngModel)]="searchQuery" (keyup.escape)="clearSearch()">
+            <button matSuffix mat-icon-button *ngIf="searchQuery" (click)="clearSearch()">
+                <mat-icon>clear</mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
+
+    <nav class="sidebar-content" *ngIf="category">
+        <div *ngFor="let item of filteredItems" class="menu-item-wrapper">
+            <!-- Item sin hijos -->
+            <div *ngIf="!hasChildren(item)" class="menu-item" [routerLink]="item.route" routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: item.exact || false }" matRipple (click)="navigate(item)">
+                <mat-icon>{{ item.icon }}</mat-icon>
+                <span>{{ item.name }}</span>
+                <span class="badge" *ngIf="item.badge">{{ item.badge }}</span>
+            </div>
+
+            <!-- Item con hijos (submenu) -->
+            <mat-expansion-panel *ngIf="hasChildren(item)" class="submenu-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <mat-icon>{{ item.icon }}</mat-icon>
+                        <span>{{ item.name }}</span>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="submenu-items">
+                    <div *ngFor="let child of item.children" class="submenu-item" [routerLink]="child.route"
+                        routerLinkActive="active" [routerLinkActiveOptions]="{ exact: child.exact || false }" matRipple
+                        (click)="navigate(child)">
+                        <mat-icon>{{ child.icon }}</mat-icon>
+                        <span>{{ child.name }}</span>
+                        <span class="badge" *ngIf="child.badge">{{ child.badge }}</span>
+                    </div>
+                </div>
+            </mat-expansion-panel>
+        </div>
+
+        <div *ngIf="filteredItems.length === 0" class="no-results">
+            <mat-icon>search_off</mat-icon>
+            <p>No se encontraron resultados</p>
+        </div>
+    </nav>
+</div>

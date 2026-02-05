@@ -413,9 +413,11 @@ export class PurchasesComponent implements OnInit, OnDestroy {
                             currency_id: 1, // Bs
                             exchange_rate: this.exchangeRate,
                             bank: paymentData.paymentDetails[method]?.bank,
-                            bank_id: paymentData.paymentDetails[method]?.bank_id || null, // ADDED bank_id
+                            bank_id: paymentData.paymentDetails[method]?.bank_id || null,
                             numdocument: paymentData.paymentDetails[method]?.cedula || null,
-                            reference: paymentData.paymentDetails[method]?.reference || null
+                            reference: paymentData.paymentDetails[method]?.reference || null,
+                            account_number: paymentData.paymentDetails[method]?.account || null,
+                            is_pago_movil: paymentData.paymentDetails[method]?.is_pago_movil || false
                         });
                     }
                 }
@@ -429,9 +431,11 @@ export class PurchasesComponent implements OnInit, OnDestroy {
                             currency_id: 2, // USD
                             exchange_rate: this.exchangeRate,
                             bank: paymentData.paymentDetails[method]?.bank,
-                            bank_id: paymentData.paymentDetails[method]?.bank_id || null, // ADDED bank_id
+                            bank_id: paymentData.paymentDetails[method]?.bank_id || null,
                             numdocument: paymentData.paymentDetails[method]?.cedula || null,
-                            reference: paymentData.paymentDetails[method]?.reference || null
+                            reference: paymentData.paymentDetails[method]?.reference || null,
+                            account_number: paymentData.paymentDetails[method]?.account || null,
+                            is_pago_movil: paymentData.paymentDetails[method]?.is_pago_movil || false
                         });
                     }
                 }
@@ -443,9 +447,11 @@ export class PurchasesComponent implements OnInit, OnDestroy {
                     currency_id: paymentData.currency_id,
                     exchange_rate: this.exchangeRate,
                     bank: paymentData.paymentDetails ? paymentData.paymentDetails[paymentData.method]?.bank : null,
-                    bank_id: paymentData.bank_id || (paymentData.paymentDetails ? paymentData.paymentDetails[paymentData.method]?.bank_id : null), // ADDED bank_id 
+                    bank_id: paymentData.bank_id || (paymentData.paymentDetails ? paymentData.paymentDetails[paymentData.method]?.bank_id : null),
                     numdocument: paymentData.paymentDetails ? paymentData.paymentDetails[paymentData.method]?.cedula : null,
-                    reference: paymentData.paymentDetails ? (paymentData.paymentDetails[paymentData.method]?.reference || null) : null
+                    reference: paymentData.paymentDetails ? (paymentData.paymentDetails[paymentData.method]?.reference || null) : null,
+                    account_number: paymentData.paymentDetails ? paymentData.paymentDetails[paymentData.method]?.account : null,
+                    is_pago_movil: paymentData.paymentDetails ? paymentData.paymentDetails[paymentData.method]?.is_pago_movil : false
                 });
             }
 

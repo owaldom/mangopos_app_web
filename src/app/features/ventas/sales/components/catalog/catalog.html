@@ -1,18 +1,38 @@
-<div class="catalog-container">
+<div class="catalog-container" [class.modern-layout]="settingsService.getSettings()?.pos_layout === 'modern'">
+    <!-- HEADER (Navigation & Search) -->
     <div class="catalog-header">
-        <div class="breadcrumb">
-            <button mat-button
-                (click)="currentParentId = null; selectedCategory = null; navigationHistory = []; searchText = ''; updateDisplay()"
-                [class.active]="!selectedCategory">
-                Categorías
-            </button>
-            <ng-container *ngFor="let nav of navigationHistory; let last = last">
-                <mat-icon>chevron_right</mat-icon>
-                <button mat-button (click)="navigateTo(nav)" [class.active]="last">
-                    {{ nav.name }}
-                </button>
-            </ng-container>
+        <div class="navigation-area">
+            <div class="breadcrumb" *ngIf="settingsService.getSettings()?.pos_layout === 'classic'">
+                <div class="breadcrumb-scroll">
+                    <button mat-button
+                        (click)="currentParentId = null; selectedCategory = null; navigationHistory = []; searchText = ''; updateDisplay()"
+                        [class.active]="!selectedCategory">
+                        Categorías
+                    </button>
+                    <ng-container *ngFor="let nav of navigationHistory; let last = last">
+                        <mat-icon>chevron_right</mat-icon>
+                        <button mat-button (click)="navigateTo(nav)" [class.active]="last">
+                            {{ nav.name }}
+                        </button>
+                    </ng-container>
+                </div>
+            </div>
+
+            <!-- Modern Category Tabs (Chips) -->
+            <div class="modern-categories" *ngIf="settingsService.getSettings()?.pos_layout === 'modern'">
+                <div class="chips-scroll-container">
+                    <button class="category-chip" [class.active]="!selectedCategory && !searchText"
+                        (click)="currentParentId = null; selectedCategory = null; navigationHistory = []; searchText = ''; updateDisplay()">
+                        Todos
+                    </button>
+                    <button *ngFor="let cat of topLevelCategories" class="category-chip"
+                        [class.active]="selectedCategory?.id === cat.id" (click)="selectCategory(cat)">
+                        {{ cat.name }}
+                    </button>
+                </div>
+            </div>
         </div>
+
         <div class="search-box">
             <mat-icon size="small">search</mat-icon>
             <input #searchInput type="text" placeholder="Buscar producto (F2)..." [ngModel]="searchText"
@@ -20,38 +40,72 @@
         </div>
     </div>
 
-    <div class="item-grid scrollable">
-        <!-- Vista de Categorías (Solo las que pertenecen al nivel actual) -->
-        <div *ngFor="let cat of displayedCategories" class="category-card" (click)="selectCategory(cat)">
-            <img *ngIf="cat.image" [src]="'data:image/png;base64,' + cat.image" class="category-image">
-            <mat-icon *ngIf="!cat.image">folder</mat-icon>
-            <span class="category-name">{{ cat.name }}</span>
+    <!-- MODERN NAVIGATION SUBHEADER (Breadcrumb context for nested categories) -->
+    <div class="modern-breadcrumb"
+        *ngIf="settingsService.getSettings()?.pos_layout === 'modern' && navigationHistory.length > 0">
+        <button class="back-pill" (click)="back()"><mat-icon>arrow_back</mat-icon> Volver</button>
+        <div class="path">
+            <span *ngFor="let nav of navigationHistory">{{ nav.name }}</span>
         </div>
+    </div>
 
-        <!-- Divisor si hay categorías y productos -->
-        <div class="grid-divider" *ngIf="displayedCategories.length > 0 && filteredProducts.length > 0"></div>
-
-        <!-- Vista de Productos -->
-        <div *ngFor="let prod of filteredProducts" class="product-card" (click)="addToTicket(prod)">
-            <div class="product-image">
-                <button mat-icon-button *ngIf="prod.image" class="view-image-btn" (click)="openImagePopup($event, prod)"
-                    matTooltip="Ver foto">
-                    <mat-icon>photo_camera</mat-icon>
-                </button>
-                <mat-icon *ngIf="!prod.image">image</mat-icon>
+    <div class="item-grid scrollable" [class.modern-grid]="settingsService.getSettings()?.pos_layout === 'modern'">
+        <!-- Vista de Categorías (Solo en Classic o si hay subcategorías en Modern) -->
+        <ng-container
+            *ngIf="settingsService.getSettings()?.pos_layout === 'classic' || (selectedCategory && displayedCategories.length > 0)">
+            <div *ngFor="let cat of displayedCategories" class="category-card" (click)="selectCategory(cat)">
+                <img *ngIf="cat.image" [src]="'data:image/png;base64,' + cat.image" class="category-image">
+                <mat-icon *ngIf="!cat.image">folder</mat-icon>
+                <span class="category-name">{{ cat.name }}</span>
             </div>
-            <div class="product-details">
-                <span class="product-name">{{ prod.name }}</span>
-                <div class="product-meta">
-                    <span class="product-price">{{ prod.pricesell * (1 + (prod.tax_rate - 0 || 0)) *
-                        exchangeRate |
-                        currency:'VES':'Bs. ':settingsService.getDecimalFormat('price') }}</span>
+            <div class="grid-divider" *ngIf="displayedCategories.length > 0 && filteredProducts.length > 0"></div>
+        </ng-container>
 
-                    <span class="product-stock" [class.low-stock]="prod.stock <= 0">
-                        Stock: {{ prod.stock | number:settingsService.getDecimalFormat('quantity') }}
-                    </span>
+        <!-- Vista de Productos (MODERN CARDS) -->
+        <ng-container *ngIf="settingsService.getSettings()?.pos_layout === 'modern'">
+            <div *ngFor="let prod of filteredProducts" class="modern-product-card" (click)="addToTicket(prod)">
+                <div class="image-area">
+                    <img *ngIf="prod.image" [src]="'data:image/png;base64,' + prod.image">
+                    <mat-icon *ngIf="!prod.image">fastfood</mat-icon>
+                    <span class="price-badge">{{ prod.pricesell * (1 + (prod.tax_rate - 0 || 0)) * exchangeRate |
+                        currency:'VES':'Bs. ':settingsService.getDecimalFormat('price') }}</span>
+                </div>
+                <div class="info-area">
+                    <span class="name">{{ prod.name }}</span>
+                    <div class="modern-stock-info">
+                        <div class="stock-indicator" [class.low]="prod.stock < 5">
+                            <div class="bar" [style.width]="(prod.stock > 20 ? 100 : prod.stock * 5) + '%'"></div>
+                        </div>
+                        <span class="stock-count" [class.low]="prod.stock < 5">
+                            {{ prod.stock | number:settingsService.getDecimalFormat('quantity') }}
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </ng-container>
+
+        <!-- Vista de Productos (CLASSIC CARDS) -->
+        <ng-container *ngIf="settingsService.getSettings()?.pos_layout === 'classic'">
+            <div *ngFor="let prod of filteredProducts" class="product-card" (click)="addToTicket(prod)">
+                <div class="product-image">
+                    <img *ngIf="prod.image" [src]="'data:image/png;base64,' + prod.image" class="img-thumb">
+                    <button mat-icon-button *ngIf="prod.image" class="view-image-btn"
+                        (click)="openImagePopup($event, prod)" matTooltip="Ver foto">
+                        <mat-icon ripple="false">photo_camera</mat-icon>
+                    </button>
+                    <mat-icon *ngIf="!prod.image">image</mat-icon>
+                </div>
+                <div class="product-details">
+                    <span class="product-name">{{ prod.name }}</span>
+                    <div class="product-meta">
+                        <span class="product-price">{{ prod.pricesell * (1 + (prod.tax_rate - 0 || 0)) * exchangeRate |
+                            currency:'VES':'Bs. ':settingsService.getDecimalFormat('price') }}</span>
+                        <span class="product-stock" [class.low-stock]="prod.stock <= 0">
+                            Stock: {{ prod.stock | number:settingsService.getDecimalFormat('quantity') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
     </div>
 </div>

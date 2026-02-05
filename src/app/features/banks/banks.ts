@@ -13,6 +13,7 @@ import { BanksService } from '../../core/services/banks.service';
 import { Bank } from '../../core/models/bank.model';
 import { BankFormDialogComponent } from './bank-form-dialog/bank-form-dialog';
 import { BankTransactionsDialogComponent } from './bank-transactions-dialog/bank-transactions-dialog';
+import { BankTransferDialogComponent } from './bank-transfer-dialog/bank-transfer-dialog';
 
 @Component({
     selector: 'app-banks',
@@ -88,6 +89,18 @@ export class BanksComponent implements OnInit {
         });
     }
 
+    openTransferDialog(): void {
+        const dialogRef = this.dialog.open(BankTransferDialogComponent, {
+            width: '500px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result) {
+                this.loadBanks();
+            }
+        });
+    }
+
     openTransactionsDialog(bank: Bank): void {
         this.dialog.open(BankTransactionsDialogComponent, {
             width: '90%',
@@ -121,8 +134,9 @@ export class BanksComponent implements OnInit {
         return types[type] || type;
     }
 
-    formatCurrency(amount: number, currency: string): string {
+    formatCurrency(amount: any, currency: string): string {
         const symbol = currency === 'USD' ? '$' : 'Bs.';
-        return `${symbol} ${amount.toFixed(2)}`;
+        const value = Number(amount) || 0;
+        return `${symbol} ${value.toFixed(2)}`;
     }
 }

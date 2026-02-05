@@ -68,12 +68,16 @@
                 </div>
 
                 <!-- Extra Fields for Single Mode -->
-                <div *ngIf="selectedMethod === 'card' || selectedMethod === 'paper'"
-                    style="margin-top: 12px; display: flex; gap: 8px;">
+                <div *ngIf="requiresBank(selectedMethod)" style="margin-top: 12px; display: flex; gap: 8px;">
                     <mat-form-field appearance="outline" density="compact" *ngIf="selectedMethod === 'paper'"
                         style="flex: 1;">
-                        <mat-label>Cédula</mat-label>
-                        <input matInput [(ngModel)]="paymentDetails['paper'].cedula" placeholder="V-12345678">
+                        <mat-label>Cédula/Telf (PM)</mat-label>
+                        <input matInput [(ngModel)]="paymentDetails['paper'].cedula" placeholder="V-12345678 / 0412...">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" density="compact" *ngIf="selectedMethod === 'transfer'"
+                        style="flex: 1;">
+                        <mat-label>Cuenta</mat-label>
+                        <input matInput [(ngModel)]="paymentDetails['transfer'].account" placeholder="Últimos 4 o full">
                     </mat-form-field>
                     <mat-form-field appearance="outline" density="compact" style="flex: 1;">
                         <mat-label>Referencia</mat-label>
@@ -83,8 +87,8 @@
                         <mat-label>Banco</mat-label>
                         <mat-select [(ngModel)]="selectedBankId">
                             <mat-option value="">Ninguno</mat-option>
-                            <mat-option *ngFor="let bank of banks" [value]="bank.id">
-                                {{ bank.name }} ({{ bank.currency }})
+                            <mat-option *ngFor="let bank of getFilteredBanks(selectedMethod)" [value]="bank.id">
+                                {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -140,7 +144,7 @@
                         <mat-select [(ngModel)]="paymentDetails['card'].bank_id">
                             <mat-option value="">Ninguno</mat-option>
                             <mat-option *ngFor="let bank of banks" [value]="bank.id">
-                                {{ bank.name }} ({{ bank.currency }})
+                                {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -160,10 +164,8 @@
                         <input matInput appMoneyInput [(ngModel)]="paymentsAlt['paper']"
                             (ngModelChange)="updateMultiPayment('paper', $event, 'alt')" placeholder="0.00">
                     </mat-form-field>
-
-                    <!-- Pago Móvil Details -->
                     <mat-form-field appearance="outline" density="compact">
-                        <mat-label>Cédula</mat-label>
+                        <mat-label>Cédula/Telf</mat-label>
                         <input matInput [(ngModel)]="paymentDetails['paper'].cedula" placeholder="V-12345678">
                     </mat-form-field>
                     <mat-form-field appearance="outline" density="compact">
@@ -174,8 +176,41 @@
                         <mat-label>Banco</mat-label>
                         <mat-select [(ngModel)]="paymentDetails['paper'].bank_id">
                             <mat-option value="">Ninguno</mat-option>
+                            <mat-option *ngFor="let bank of getFilteredBanks('paper')" [value]="bank.id">
+                                {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <!-- Transferencia -->
+                <div class="multi-row-mat">
+                    <div class="method-icon"><mat-icon>account_balance</mat-icon></div>
+                    <div class="method-name">Transferencia</div>
+                    <mat-form-field appearance="outline" density="compact">
+                        <span matTextPrefix>Bs. &nbsp;</span>
+                        <input matInput appMoneyInput [(ngModel)]="payments['transfer']"
+                            (ngModelChange)="updateMultiPayment('transfer', $event, 'base')" placeholder="0,00">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" density="compact">
+                        <span matTextPrefix>$ &nbsp;</span>
+                        <input matInput appMoneyInput [(ngModel)]="paymentsAlt['transfer']"
+                            (ngModelChange)="updateMultiPayment('transfer', $event, 'alt')" placeholder="0.00">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" density="compact">
+                        <mat-label>Cuenta</mat-label>
+                        <input matInput [(ngModel)]="paymentDetails['transfer'].account" placeholder="Cuenta">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" density="compact">
+                        <mat-label>Referencia</mat-label>
+                        <input matInput [(ngModel)]="paymentDetails['transfer'].reference" placeholder="Ref #">
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" density="compact">
+                        <mat-label>Banco</mat-label>
+                        <mat-select [(ngModel)]="paymentDetails['transfer'].bank_id">
+                            <mat-option value="">Ninguno</mat-option>
                             <mat-option *ngFor="let bank of banks" [value]="bank.id">
-                                {{ bank.name }} ({{ bank.currency }})
+                                {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -215,6 +250,11 @@
                 <div class="method-btn" [class.active]="selectedMethod === 'paper'" (click)="selectedMethod = 'paper'">
                     <mat-icon>smartphone</mat-icon>
                     <span>Pago Móvil</span>
+                </div>
+                <div class="method-btn" [class.active]="selectedMethod === 'transfer'"
+                    (click)="selectedMethod = 'transfer'">
+                    <mat-icon>account_balance</mat-icon>
+                    <span>Transferencia</span>
                 </div>
                 <div class="method-btn" [class.active]="selectedMethod === 'Credito'"
                     (click)="selectedMethod = 'Credito'" [class.disabled]="!data.supplier">

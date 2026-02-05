@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSelectModule } from '@angular/material/select';
 import { SettingsService, AppSettings } from '../../../core/services/settings.service';
 import { MoneyInputDirective } from '../../../shared/directives/money-input.directive';
 
@@ -24,6 +25,7 @@ import { MoneyInputDirective } from '../../../shared/directives/money-input.dire
         MatIconModule,
         MatSnackBarModule,
         MatSlideToggleModule,
+        MatSelectModule,
         MoneyInputDirective
     ],
     templateUrl: './settings.html',
@@ -38,7 +40,10 @@ export class SettingsComponent implements OnInit {
         currency_code: 'VES',
         company_name: '',
         company_address: '',
-        enable_pdf_ticket: false
+        enable_pdf_ticket: false,
+        percentage_decimals: 0,
+        pos_layout: 'classic',
+        print_server_url: 'http://localhost:3001/api'
     };
 
     currencies: any[] = [];

@@ -37,7 +37,13 @@ export class PrintersListComponent implements OnInit {
     private snackBar = inject(MatSnackBar);
 
     printers: any[] = [];
-    settings: any = { roles: { TICKET: '', FISCAL: '', REPORT: '' } };
+    settings: any = {
+        roles: {
+            TICKET: { name: '', width: 80 },
+            FISCAL: { name: '', width: 80 },
+            REPORT: { name: '', width: 80 }
+        }
+    };
     loading = true;
     saving = false;
     displayedColumns: string[] = ['name', 'driver', 'status', 'actions'];
@@ -67,6 +73,18 @@ export class PrintersListComponent implements OnInit {
         this.printerService.getPrinterSettings().subscribe({
             next: (settings) => {
                 if (settings && settings.roles) {
+                    // Normalizar para asegurar el nuevo formato de objetos
+                    const roles = ['TICKET', 'FISCAL', 'REPORT'];
+                    roles.forEach(role => {
+                        const val = settings.roles[role];
+                        if (typeof val === 'string') {
+                            settings.roles[role] = { name: val, width: 80 };
+                        } else if (!val) {
+                            settings.roles[role] = { name: '', width: 80 };
+                        } else if (!val.width) {
+                            val.width = 80;
+                        }
+                    });
                     this.settings = settings;
                 }
                 this.loading = false;
@@ -94,6 +112,27 @@ export class PrintersListComponent implements OnInit {
     }
 
     testPrinter(printerName: string) {
-        this.snackBar.open(`Enviando prueba a ${printerName}... (Funcionalidad Simulada)`, 'OK', { duration: 2000 });
+        this.snackBar.open(`Enviando prueba a ${printerName}...`, 'OK', { duration: 2000 });
+
+        // Buscar si esta impresora tiene un ancho asignado en algún rol
+        let width = 80;
+        const roles = Object.values(this.settings.roles) as any[];
+        const mapping = roles.find(r => r.name === printerName);
+        if (mapping) width = mapping.width;
+
+        this.printerService.testPrinter(printerName, width).subscribe({
+            next: (res) => {
+                if (res.success) {
+                    this.snackBar.open(`Prueba enviada con éxito a ${printerName}`, 'OK', { duration: 3000 });
+                } else {
+                    this.snackBar.open(`Error en prueba: ${res.error}`, 'Cerrar', { duration: 5000 });
+                }
+            },
+            error: (err) => {
+                console.error('Error in test print:', err);
+                const msg = err.error?.error || 'Error de conexión con el servidor de impresión';
+                this.snackBar.open(msg, 'Cerrar', { duration: 5000 });
+            }
+        });
     }
 }
