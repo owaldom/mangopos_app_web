@@ -151,7 +151,7 @@
 
     span {
         flex: 1;
-        font-size: 14px;
+        font-size: 16px; // Unificado a 16px
         font-weight: 500;
         color: rgba(255, 255, 255, 0.95);
     }
@@ -196,18 +196,17 @@
             padding: 12px 16px;
             border-radius: 8px;
             background: transparent;
-            color: var(--category-color, rgba(255, 255, 255, 0.95));
+            color: rgba(255, 255, 255, 0.7) !important; // Gris claro para distinguir de items sin hijos
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
             &:hover {
                 background: rgba(255, 255, 255, 0.08);
-                color: var(--category-color, rgba(255, 255, 255, 1));
+                color: rgba(255, 255, 255, 1) !important;
 
                 .mat-expansion-panel-header-title {
                     mat-icon {
                         transform: scale(1.1);
-                        /*color: var(--category-color, rgba(255, 255, 255, 0.9));*/
-                        color: var(--category-color, rgba(255, 255, 255, 0.9));
+                        color: rgba(255, 255, 255, 0.9);
                     }
                 }
             }
@@ -216,19 +215,21 @@
                 display: flex;
                 align-items: center;
                 gap: 12px;
+                color: rgba(255, 255, 255, 0.9) !important; // Forzar color en el titulo contenedor
 
                 mat-icon {
                     font-size: 20px;
                     width: 20px;
                     height: 20px;
-                    color: var(--category-color, rgba(255, 255, 255, 0.8));
+                    color: rgba(255, 255, 255, 0.75); // Aumentado de 0.6
                     transition: all 0.2s ease;
                 }
 
                 span {
-                    font-size: 14px;
+                    font-size: 16px; // Unificado a 16px
                     font-weight: 600;
                     letter-spacing: 0.3px;
+                    color: rgba(255, 255, 255, 0.9) !important; // Forzar color en el texto especificamente
                 }
             }
         }
@@ -252,19 +253,19 @@
     padding: 10px 16px 10px 48px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.8) !important; // Mejorar visibilidad del texto base
     text-decoration: none;
 
     mat-icon {
         font-size: 18px;
         width: 18px;
         height: 18px;
-        color: rgba(255, 255, 255, 0.7);
+        color: rgba(255, 255, 255, 0.75) !important;
     }
 
     span {
         flex: 1;
-        font-size: 13px;
+        font-size: 15px; // Aumentado a 15px
         font-weight: 400;
     }
 
@@ -279,19 +280,19 @@
 
     &:hover {
         background: rgba(255, 255, 255, 0.08);
-        color: rgba(255, 255, 255, 0.95);
+        color: rgba(255, 255, 255, 1) !important;
 
         mat-icon {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
         }
     }
 
     &.active {
         background: rgba(255, 152, 0, 0.1);
-        color: #ff9800;
+        color: #ff9800 !important;
 
         mat-icon {
-            color: #ff9800;
+            color: #ff9800 !important;
         }
     }
 }
