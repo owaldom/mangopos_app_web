@@ -8,11 +8,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TicketLinesComponent } from './components/ticket-lines/ticket-lines';
 import { CatalogComponent } from './components/catalog/catalog';
+import { MatMenuModule } from '@angular/material/menu';
+import { WarehouseService } from '../../../core/services/warehouse.service';
+import { Warehouse } from '../../../core/models/warehouse.model';
 
-import { SalesService, TicketLine, Currency } from '../../../core/services/sales.service';
+import { SalesService, TicketLine, Currency, SaleRequest } from '../../../core/services/sales.service';
 import { KitComponent } from '../../../core/services/product-kit.model';
 import { AuthService } from '../../../core/services/auth';
 import { SettingsService } from '../../../core/services/settings.service';
+import { AppConfigService } from '../../../core/services/app-config.service';
 import { ProductKitService } from '../../../core/services/product-kit.service';
 import { KitSelectionDialogComponent } from './components/kit-selection-dialog/kit-selection-dialog.component';
 import { CashService } from '../../../core/services/cash.service';
@@ -46,7 +50,8 @@ import { DiscountDialogComponent } from './components/discount-dialog/discount-d
     TicketLinesComponent,
 
     CatalogComponent,
-    MoneyInputDirective
+    MoneyInputDirective,
+    MatMenuModule
   ],
   templateUrl: './sales.html',
   styleUrl: './sales.css'
@@ -59,8 +64,8 @@ export class SalesComponent implements OnInit, OnDestroy {
   linesCount: number = 0;
   currentLines: TicketLine[] = [];
   currentLocationName: string = '';
+  warehouses: Warehouse[] = [];
   private snackBar = inject(MatSnackBar);
-  public cashService = inject(CashService);
   private productService = inject(ProductService);
   private productKitService = inject(ProductKitService);
   private compoundProductsService = inject(CompoundProductsService);
@@ -110,7 +115,10 @@ export class SalesComponent implements OnInit, OnDestroy {
     public settingsService: SettingsService,
     private router: Router,
     private printService: PrintService,
-    private salesHistoryService: SalesHistoryService
+    private salesHistoryService: SalesHistoryService,
+    private cashService: CashService,
+    private warehouseService: WarehouseService,
+    private appConfigService: AppConfigService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -121,6 +129,9 @@ export class SalesComponent implements OnInit, OnDestroy {
     }
 
     this.loadCurrencies();
+    this.loadWarehouses();
+    this.activeTicketIndex = this.salesService.getActiveTicketIndex();
+
     this.subscription.add(
       this.salesService.currentLines$.subscribe(lines => {
         this.currentLines = lines;
@@ -157,12 +168,6 @@ export class SalesComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.salesService.selectedCustomer$.subscribe(customer => {
         this.selectedCustomer = customer;
-      })
-    );
-
-    this.subscription.add(
-      this.salesService.currentLocationName$.subscribe(name => {
-        this.currentLocationName = name;
       })
     );
 
@@ -282,6 +287,25 @@ export class SalesComponent implements OnInit, OnDestroy {
         this.calculateTotals(this.currentLines);
       }
     });
+  }
+
+  loadWarehouses(): void {
+    const type = this.appConfigService.getInstallationType();
+    this.warehouseService.getAll().subscribe(res => {
+      // Filtrar por tipo de instalación (vendedor vs fabrica)
+      this.warehouses = res.filter(w => w.type === type);
+    });
+  }
+
+  switchWarehouse(warehouse: Warehouse): void {
+    if (warehouse.id === this.salesService.currentLocationId) return;
+
+    this.salesService.setCurrentLocation(warehouse.id, warehouse.name);
+    this.snackBar.open(`Cambiado a almacén: ${warehouse.name}`, 'Cerrar', { duration: 2000 });
+  }
+
+  get currentLocationName$() {
+    return this.salesService.currentLocationName$;
   }
 
   syncAll(): void {
@@ -478,7 +502,7 @@ export class SalesComponent implements OnInit, OnDestroy {
         });
       }
 
-      const saleRequest = {
+      const saleRequest: SaleRequest = {
         person_id: user.id,
         lines: this.currentLines,
         payments: payments,
@@ -489,7 +513,9 @@ export class SalesComponent implements OnInit, OnDestroy {
         customer_id: this.selectedCustomer?.id || null,
         cash_register_id: this.cashService.getCashRegisterId() || 1,
         notes: this.salesService.getNotes(),
-        location_id: this.salesService.currentLocationId$ ? (this.salesService as any).currentLocationIdSubject.value : 1
+        location_id: this.salesService.currentLocationId || 1,
+        igtf_amount: paymentData.igtf_amount || 0,
+        igtf_amount_alt: paymentData.igtf_amount_alt || 0
       };
 
       const result = await firstValueFrom(this.salesService.createSale(saleRequest));

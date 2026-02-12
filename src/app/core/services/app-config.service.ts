@@ -6,6 +6,7 @@ export interface AppConfig {
     installation_type: InstallationType;
     location_name: string;
     factory_warehouse_id?: number;
+    warehouse_id?: number;
 }
 
 @Injectable({

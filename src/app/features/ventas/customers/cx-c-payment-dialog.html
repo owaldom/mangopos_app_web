@@ -53,6 +53,14 @@
                 <span class="equivalent-hint" *ngIf="selectedCurrency === 'alt'">Equivale a: <strong>{{amountBs |
                         number:totalFormat}} Bs.</strong></span>
             </div>
+
+            <div class="exchange-rate-details" *ngIf="igtfAmountAlt > 0" style="margin-top: 4px;">
+                <span class="rate-label" style="color: #e02424;">IGTF
+                    ({{settingsService.getSettings()?.igtf_percentage}}%):
+                    <strong>$ {{igtfAmountAlt | number:totalFormat}}</strong> / <strong>{{igtfAmount |
+                        number:totalFormat}} Bs.</strong>
+                </span>
+            </div>
         </div>
 
         <div class="payment-methods">

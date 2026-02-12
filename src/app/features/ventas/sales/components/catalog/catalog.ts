@@ -46,9 +46,8 @@ export class CatalogComponent implements OnInit {
   ngOnInit(): void {
     this.subscription.add(
       this.salesService.currentLocationId$.subscribe(id => {
-        if (id) {
-          this.refresh();
-        }
+        // Cargar catálogo incluso si el id es null (usará el default en el servicio)
+        this.refresh();
       })
     );
     this.subscription.add(

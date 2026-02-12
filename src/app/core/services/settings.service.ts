@@ -15,6 +15,8 @@ export interface AppSettings {
     percentage_decimals: number;
     pos_layout: 'classic' | 'modern';
     print_server_url: string;
+    igtf_enabled: boolean;
+    igtf_percentage: number;
 }
 
 @Injectable({
@@ -43,7 +45,9 @@ export class SettingsService {
                 enable_pdf_ticket: data.enable_pdf_ticket === 'true',
                 percentage_decimals: parseInt(data.percentage_decimals) || 0,
                 pos_layout: (data.pos_layout as 'classic' | 'modern') || 'classic',
-                print_server_url: data.print_server_url || 'http://localhost:3001/api'
+                print_server_url: data.print_server_url || 'http://localhost:3001/api',
+                igtf_enabled: data.igtf_enabled === 'true',
+                igtf_percentage: parseFloat(data.igtf_percentage) || 3
             };
             this.settingsSubject.next(settings);
             return settings;
