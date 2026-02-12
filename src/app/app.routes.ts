@@ -168,6 +168,11 @@ export const routes: Routes = [
                 data: { title: 'Impuestos', description: 'Gestión de impuestos' }
             },
             {
+                path: 'inventario/almacenes',
+                loadComponent: () => import('./features/administracion/inventario/warehouses/warehouses-list.component').then(m => m.WarehousesListComponent),
+                data: { title: 'Almacenes', description: 'Gestión de almacenes y sucursales' }
+            },
+            {
                 path: 'inventario/categorias-impuestos',
                 loadComponent: () => import('./features/administracion/inventario/tax-categories/tax-categories').then(m => m.TaxCategoriesComponent),
                 data: { title: 'Categorías de Impuestos', description: 'Gestión de categorías de impuestos' }
@@ -253,6 +258,24 @@ export const routes: Routes = [
                 canActivate: [permissionGuard],
                 data: { permission: 'inventory.products', title: 'Consulta de Kits', description: 'Ver lista de combos y componentes' },
                 loadComponent: () => import('./features/administracion/inventario/product-kits/product-kits-list/product-kits-list.component').then(m => m.ProductKitsListComponent)
+            },
+            {
+                path: 'inventario/distribution-orders',
+                canActivate: [permissionGuard],
+                data: { permission: 'inventory.distribution', title: 'Órdenes de Distribución', description: 'Gestión de distribuciones desde fábrica' },
+                loadComponent: () => import('./features/administracion/inventario/distribution-orders/distribution-orders-list.component').then(m => m.DistributionOrdersListComponent)
+            },
+            {
+                path: 'inventario/distribution-orders/new',
+                canActivate: [permissionGuard],
+                data: { permission: 'inventory.distribution', title: 'Nueva Distribución', description: 'Crear orden de distribución' },
+                loadComponent: () => import('./features/administracion/inventario/distribution-orders/distribution-order-form.component').then(m => m.DistributionOrderFormComponent)
+            },
+            {
+                path: 'inventario/distribution-reception',
+                canActivate: [permissionGuard],
+                data: { permission: 'inventory.distribution', title: 'Recibir Mercancía', description: 'Importar y recibir distribución' },
+                loadComponent: () => import('./features/administracion/inventario/distribution-reception/distribution-reception.component').then(m => m.DistributionReceptionComponent)
             },
             {
                 path: 'inventario',

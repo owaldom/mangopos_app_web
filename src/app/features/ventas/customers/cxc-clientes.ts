@@ -13,6 +13,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CustomerFormComponent } from './components/customer-form/customer-form';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CxCPaymentDialogComponent } from './cx-c-payment-dialog';
 import { CxCHistoryDialogComponent } from './cx-c-history-dialog';
@@ -37,6 +38,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     MatSnackBarModule,
     MatTooltipModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     PhoneFormatPipe
   ],
   providers: [DecimalPipe, DatePipe, PhoneFormatPipe],
@@ -176,12 +178,11 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
               <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
             </table>
 
-            <mat-paginator 
+            <app-shared-paginator 
                 [length]="totalElements"
                 [pageSize]="pageSize"
-                [pageSizeOptions]="[10, 20, 50]"
                 (page)="onPageChange($event)">
-            </mat-paginator>
+            </app-shared-paginator>
           </div>
 
           <div class="empty-msg" *ngIf="customers.length === 0">
@@ -247,7 +248,7 @@ export class CxCClientesComponent implements OnInit {
   isCashOpened = false;
 
   totalElements = 0;
-  pageSize = 20;
+  pageSize = 50;
   currentExchangeRate = 1;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 

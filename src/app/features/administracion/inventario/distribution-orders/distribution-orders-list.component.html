@@ -1,0 +1,104 @@
+<div class="distribution-orders-container">
+  <div class="header">
+    <h2>Órdenes de Distribución</h2>
+    <button class="btn btn-primary" (click)="createNewOrder()">
+      <i class="material-icons">add</i>
+      Nueva Distribución
+    </button>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label>Buscar:</label>
+      <input 
+        type="text" 
+        [(ngModel)]="searchFilter" 
+        (input)="onFilterChange()"
+        placeholder="Número de orden o destino"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>Estado:</label>
+      <select [(ngModel)]="statusFilter" (change)="onFilterChange()">
+        <option value="">Todos</option>
+        <option value="pending">Pendiente</option>
+        <option value="exported">Exportada</option>
+        <option value="received">Recibida</option>
+        <option value="cancelled">Cancelada</option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Cargando...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Número de Orden</th>
+          <th>Destino</th>
+          <th>Fecha Creación</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td>{{ order.order_number }}</td>
+          <td>{{ order.destination_location_name }}</td>
+          <td>{{ order.date_created | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+            <span [class]="'status-badge ' + getStatusClass(order.status)">
+              {{ getStatusLabel(order.status) }}
+            </span>
+          </td>
+          <td class="actions">
+            <button 
+              class="btn-icon" 
+              (click)="viewOrder(order)"
+              title="Ver detalles"
+            >
+              <i class="material-icons">visibility</i>
+            </button>
+            <button 
+              *ngIf="order.status === 'pending' || order.status === 'exported'"
+              class="btn-icon" 
+              (click)="exportOrder(order)"
+              title="Exportar a JSON"
+            >
+              <i class="material-icons">download</i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="orders.length === 0">
+          <td colspan="5" class="no-data">
+            No hay órdenes de distribución
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="totalPages > 1" class="pagination">
+    <button 
+      [disabled]="currentPage === 1" 
+      (click)="onPageChange(currentPage - 1)"
+    >
+      Anterior
+    </button>
+    <span>Página {{ currentPage }} de {{ totalPages }}</span>
+    <button 
+      [disabled]="currentPage === totalPages" 
+      (click)="onPageChange(currentPage + 1)"
+    >
+      Siguiente
+    </button>
+  </div>
+</div>

@@ -2,7 +2,8 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -26,6 +27,7 @@ import { SystemDatePipe } from '../../../../../shared/pipes/system-date.pipe';
     ReactiveFormsModule,
     MatTableModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     MatButtonModule,
     MatIconModule,
     MatInputModule,
@@ -138,9 +140,11 @@ import { SystemDatePipe } from '../../../../../shared/pipes/system-date.pipe';
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 
-      <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]"
+      <app-shared-paginator 
+        [length]="totalElements" 
+        [pageSize]="pageSize" 
         (page)="onPageChange($event)">
-      </mat-paginator>
+      </app-shared-paginator>
 
       <div class="totals-footer">
         <strong>Total Periodo: {{ getTotalPeriod() | number:'1.2-2' }}</strong>
@@ -195,11 +199,10 @@ export class DailyExpenseListComponent implements OnInit {
   dailyExpenses: DailyExpense[] = [];
   expenses: Expense[] = [];
   totalElements = 0;
-  pageSize = 20;
+  pageSize = 50;
 
   filterForm: FormGroup;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private dailyExpenseService = inject(DailyExpenseService);
   private expenseService = inject(ExpenseService);
@@ -267,7 +270,7 @@ export class DailyExpenseListComponent implements OnInit {
       this.dailyExpenseService.delete(expense.id).subscribe({
         next: () => {
           this.snackBar.open('Registro eliminado', 'Cerrar', { duration: 3000 });
-          this.loadExpenses(this.paginator.pageIndex + 1);
+          this.loadExpenses();
         },
         error: (err) => {
           console.error(err);

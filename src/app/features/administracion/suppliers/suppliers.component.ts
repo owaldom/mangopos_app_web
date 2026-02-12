@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -33,6 +34,7 @@ import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
         MatDialogModule,
         MatSnackBarModule,
         MatPaginatorModule,
+        SharedPaginatorComponent,
         MatSortModule,
         MatTooltipModule,
         PhoneFormatPipe
@@ -52,7 +54,7 @@ export class SuppliersComponent implements OnInit {
     loading = false;
 
     totalElements = 0;
-    pageSize = 20;
+    pageSize = 50;
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
     ngOnInit(): void {

@@ -10,6 +10,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { SettingsService, AppSettings } from '../../../core/services/settings.service';
+import { AppConfigService } from '../../../core/services/app-config.service';
 import { MoneyInputDirective } from '../../../shared/directives/money-input.directive';
 
 @Component({
@@ -49,13 +50,17 @@ export class SettingsComponent implements OnInit {
     currencies: any[] = [];
     loading = true;
 
+    currInstallationType: 'factory' | 'pos' = 'pos';
+
     constructor(
         private settingsService: SettingsService,
+        private appConfigService: AppConfigService,
         private snackBar: MatSnackBar
     ) { }
 
     ngOnInit(): void {
         this.loadSettings();
+        this.currInstallationType = this.appConfigService.getInstallationType() || 'pos';
     }
 
     async loadSettings() {
@@ -95,7 +100,14 @@ export class SettingsComponent implements OnInit {
     async saveSettings() {
         try {
             await this.settingsService.updateSettings(this.settings);
+            this.appConfigService.setConfig({
+                ...this.appConfigService.getConfig(),
+                installation_type: this.currInstallationType,
+                location_name: this.settings.company_name || 'Generic Location'
+            });
             this.snackBar.open('Configuración guardada exitosamente', 'Cerrar', { duration: 3000 });
+            // Recargar para aplicar cambios en el menú si es necesario
+            setTimeout(() => window.location.reload(), 1000);
         } catch (error) {
             this.snackBar.open('Error al guardar configuración', 'Cerrar', { duration: 3000 });
         }

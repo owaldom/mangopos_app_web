@@ -2,7 +2,8 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -23,6 +24,7 @@ import { ExpenseDefinitionDialogComponent } from '../expense-definition-dialog/e
     FormsModule,
     MatTableModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     MatButtonModule,
     MatIconModule,
     MatInputModule,
@@ -103,9 +105,9 @@ import { ExpenseDefinitionDialogComponent } from '../expense-definition-dialog/e
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 
-      <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]"
+      <app-shared-paginator [length]="totalElements" [pageSize]="pageSize" 
         (page)="onPageChange($event)">
-      </mat-paginator>
+      </app-shared-paginator>
     </div>
   `,
   styles: [`
@@ -137,10 +139,9 @@ export class ExpenseDefinitionListComponent implements OnInit {
   displayedColumns: string[] = ['name', 'frequency', 'supplier', 'taxcat', 'status', 'actions'];
   expenses: Expense[] = [];
   totalElements = 0;
-  pageSize = 20;
+  pageSize = 50;
   searchText = '';
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private expenseService = inject(ExpenseService);
   private dialog = inject(MatDialog);
@@ -169,7 +170,7 @@ export class ExpenseDefinitionListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.loadExpenses(this.paginator ? this.paginator.pageIndex + 1 : 1);
+        this.loadExpenses();
         this.snackBar.open(expense ? 'Gasto actualizado' : 'Gasto creado', 'Cerrar', { duration: 3000 });
       }
     });
@@ -180,7 +181,7 @@ export class ExpenseDefinitionListComponent implements OnInit {
       this.expenseService.delete(expense.id).subscribe({
         next: () => {
           this.snackBar.open('Gasto eliminado', 'Cerrar', { duration: 3000 });
-          this.loadExpenses(this.paginator.pageIndex + 1);
+          this.loadExpenses();
         },
         error: (err) => {
           console.error(err);

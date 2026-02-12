@@ -3,6 +3,7 @@ export interface MenuItem {
     route?: string;
     icon: string;
     permission?: string;
+    installationType?: 'factory' | 'pos';
     children?: MenuItem[];
     badge?: string | number;
     exact?: boolean;
@@ -79,10 +80,19 @@ export const MENU_CATEGORIES: MenuCategory[] = [
                 ]
             },
             {
+                name: 'Distribución',
+                icon: 'local_shipping',
+                children: [
+                    { name: 'Órdenes de Distribución', route: '/dashboard/inventario/distribution-orders', icon: 'assignment', permission: 'inventory.distribution', installationType: 'factory' },
+                    { name: 'Recibir Mercancía', route: '/dashboard/inventario/distribution-reception', icon: 'inventory', permission: 'inventory.distribution', installationType: 'pos' }
+                ]
+            },
+            {
                 name: 'Configuración',
                 icon: 'settings',
                 children: [
                     { name: 'Impuestos', route: '/dashboard/inventario/impuestos', icon: 'receipt', permission: 'inventory.taxes' },
+                    { name: 'Almacenes', route: '/dashboard/inventario/almacenes', icon: 'warehouse', permission: 'inventory.products' },
                     { name: 'Descuentos', route: '/dashboard/inventario/discounts', icon: 'discount' },
                     { name: 'Cat. Descuento (P)', route: '/dashboard/inventario/discount-categories', icon: 'category' },
                     { name: 'Cat. Descuento (C)', route: '/dashboard/inventario/discount-cust-categories', icon: 'people' }

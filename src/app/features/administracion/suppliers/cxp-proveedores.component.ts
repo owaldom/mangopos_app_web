@@ -11,7 +11,8 @@ import { SupplierService, Supplier } from '../../../core/services/supplier.servi
 import { SettingsService } from '../../../core/services/settings.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PurchaseService } from '../../../core/services/purchase.service';
 import { CashService } from '../../../core/services/cash.service';
@@ -38,6 +39,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     MatSnackBarModule,
     MatTooltipModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     PhoneFormatPipe
   ],
   providers: [DecimalPipe, DatePipe, PhoneFormatPipe],
@@ -174,12 +176,12 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
               <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
             </table>
 
-            <mat-paginator 
+            <app-shared-paginator 
                 [length]="totalElements"
                 [pageSize]="pageSize"
-                [pageSizeOptions]="[10, 20, 50]"
+                [pageIndex]="currentPage - 1"
                 (page)="onPageChange($event)">
-            </mat-paginator>
+            </app-shared-paginator>
           </div>
 
           <div class="empty-msg" *ngIf="suppliers.length === 0">
@@ -247,8 +249,8 @@ export class CxPProveedoresComponent implements OnInit {
   currentExchangeRate = 1;
 
   totalElements = 0;
-  pageSize = 20;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  pageSize = 50;
+  currentPage = 1;
 
   async ngOnInit() {
     this.loadSuppliers();
@@ -266,6 +268,7 @@ export class CxPProveedoresComponent implements OnInit {
   }
 
   loadSuppliers(page: number = 1) {
+    this.currentPage = page;
     this.supplierService.getAll(page, this.pageSize, this.searchText, true).subscribe(res => {
       this.suppliers = res.data;
       this.totalElements = res.total;
@@ -335,7 +338,7 @@ export class CxPProveedoresComponent implements OnInit {
           this.purchaseService.createDebtPayment(finalRequest).subscribe({
             next: () => {
               // Reload on the current page to keep context
-              const currentPage = this.paginator ? this.paginator.pageIndex + 1 : 1;
+              const currentPage = this.currentPage || 1;
 
               this.supplierService.getAll(currentPage, this.pageSize, this.searchText, true).subscribe(res => {
                 this.suppliers = res.data;

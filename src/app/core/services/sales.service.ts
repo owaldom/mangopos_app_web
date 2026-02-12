@@ -5,6 +5,8 @@ import { environment } from '../../../environments/environment';
 import { tap } from 'rxjs/operators';
 import { SettingsService } from './settings.service';
 import { DiscountService } from './discount.service';
+import { AppConfigService } from './app-config.service';
+import { WarehouseService } from './warehouse.service';
 
 export interface SalesCatalog {
     categories: any[];
@@ -44,6 +46,7 @@ export interface SaleRequest {
     currency_id?: number;
     exchange_rate?: number;
     notes?: string;
+    location_id: number;
 }
 
 export interface TicketState {
@@ -54,6 +57,7 @@ export interface TicketState {
     notes?: string;
     globalDiscount?: number;
     globalDiscountType?: 'PERCENT' | 'FIXED' | 'FIXED_VES';
+    location_id?: number;
 }
 
 @Injectable({
@@ -88,12 +92,21 @@ export class SalesService {
     private notesSubject = new BehaviorSubject<string>('');
     notes$ = this.notesSubject.asObservable();
 
+    private currentLocationIdSubject = new BehaviorSubject<number | null>(null);
+    currentLocationId$ = this.currentLocationIdSubject.asObservable();
+
+    private currentLocationNameSubject = new BehaviorSubject<string>('');
+    currentLocationName$ = this.currentLocationNameSubject.asObservable();
+
     constructor(
         private http: HttpClient,
         private settingsService: SettingsService,
-        private discountService: DiscountService
+        private discountService: DiscountService,
+        private configService: AppConfigService,
+        private warehouseService: WarehouseService
     ) {
         this.loadFromStorage();
+        this.resolveCurrentLocation();
         this.updateState();
     }
 
@@ -109,8 +122,45 @@ export class SalesService {
         };
     }
 
+    resolveCurrentLocation(): void {
+        const config = this.configService.getConfig();
+        if (!config) return;
+
+        this.warehouseService.getAll().subscribe(warehouses => {
+            let match = warehouses.find(w => w.name === config.location_name);
+
+            // Fallback for Factory installations: use factory_warehouse_id or first factory warehouse
+            if (!match && config.installation_type === 'factory') {
+                if (config.factory_warehouse_id) {
+                    match = warehouses.find(w => w.id === config.factory_warehouse_id);
+                }
+
+                if (!match) {
+                    // Default to first 'factory' type warehouse if no specific one is configured
+                    match = warehouses.find(w => w.type === 'factory');
+                }
+            }
+
+            if (match) {
+                console.log(`Sales resolved to location: ${match.name} (ID: ${match.id})`);
+                this.currentLocationIdSubject.next(match.id);
+                this.currentLocationNameSubject.next(match.name);
+                // Also update existing tickets if they don't have location_id
+                this.tickets.forEach(t => {
+                    if (!t.location_id) t.location_id = match.id;
+                });
+                this.saveToStorage();
+            } else {
+                console.warn(`Could not resolve location for sales. Using default.`);
+            }
+        });
+    }
+
     getCatalog(): Observable<SalesCatalog> {
-        return this.http.get<SalesCatalog>(`${this.apiUrl}/catalog`);
+        const locationId = this.currentLocationIdSubject.value || 1;
+        return this.http.get<SalesCatalog>(`${this.apiUrl}/catalog`, {
+            params: { locationId: locationId.toString() }
+        });
     }
 
     getCurrencies(): Observable<Currency[]> {

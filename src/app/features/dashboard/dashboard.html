@@ -184,9 +184,8 @@
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                     </table>
                 </div>
-                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons
-                    aria-label="Select page of recent sales">
-                </mat-paginator>
+                <app-shared-paginator [length]="recentSales.data.length" [pageSize]="50">
+                </app-shared-paginator>
             </mat-card-content>
         </mat-card>
 

@@ -14,6 +14,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SettingsService } from '../../../../core/services/settings.service';
+import { AppConfigService } from '../../../../core/services/app-config.service';
 import { Subject, takeUntil } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -258,6 +259,7 @@ export class StockManagementComponent implements OnInit {
     private dialog = inject(MatDialog);
     private snackBar = inject(MatSnackBar);
     public settingsService = inject(SettingsService);
+    private configService = inject(AppConfigService);
 
     constructor() {
         this.headerForm = this.fb.group({
@@ -268,10 +270,20 @@ export class StockManagementComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.stockService.getLocations().subscribe((locs: LocationInfo[]) => {
-            this.locations = locs;
-            if (locs.length > 0) {
-                this.headerForm.patchValue({ location: locs[0].id });
+        this.stockService.getLocations().subscribe((locs: any[]) => {
+            const config = this.configService.getConfig();
+
+            if (config?.installation_type === 'pos') {
+                // In POS mode, only show the warehouse that matches the configured location name
+                this.locations = locs.filter(l => l.name === config.location_name);
+            } else {
+                // In Factory mode, show only 'factory' type warehouses for mass movements
+                // (Optional: adjust this if they should see all)
+                this.locations = locs.filter(l => l.type === 'factory');
+            }
+
+            if (this.locations.length > 0) {
+                this.headerForm.patchValue({ location: this.locations[0].id });
             }
         });
 
@@ -306,7 +318,8 @@ export class StockManagementComponent implements OnInit {
         const dialogRef = this.dialog.open(ProductSelectorComponent, {
             width: '90%',
             maxWidth: '1100px',
-            height: '85%'
+            height: '85%',
+            data: { locationId: this.headerForm.get('location')?.value }
         });
 
         dialogRef.afterClosed().subscribe(result => {

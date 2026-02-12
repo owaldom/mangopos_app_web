@@ -21,6 +21,7 @@ import { SettingsService } from '../../../../../../core/services/settings.servic
 import { ProductService, Product } from '../../../../../../core/services/product.service';
 import { ProductSelectorComponent } from '../product-selector/product-selector';
 import { MoneyInputDirective } from '../../../../../../shared/directives/money-input.directive';
+import { AppConfigService } from '../../../../../../core/services/app-config.service';
 
 @Component({
   selector: 'app-stock-movement-form',
@@ -183,6 +184,7 @@ export class StockMovementFormComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   public settingsService = inject(SettingsService);
+  private configService = inject(AppConfigService);
 
   barcode: string = '';
   @ViewChild('barcodeInput') barcodeInput!: ElementRef;
@@ -203,9 +205,18 @@ export class StockMovementFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.stockService.getLocations().subscribe(locs => {
-      this.locations = locs;
-      if (locs.length > 0) {
-        this.form.patchValue({ location: locs[0].id });
+      const config = this.configService.getConfig();
+
+      if (config?.installation_type === 'pos') {
+        // In POS mode, only show the warehouse that matches the configured location name
+        this.locations = locs.filter(l => l.name === config.location_name);
+      } else {
+        // In Factory mode, show only 'factory' type warehouses for stock movements
+        this.locations = locs.filter(l => l.type === 'factory');
+      }
+
+      if (this.locations.length > 0) {
+        this.form.patchValue({ location: this.locations[0].id });
       }
     });
 
@@ -267,7 +278,8 @@ export class StockMovementFormComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ProductSelectorComponent, {
       width: '1100px',
       height: '800px',
-      maxWidth: '95vw'
+      maxWidth: '95vw',
+      data: { locationId: this.form.get('location')?.value }
     });
 
     dialogRef.afterClosed().subscribe(result => {

@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -93,6 +94,7 @@ const PERMISSION_GROUPS = [
     MatDividerModule,
     MatExpansionModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     MatTooltipModule
   ],
   template: `
@@ -131,12 +133,12 @@ const PERMISSION_GROUPS = [
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
 
-          <mat-paginator [length]="totalRecords"
-                         [pageSize]="pageSize"
-                         [pageSizeOptions]="[5, 10, 20]"
-                         (page)="onPageChange($event)"
-                         showFirstLastButtons>
-          </mat-paginator>
+          <app-shared-paginator 
+              [length]="totalRecords"
+              [pageSize]="pageSize"
+              [pageIndex]="currentPage - 1"
+              (page)="onPageChange($event)">
+          </app-shared-paginator>
         </mat-card-content>
       </mat-card>
     </div>
@@ -164,7 +166,7 @@ export class RolesListComponent implements OnInit {
 
   // Pagination
   totalRecords = 0;
-  pageSize = 10;
+  pageSize = 50;
   currentPage = 1;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;

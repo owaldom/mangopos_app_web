@@ -187,6 +187,29 @@
     font-weight: 800;
 }
 
+.modern-layout .location-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    color: #166534;
+}
+
+.modern-layout .location-pill mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #22c55e;
+}
+
+.modern-layout .location-pill .name {
+    font-weight: 700;
+    font-size: 13px;
+}
+
 .modern-layout .search-main {
     flex: 1;
     display: flex;
@@ -607,6 +630,27 @@
 .barcode-input::placeholder {
     color: #aaa;
     font-style: italic;
+}
+
+.location-info-classic {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    color: #166534;
+    margin-left: 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.location-info-classic mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #22c55e;
 }
 
 .totals-panel {

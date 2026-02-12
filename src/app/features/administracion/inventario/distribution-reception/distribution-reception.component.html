@@ -1,0 +1,136 @@
+<div class="reception-container">
+    <div class="header">
+        <h2>Recibir Mercancía - Distribución</h2>
+    </div>
+
+    <div *ngIf="error" class="error">
+        {{ error }}
+    </div>
+
+    <div class="reception-form">
+        <!-- File Upload Section -->
+        <div class="form-section">
+            <h3>1. Importar Archivo de Distribución</h3>
+
+            <div class="file-upload">
+                <input type="file" accept=".json" (change)="onFileSelected($event)" id="fileInput" #fileInput />
+                <label for="fileInput" class="file-label">
+                    <i class="material-icons">cloud_upload</i>
+                    Seleccionar archivo JSON
+                </label>
+                <div *ngIf="fileError" class="file-error">
+                    {{ fileError }}
+                </div>
+            </div>
+
+            <div *ngIf="importedData" class="file-info">
+                <i class="material-icons">check_circle</i>
+                Archivo cargado: {{ importedData.distribution_order.order_number }}
+            </div>
+        </div>
+
+        <!-- Distribution Details -->
+        <div *ngIf="importedData" class="form-section">
+            <h3>2. Detalles de la Distribución</h3>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Número de Orden:</label>
+                    <span>{{ importedData.distribution_order.order_number }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Origen:</label>
+                    <span>{{ importedData.distribution_order.origin }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Destino:</label>
+                    <span>{{ importedData.distribution_order.destination }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Fecha Creación:</label>
+                    <span>{{ importedData.distribution_order.date_created | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Total Items:</label>
+                    <span>{{ getTotalItems() }}</span>
+                </div>
+            </div>
+
+            <div class="products-table">
+                <h4>Productos</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Costo Unit.</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let line of importedData.distribution_order.lines">
+                            <td>{{ line.product_code }}</td>
+                            <td>{{ line.product_name }}</td>
+                            <td>{{ line.quantity }}</td>
+                            <td>{{ line.unit_cost | currency:'USD':'symbol':'1.2-2' }}</td>
+                            <td>{{ (line.quantity * line.unit_cost) | currency:'USD':'symbol':'1.2-2' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div *ngIf="importedData.distribution_order.notes" class="notes">
+                <label>Notas:</label>
+                <p>{{ importedData.distribution_order.notes }}</p>
+            </div>
+        </div>
+
+        <!-- Reception Information -->
+        <div *ngIf="importedData" class="form-section">
+            <h3>3. Información de Recepción</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Número de Guía de Despacho</label>
+                    <input type="text" [(ngModel)]="dispatchDocumentNumber" placeholder="Ej: GD-2026-001" />
+                    <small>Ingrese el número del documento físico recibido</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Almacén Destino *</label>
+                    <select [(ngModel)]="locationId" required>
+                        <option value="0">Seleccione almacén</option>
+                        <option *ngFor="let loc of locations" [value]="loc.id">
+                            {{ loc.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Recibido Por *</label>
+                    <input type="text" [(ngModel)]="receivedBy" placeholder="Nombre de quien recibe" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Observaciones de Recepción</label>
+                <textarea [(ngModel)]="receptionNotes" rows="3"
+                    placeholder="Ej: 1 unidad rota en transporte, diferencias encontradas, etc."></textarea>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div *ngIf="importedData" class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="reset()" [disabled]="loading">
+                Limpiar
+            </button>
+            <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="!canSubmit() || loading">
+                <i class="material-icons">check</i>
+                {{ loading ? 'Procesando...' : 'Confirmar Recepción' }}
+            </button>
+        </div>
+    </div>
+</div>

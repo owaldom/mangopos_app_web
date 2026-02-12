@@ -5,7 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -28,6 +29,7 @@ import { SettingsService } from '../../../../core/services/settings.service';
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     MatSortModule,
     MatFormFieldModule,
     MatInputModule,
@@ -128,7 +130,7 @@ import { SettingsService } from '../../../../core/services/settings.service';
           </table>
         </div>
 
-        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+        <app-shared-paginator [length]="dataSource.data.length" [pageSize]="50"></app-shared-paginator>
       </mat-card>
     </div>
   `,
@@ -168,7 +170,7 @@ export class LowStockComponent implements OnInit {
     search: ''
   };
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(SharedPaginatorComponent) sharedPaginator!: SharedPaginatorComponent;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit() {
@@ -187,7 +189,12 @@ export class LowStockComponent implements OnInit {
     this.stockService.getLowStockReport(this.filters).subscribe({
       next: (data) => {
         this.dataSource.data = data;
-        this.dataSource.paginator = this.paginator;
+        // Wait for ViewChild to be available (if data loads very fast, it might be race condition, but usually ok)
+        setTimeout(() => {
+          if (this.sharedPaginator && this.sharedPaginator.paginator) {
+            this.dataSource.paginator = this.sharedPaginator.paginator;
+          }
+        });
         this.dataSource.sort = this.sort;
         this.loading = false;
       },
