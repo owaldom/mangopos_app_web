@@ -278,7 +278,7 @@ export class PaymentDialogComponent implements OnInit {
       method: this.isMultiPayment ? 'mixed' : this.selectedMethod,
       amount: this.selectedCurrency === 'base' ? this.receivedAmount : this.receivedAmountAlt,
       total: this.data.total,
-      change: this.change,
+      change: this.selectedCurrency === 'base' ? this.change : this.changeAlt,
       currency_id: this.selectedCurrency === 'base' ? 1 : 2,
       exchange_rate: this.data.exchangeRate,
       money_id: this.data.money_id,

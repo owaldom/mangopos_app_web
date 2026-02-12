@@ -50,6 +50,7 @@ export interface SaleRequest {
     money_id?: string;
     igtf_amount?: number;
     igtf_amount_alt?: number;
+    change?: number;
 }
 
 export interface TicketState {
