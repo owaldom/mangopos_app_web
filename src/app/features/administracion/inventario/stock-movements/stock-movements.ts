@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -19,6 +20,7 @@ import { StockMovementFormComponent } from './components/stock-movement-form/sto
     CommonModule,
     MatTableModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     MatButtonModule,
     MatIconModule,
     MatCardModule,
@@ -78,12 +80,11 @@ import { StockMovementFormComponent } from './components/stock-movement-form/sto
           </table>
         </div>
         
-        <mat-paginator 
+        <app-shared-paginator 
             [length]="totalElements"
             [pageSize]="pageSize"
-            [pageSizeOptions]="[10, 20, 50]"
             (page)="onPageChange($event)">
-        </mat-paginator>
+        </app-shared-paginator>
       </mat-card>
     </div>
   `,
@@ -101,9 +102,8 @@ export class StockMovementsComponent implements OnInit {
   displayedColumns: string[] = ['date', 'location', 'product', 'reason', 'units', 'price'];
   dataSource = new MatTableDataSource<StockMovement>([]);
   totalElements = 0;
-  pageSize = 20;
+  pageSize = 50;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private stockService = inject(StockService);
   private dialog = inject(MatDialog);
@@ -121,6 +121,7 @@ export class StockMovementsComponent implements OnInit {
   }
 
   onPageChange(event: any): void {
+    this.pageSize = event.pageSize;
     this.loadMovements(event.pageIndex + 1);
   }
 

@@ -151,7 +151,8 @@
                     <mat-form-field appearance="outline" density="compact">
                         <span matTextPrefix>$ &nbsp;</span>
                         <input matInput appMoneyInput [(ngModel)]="paymentsAlt['card']"
-                            (ngModelChange)="updateMultiPayment('card', $event, 'alt')" placeholder="0.00">
+                            (ngModelChange)="updateMultiPayment('card', $event, 'alt')" placeholder="0.00"
+                            [disabled]="true">
                     </mat-form-field>
                     <mat-form-field appearance="outline" density="compact">
                         <mat-label>Referencia</mat-label>
@@ -181,7 +182,8 @@
                     <mat-form-field appearance="outline" density="compact">
                         <span matTextPrefix>$ &nbsp;</span>
                         <input matInput appMoneyInput [(ngModel)]="paymentsAlt['PagoMovil']"
-                            (ngModelChange)="updateMultiPayment('PagoMovil', $event, 'alt')" placeholder="0.00">
+                            (ngModelChange)="updateMultiPayment('PagoMovil', $event, 'alt')" placeholder="0.00"
+                            [disabled]="true">
                     </mat-form-field>
                     <mat-form-field appearance="outline" density="compact">
                         <mat-label>Referencia</mat-label>
@@ -214,7 +216,8 @@
                     <mat-form-field appearance="outline" density="compact">
                         <span matTextPrefix>$ &nbsp;</span>
                         <input matInput appMoneyInput [(ngModel)]="paymentsAlt['transfer']"
-                            (ngModelChange)="updateMultiPayment('transfer', $event, 'alt')" placeholder="0.00">
+                            (ngModelChange)="updateMultiPayment('transfer', $event, 'alt')" placeholder="0.00"
+                            [disabled]="true">
                     </mat-form-field>
                     <mat-form-field appearance="outline" density="compact">
                         <mat-label>Referencia</mat-label>
@@ -285,20 +288,26 @@
             <mat-icon>payments</mat-icon>
             <span>Efectivo</span>
         </div>
-        <div class="method-btn" [class.active]="selectedMethod === 'card'" (click)="selectedMethod = 'card'">
+        <div class="method-btn" [class.active]="selectedMethod === 'card'" [class.disabled]="isMethodDisabled('card')"
+            (click)="!isMethodDisabled('card') && (selectedMethod = 'card')">
             <mat-icon>credit_card</mat-icon>
             <span>Tarjeta</span>
         </div>
-        <div class="method-btn" [class.active]="selectedMethod === 'PagoMovil'" (click)="selectedMethod = 'PagoMovil'">
+        <div class="method-btn" [class.active]="selectedMethod === 'PagoMovil'"
+            [class.disabled]="isMethodDisabled('PagoMovil')"
+            (click)="!isMethodDisabled('PagoMovil') && (selectedMethod = 'PagoMovil')">
             <mat-icon>smartphone</mat-icon>
             <span>Pago Móvil</span>
         </div>
-        <div class="method-btn" [class.active]="selectedMethod === 'transfer'" (click)="selectedMethod = 'transfer'">
+        <div class="method-btn" [class.active]="selectedMethod === 'transfer'"
+            [class.disabled]="isMethodDisabled('transfer')"
+            (click)="!isMethodDisabled('transfer') && (selectedMethod = 'transfer')">
             <mat-icon>sync_alt</mat-icon>
             <span>Transferencia</span>
         </div>
-        <div class="method-btn" [class.active]="selectedMethod === 'Credito'" (click)="selectedMethod = 'Credito'"
-            [class.disabled]="!data.customer">
+        <div class="method-btn" [class.active]="selectedMethod === 'Credito'"
+            [class.disabled]="isMethodDisabled('Credito')"
+            (click)="!isMethodDisabled('Credito') && (selectedMethod = 'Credito')">
             <mat-icon>request_quote</mat-icon>
             <span>Crédito</span>
         </div>

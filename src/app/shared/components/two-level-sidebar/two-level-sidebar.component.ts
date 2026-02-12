@@ -5,6 +5,7 @@ import { SecondarySidebarComponent } from './secondary-sidebar/secondary-sidebar
 import { MENU_CATEGORIES, MenuCategory, MenuItem } from '../../config/menu-config';
 import { sidebarAnimations } from './sidebar-animations';
 import { AuthService } from '../../../core/services/auth';
+import { AppConfigService } from '../../../core/services/app-config.service';
 
 @Component({
     selector: 'app-two-level-sidebar',
@@ -20,6 +21,7 @@ import { AuthService } from '../../../core/services/auth';
 })
 export class TwoLevelSidebarComponent implements OnInit {
     private authService = inject(AuthService);
+    private appConfigService = inject(AppConfigService);
 
     private allCategories = MENU_CATEGORIES;
     filteredCategories: MenuCategory[] = [];
@@ -34,11 +36,9 @@ export class TwoLevelSidebarComponent implements OnInit {
         this.filteredCategories = this.allCategories
             .map(category => ({
                 ...category,
-                items: this.filterByPermission(category.items)
+                items: this.filterMenuItems(category.items)
             }))
             .filter(category => category.items.length > 0);
-
-
 
         // Restaurar última categoría seleccionada
         const savedCategoryId = localStorage.getItem('lastActiveCategory');
@@ -50,13 +50,22 @@ export class TwoLevelSidebarComponent implements OnInit {
         }
     }
 
-    private filterByPermission(items: MenuItem[]): MenuItem[] {
+    private filterMenuItems(items: MenuItem[]): MenuItem[] {
+        const currentType = this.appConfigService.getInstallationType();
+
         return items.filter(item => {
+            // Filter by permission
             if (item.permission && !this.authService.hasPermission(item.permission)) {
                 return false;
             }
+
+            // Filter by installation type
+            if (item.installationType && currentType && item.installationType !== currentType) {
+                return false;
+            }
+
             if (item.children) {
-                const filteredChildren = this.filterByPermission(item.children);
+                const filteredChildren = this.filterMenuItems(item.children);
                 return filteredChildren.length > 0;
             }
             return true;

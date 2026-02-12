@@ -12,6 +12,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CustomerFormComponent } from './components/customer-form/customer-form';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../shared/components/shared-paginator/shared-paginator.component';
 import { CxCHistoryDialogComponent } from './cx-c-history-dialog';
 import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
 
@@ -30,6 +31,7 @@ import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
     MatDialogModule,
     MatSnackBarModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     PhoneFormatPipe
   ],
   providers: [PhoneFormatPipe],
@@ -93,12 +95,11 @@ import { PhoneFormatPipe } from '../../../shared/pipes/phone-format.pipe';
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
 
-          <mat-paginator 
+          <app-shared-paginator 
             [length]="totalElements"
             [pageSize]="pageSize"
-            [pageSizeOptions]="[10, 20, 50]"
             (page)="onPageChange($event)">
-          </mat-paginator>
+          </app-shared-paginator>
 
           <div class="empty-msg" *ngIf="customers.length === 0">
             No se encontraron clientes.
@@ -127,7 +128,7 @@ export class CustomersComponent implements OnInit {
   displayedColumns: string[] = ['taxid', 'name', 'phone', 'email', 'actions'];
 
   totalElements = 0;
-  pageSize = 20;
+  pageSize = 50;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit() {

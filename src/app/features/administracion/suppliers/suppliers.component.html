@@ -87,9 +87,8 @@
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
 
-                <mat-paginator [length]="totalElements" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50]"
-                    (page)="onPageChange($event)">
-                </mat-paginator>
+                <app-shared-paginator [length]="totalElements" [pageSize]="pageSize" (page)="onPageChange($event)">
+                </app-shared-paginator>
 
                 <div class="empty-state" *ngIf="suppliers.length === 0 && !loading">
                     <mat-icon>search_off</mat-icon>

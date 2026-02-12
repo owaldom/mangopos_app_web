@@ -3,6 +3,7 @@ import { CommonModule, DatePipe, DecimalPipe } from '@angular/common'; // Import
 import { FormsModule } from '@angular/forms';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -35,6 +36,7 @@ import { CashMovementFormComponent } from './components/cash-movement-form';
         FormsModule,
         MatTableModule,
         MatPaginatorModule,
+        SharedPaginatorComponent,
         MatButtonModule,
         MatIconModule,
         MatCardModule,
@@ -153,12 +155,11 @@ import { CashMovementFormComponent } from './components/cash-movement-form';
                     </table>
                 </div>
                 
-                <mat-paginator 
+                <app-shared-paginator 
                     [length]="totalElements"
                     [pageSize]="pageSize"
-                    [pageSizeOptions]="[10, 20, 50]"
                     (page)="onPageChange($event)">
-                </mat-paginator>
+                </app-shared-paginator>
             </mat-card>
         </div>
     `,
@@ -178,7 +179,7 @@ export class CashMovementsComponent implements OnInit {
     displayedColumns: string[] = ['date', 'type', 'amount', 'concept', 'person', 'session'];
     dataSource = new MatTableDataSource<CashMovement>([]);
     totalElements = 0;
-    pageSize = 20;
+    pageSize = 50;
 
     filterStartDate: Date | null = null;
     filterEndDate: Date | null = null;

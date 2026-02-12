@@ -215,6 +215,25 @@ export class PaymentDialogComponent implements OnInit {
 
   setCurrency(type: 'base' | 'alt'): void {
     this.selectedCurrency = type;
+
+    // If switching to USD and current method is disabled (card, transfer, PagoMovil), reset to cash
+    if (type === 'alt' && ['card', 'transfer', 'PagoMovil'].includes(this.selectedMethod)) {
+      this.selectedMethod = 'cash';
+    }
+  }
+
+  isMethodDisabled(method: string): boolean {
+    if (this.selectedCurrency === 'alt') {
+      if (['card', 'transfer', 'PagoMovil'].includes(method)) {
+        return true;
+      }
+    }
+
+    if (method === 'Credito' && !this.data.customer) {
+      return true;
+    }
+
+    return false;
   }
 
   onCancel(): void {

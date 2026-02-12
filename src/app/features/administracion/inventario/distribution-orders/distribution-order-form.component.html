@@ -1,0 +1,159 @@
+<div class="distribution-form-container">
+    <div class="header">
+        <h2>Nueva Orden de Distribución</h2>
+    </div>
+
+    <div *ngIf="error" class="error">
+        {{ error }}
+    </div>
+
+    <form class="distribution-form">
+        <div class="form-section">
+            <h3>Información General</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Almacén Origen *</label>
+                    <select [(ngModel)]="order.origin_location_id" name="origin" (change)="onOriginLocationChange()"
+                        required>
+                        <option [value]="0">Seleccione almacén</option>
+                        <option *ngFor="let loc of locations" [value]="loc.id">
+                            {{ loc.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Punto de Venta Destino *</label>
+                    <input type="text" [(ngModel)]="order.destination_location_name" name="destination"
+                        placeholder="Ej: Punto de Venta Centro" required />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Notas</label>
+                <textarea [(ngModel)]="order.notes" name="notes" rows="3"
+                    placeholder="Observaciones adicionales..."></textarea>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>Productos</h3>
+
+            <div class="product-selector">
+                <div class="form-row">
+                    <div class="form-group flex-grow">
+                        <label>Categoría</label>
+                        <select [(ngModel)]="selectedCategoryId" name="category" #catSelect
+                            (change)="onCategoryChange(+catSelect.value)">
+                            <option [value]="null">Todas las categorías</option>
+                            <option *ngFor="let cat of categories" [value]="cat.id">
+                                {{ cat.name }}
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group flex-grow" *ngIf="categoryProducts.length > 0">
+                        <label>Producto por Categoría</label>
+                        <select [(ngModel)]="selectedProduct" name="catProduct">
+                            <option [value]="null">Seleccione producto</option>
+                            <option *ngFor="let prod of categoryProducts" [ngValue]="prod">
+                                {{ prod.name }} ({{ prod.code || prod.reference }})
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group flex-grow relative">
+                        <label>O Buscar Producto (Global)</label>
+                        <input type="text" #searchInput placeholder="Buscar por nombre o código..."
+                            (input)="searchProducts(searchInput.value)" autocomplete="off" />
+
+                        <div class="search-results" *ngIf="searchResults.length > 0">
+                            <div class="search-item" *ngFor="let prod of searchResults"
+                                (click)="selectProduct(prod); searchInput.value = prod.name">
+                                <span class="name">{{ prod.name }}</span>
+                                <span class="code">{{ prod.code || prod.reference }}</span>
+                                <span class="price">{{ prod.pricebuy | currency:'USD':'symbol':'1.2-2' }}</span>
+                            </div>
+                        </div>
+
+                        <div class="selected-product-info" *ngIf="selectedProduct">
+                            Cod: {{ selectedProduct.code || selectedProduct.reference }} -
+                            Stock: {{ selectedProduct.stock_current || 0 }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <input type="number" [(ngModel)]="quantity" name="quantity" min="0" step="1" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn btn-secondary" (click)="addProduct()"
+                            [disabled]="!selectedProduct || quantity <= 0">
+                            <i class="material-icons">add</i>
+                            Agregar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="products-table" *ngIf="order.lines && order.lines.length > 0">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Costo Unit.</th>
+                            <th>Subtotal</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let line of order.lines; let i = index">
+                            <td>{{ line.product_code }}</td>
+                            <td>{{ line.product_name }}</td>
+                            <td>
+                                <input type="number" [value]="line.quantity_sent" #qtyInput
+                                    (change)="updateQuantity(line, +qtyInput.value)" min="1" class="quantity-input" />
+                            </td>
+                            <td>{{ line.unit_cost | currency:'USD':'symbol':'1.2-2' }}</td>
+                            <td>{{ (line.quantity_sent * line.unit_cost) | currency:'USD':'symbol':'1.2-2' }}</td>
+                            <td>
+                                <button type="button" class="btn-icon btn-danger" (click)="removeLine(i)"
+                                    title="Eliminar">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"><strong>Total</strong></td>
+                            <td><strong>{{ getTotalItems() }}</strong></td>
+                            <td colspan="3"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div *ngIf="!order.lines || order.lines.length === 0" class="no-products">
+                No hay productos agregados. Use el buscador para agregar productos.
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="loading">
+                Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="!canSubmit() || loading">
+                <i class="material-icons">save</i>
+                {{ loading ? 'Guardando...' : 'Crear Distribución' }}
+            </button>
+        </div>
+    </form>
+</div>

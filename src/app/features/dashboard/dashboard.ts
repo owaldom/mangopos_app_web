@@ -6,7 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../shared/components/shared-paginator/shared-paginator.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { Router } from '@angular/router';
@@ -29,6 +30,7 @@ Chart.register(...registerables);
         MatDividerModule,
         MatTableModule,
         MatPaginatorModule,
+        SharedPaginatorComponent,
         MatTooltipModule,
         MatChipsModule,
         SystemDatePipe,
@@ -110,7 +112,7 @@ export class DashboardComponent implements OnInit {
     recentSales = new MatTableDataSource<any>([]);
     displayedColumns: string[] = ['id', 'customer', 'total', 'time'];
 
-    @ViewChild(MatPaginator) paginator!: MatPaginator;
+    @ViewChild(SharedPaginatorComponent) sharedPaginator!: SharedPaginatorComponent;
 
     ngOnInit(): void {
         this.totalFormat = this.settingsService.getDecimalFormat('total');
@@ -138,7 +140,11 @@ export class DashboardComponent implements OnInit {
                     time: sale.date,
                     status: sale.status === 0 ? 'COMPLETADO' : 'PENDIENTE'
                 }));
-                this.recentSales.paginator = this.paginator;
+                setTimeout(() => {
+                    if (this.sharedPaginator && this.sharedPaginator.paginator) {
+                        this.recentSales.paginator = this.sharedPaginator.paginator;
+                    }
+                });
             }
         });
 

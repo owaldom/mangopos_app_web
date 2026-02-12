@@ -44,7 +44,13 @@ export class CatalogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.refresh();
+    this.subscription.add(
+      this.salesService.currentLocationId$.subscribe(id => {
+        if (id) {
+          this.refresh();
+        }
+      })
+    );
     this.subscription.add(
       this.salesService.exchangeRate$.subscribe(rate => {
         this.exchangeRate = rate;

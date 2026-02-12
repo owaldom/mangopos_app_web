@@ -1,8 +1,9 @@
 import { Component, inject, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,6 +22,7 @@ import { SettingsService } from '../../../../../../core/services/settings.servic
     MatDialogModule,
     MatTableModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     MatButtonModule,
     MatIconModule,
     MatFormFieldModule,
@@ -99,12 +101,12 @@ import { SettingsService } from '../../../../../../core/services/settings.servic
         </table>
       </div>
 
-      <mat-paginator 
+      <app-shared-paginator 
           [length]="totalProducts"
           [pageSize]="pageSize"
-          [pageSizeOptions]="[10, 25]"
+          [pageIndex]="currentPage"
           (page)="onPageChange($event)">
-      </mat-paginator>
+      </app-shared-paginator>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="dialogRef.close()">Cancelar</button>
@@ -124,12 +126,17 @@ export class ProductSelectorComponent implements OnInit {
   @ViewChild('searchInput') searchInput!: ElementRef;
 
   totalProducts = 0;
-  pageSize = 10;
+  pageSize = 50;
   currentPage = 0;
 
   private productService = inject(ProductService);
   public dialogRef = inject(MatDialogRef<ProductSelectorComponent>);
   public settingsService = inject(SettingsService);
+  public data = inject(MAT_DIALOG_DATA, { optional: true });
+
+  get locationId(): number | null {
+    return this.data?.locationId || null;
+  }
 
   ngOnInit(): void {
     this.loadProducts();
@@ -152,7 +159,7 @@ export class ProductSelectorComponent implements OnInit {
     const search = event.target.value?.trim();
     if (!search) return;
 
-    this.productService.getAll(1, 10, { search }).subscribe({
+    this.productService.getAll(1, this.pageSize, { search, locationId: this.locationId }).subscribe({
       next: (res) => {
         if (res.data && res.data.length > 0) {
           // Intentar coincidencia exacta primero
@@ -176,7 +183,7 @@ export class ProductSelectorComponent implements OnInit {
 
   loadProducts(search: string = ''): void {
     const page = this.currentPage + 1;
-    this.productService.getAll(page, this.pageSize, { search }).subscribe({
+    this.productService.getAll(page, this.pageSize, { search, locationId: this.locationId }).subscribe({
       next: (res) => {
         this.products = res.data;
         this.totalProducts = res.total;

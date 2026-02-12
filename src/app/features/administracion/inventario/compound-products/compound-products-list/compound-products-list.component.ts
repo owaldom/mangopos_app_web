@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -19,6 +20,7 @@ import { Router, RouterModule } from '@angular/router';
         RouterModule,
         MatTableModule,
         MatPaginatorModule,
+        SharedPaginatorComponent,
         MatIconModule,
         MatButtonModule,
         MatCardModule,
@@ -44,7 +46,7 @@ export class CompoundProductsListComponent implements OnInit {
     compoundDetailsMap: { [key: number]: CompoundProductDetail[] } = {};
 
     totalItems = 0;
-    pageSize = 10;
+    pageSize = 50;
     currentPage = 1;
 
     ngOnInit() {

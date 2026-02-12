@@ -2,7 +2,8 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -38,6 +39,7 @@ interface LocationInfo {
     ReactiveFormsModule,
     MatTableModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     MatButtonModule,
     MatIconModule,
     MatCardModule,
@@ -171,12 +173,11 @@ interface LocationInfo {
                   </table>
                 </div>
 
-                <mat-paginator 
+                <app-shared-paginator 
                     [length]="totalElements"
                     [pageSize]="pageSize"
-                    [pageSizeOptions]="[10, 20, 50]"
                     (page)="onPageChange($event)">
-                </mat-paginator>
+                </app-shared-paginator>
               </mat-card-content>
             </mat-card>
           </div>
@@ -389,9 +390,8 @@ export class ProductDespieceComponent implements OnInit {
   displayedColumns: string[] = ['productoMayor', 'productoMenor', 'relacion', 'acciones'];
   dataSource = new MatTableDataSource<RelacionDespiece>([]);
   totalElements = 0;
-  pageSize = 20;
+  pageSize = 50;
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   // Services
   private despieceService = inject(DespieceService);
@@ -577,7 +577,8 @@ export class ProductDespieceComponent implements OnInit {
     const dialogRef = this.dialog.open(ProductSelectorComponent, {
       width: '90%',
       maxWidth: '1000px',
-      height: '80%'
+      height: '80%',
+      data: { locationId: this.ejecutarForm.get('location')?.value }
     });
 
     dialogRef.afterClosed().subscribe(result => {

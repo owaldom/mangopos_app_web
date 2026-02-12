@@ -86,6 +86,15 @@
                         <input matInput [(ngModel)]="settings.print_server_url" placeholder="http://localhost:3001/api">
                         <mat-hint>URL del servidor de impresión térmica (ej: http://localhost:3001/api)</mat-hint>
                     </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Tipo de Instalación</mat-label>
+                        <mat-select [(ngModel)]="currInstallationType">
+                            <mat-option value="factory">Instalación en Fábrica (Distribuidor)</mat-option>
+                            <mat-option value="pos">Punto de Venta (Receptor)</mat-option>
+                        </mat-select>
+                        <mat-hint>Define qué funciones de distribución estarán disponibles</mat-hint>
+                    </mat-form-field>
                 </div>
             </div>
 

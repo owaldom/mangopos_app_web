@@ -22,6 +22,7 @@ export interface LocationInfo {
     id: number;
     name: string;
     address: string;
+    type: 'factory' | 'pos';
 }
 
 export class MovementReason {

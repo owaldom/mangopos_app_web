@@ -24,6 +24,11 @@
             <span class="action">Cambiar</span>
         </div>
 
+        <div class="location-pill" *ngIf="currentLocationName">
+            <mat-icon>warehouse</mat-icon>
+            <span class="name">{{ currentLocationName }}</span>
+        </div>
+
         <div class="exchange-pill">
             <span class="label">Tasa:</span>
             <span class="value">{{ exchangeRate | number:settingsService.getDecimalFormat('price') }} Bs/$</span>
@@ -81,6 +86,11 @@
                     <mat-icon class="barcode-icon">qr_code_scanner</mat-icon>
                     <input #barcodeInput type="text" [(ngModel)]="barcode" (ngModelChange)="onBarcodeChange($event)"
                         (keyup.enter)="onBarcodeEnter($event)" placeholder="Escanear Código..." class="barcode-input">
+                </div>
+
+                <div class="location-info-classic" *ngIf="currentLocationName">
+                    <mat-icon>warehouse</mat-icon>
+                    <span>{{ currentLocationName }}</span>
                 </div>
             </div>
 

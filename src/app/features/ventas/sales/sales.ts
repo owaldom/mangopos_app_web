@@ -58,6 +58,7 @@ export class SalesComponent implements OnInit, OnDestroy {
   taxes: number = 0;
   linesCount: number = 0;
   currentLines: TicketLine[] = [];
+  currentLocationName: string = '';
   private snackBar = inject(MatSnackBar);
   public cashService = inject(CashService);
   private productService = inject(ProductService);
@@ -156,6 +157,12 @@ export class SalesComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.salesService.selectedCustomer$.subscribe(customer => {
         this.selectedCustomer = customer;
+      })
+    );
+
+    this.subscription.add(
+      this.salesService.currentLocationName$.subscribe(name => {
+        this.currentLocationName = name;
       })
     );
 
@@ -481,7 +488,8 @@ export class SalesComponent implements OnInit, OnDestroy {
         money_id: paymentData.money_id,
         customer_id: this.selectedCustomer?.id || null,
         cash_register_id: this.cashService.getCashRegisterId() || 1,
-        notes: this.salesService.getNotes()
+        notes: this.salesService.getNotes(),
+        location_id: this.salesService.currentLocationId$ ? (this.salesService as any).currentLocationIdSubject.value : 1
       };
 
       const result = await firstValueFrom(this.salesService.createSale(saleRequest));

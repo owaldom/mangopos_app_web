@@ -1,0 +1,200 @@
+.distribution-form-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header h2 {
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.error {
+    padding: 12px;
+    margin-bottom: 20px;
+    background-color: #ffebee;
+    color: #d32f2f;
+    border-radius: 4px;
+    border-left: 4px solid #d32f2f;
+}
+
+.distribution-form {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+}
+
+.form-section {
+    margin-bottom: 30px;
+}
+
+.form-section h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    color: #333;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group.flex-grow {
+    flex: 1;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #555;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.product-selector {
+    background-color: #f9f9f9;
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.products-table {
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
+.products-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.products-table thead {
+    background-color: #f5f5f5;
+}
+
+.products-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+}
+
+.products-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.products-table tfoot {
+    background-color: #f9f9f9;
+    font-weight: 600;
+}
+
+.quantity-input {
+    width: 80px;
+    padding: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.no-products {
+    padding: 40px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+.btn-secondary {
+    background-color: #757575;
+    color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: #616161;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 4px;
+    color: #666;
+}
+
+.btn-icon:hover {
+    background-color: #f0f0f0;
+}
+
+.btn-danger {
+    color: #d32f2f;
+}
+
+.btn-danger:hover {
+    background-color: #ffebee;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+}

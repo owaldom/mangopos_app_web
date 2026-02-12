@@ -80,8 +80,8 @@
             <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
         </table>
 
-        <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 100]"
-            (page)="onPageChange($event)" aria-label="Seleccionar página">
-        </mat-paginator>
+        <app-shared-paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="currentPage - 1"
+            (page)="onPageChange($event)">
+        </app-shared-paginator>
     </mat-card>
 </div>

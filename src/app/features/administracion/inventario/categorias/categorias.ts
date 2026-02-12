@@ -6,7 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../../shared/components/shared-paginator/shared-paginator.component';
 
 import { CategoryService, Category, PaginatedResponse } from '../../../../core/services/category.service';
 import { CategoryFormComponent } from './components/category-form/category-form';
@@ -22,7 +23,8 @@ import { CategoryFormComponent } from './components/category-form/category-form'
     MatTableModule,
     MatDialogModule,
     MatSnackBarModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    SharedPaginatorComponent
   ],
   template: `
     <div class="container">
@@ -89,13 +91,12 @@ import { CategoryFormComponent } from './components/category-form/category-form'
           </table>
         </div>
 
-        <mat-paginator 
+        <app-shared-paginator 
           [length]="totalCategories"
           [pageSize]="pageSize"
-          [pageSizeOptions]="[10, 25, 50, 100]"
-          (page)="onPageChange($event)"
-          aria-label="Seleccionar página de categorías">
-        </mat-paginator>
+          [pageIndex]="currentPage"
+          (page)="onPageChange($event)">
+        </app-shared-paginator>
       </mat-card>
     </div>
   `,

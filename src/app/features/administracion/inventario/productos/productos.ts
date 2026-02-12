@@ -8,6 +8,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../../shared/components/shared-paginator/shared-paginator.component';
 import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -45,6 +46,7 @@ interface Currency {
     MatDialogModule,
     MatSnackBarModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
@@ -220,13 +222,12 @@ interface Currency {
           </table>
         </div>
 
-        <mat-paginator 
+        <app-shared-paginator 
           [length]="totalProducts"
           [pageSize]="pageSize"
-          [pageSizeOptions]="[10, 25, 50, 100]"
-          (page)="onPageChange($event)"
-          aria-label="Seleccionar página de productos">
-        </mat-paginator>
+          [pageIndex]="currentPage"
+          (page)="onPageChange($event)">
+        </app-shared-paginator>
       </mat-card>
     </div>
   `,
@@ -305,7 +306,7 @@ export class ProductosComponent implements OnInit {
   @ViewChild('barcodeInput') barcodeInput!: any;
 
   totalProducts = 0;
-  pageSize = 25;
+  pageSize = 50;
   currentPage = 0;
 
   private productService = inject(ProductService);

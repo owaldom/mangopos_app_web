@@ -11,6 +11,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { SharedPaginatorComponent } from '../../../shared/components/shared-paginator/shared-paginator.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SalesHistoryService, Ticket, SalesHistoryFilters } from '../../../core/services/sales-history.service';
@@ -38,6 +39,7 @@ import { SystemDatePipe } from '../../../shared/pipes/system-date.pipe';
     MatNativeDateModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
+    SharedPaginatorComponent,
     MatDialogModule,
     MatSnackBarModule,
     MoneyInputDirective,
@@ -171,15 +173,13 @@ import { SystemDatePipe } from '../../../shared/pipes/system-date.pipe';
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>
 
-            <mat-paginator 
+            <app-shared-paginator 
               *ngIf="!loading && tickets.length > 0"
               [length]="pagination.total"
               [pageSize]="pagination.limit"
               [pageIndex]="pagination.page - 1"
-              [pageSizeOptions]="[10, 25, 50, 100]"
-              (page)="onPageChange($event)"
-              showFirstLastButtons>
-            </mat-paginator>
+              (page)="onPageChange($event)">
+            </app-shared-paginator>
           </div>
         </mat-card-content>
       </mat-card>
