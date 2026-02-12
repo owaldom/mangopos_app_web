@@ -24,9 +24,11 @@
             <span class="action">Cambiar</span>
         </div>
 
-        <div class="location-pill" *ngIf="currentLocationName">
+        <div class="location-pill clickable" [matMenuTriggerFor]="locationMenu"
+            *ngIf="currentLocationName$ | async as locName">
             <mat-icon>warehouse</mat-icon>
-            <span class="name">{{ currentLocationName }}</span>
+            <span class="name">{{ locName }}</span>
+            <mat-icon class="arrow">arrow_drop_down</mat-icon>
         </div>
 
         <div class="exchange-pill">
@@ -88,9 +90,11 @@
                         (keyup.enter)="onBarcodeEnter($event)" placeholder="Escanear Código..." class="barcode-input">
                 </div>
 
-                <div class="location-info-classic" *ngIf="currentLocationName">
+                <div class="location-info-classic clickable" [matMenuTriggerFor]="locationMenu"
+                    *ngIf="currentLocationName$ | async as locName">
                     <mat-icon>warehouse</mat-icon>
-                    <span>{{ currentLocationName }}</span>
+                    <span>{{ locName }}</span>
+                    <mat-icon class="arrow">arrow_drop_down</mat-icon>
                 </div>
             </div>
 
@@ -256,4 +260,13 @@
             </main>
         </div>
     </div>
+
+    <mat-menu #locationMenu="matMenu">
+        <button mat-menu-item *ngFor="let w of warehouses" (click)="switchWarehouse(w)">
+            <mat-icon [color]="w.name === (currentLocationName$ | async) ? 'primary' : ''">
+                {{ w.name === (currentLocationName$ | async) ? 'check_circle' : 'warehouse' }}
+            </mat-icon>
+            <span>{{ w.name }} ({{ w.type === 'factory' ? 'Fábrica' : 'POS' }})</span>
+        </button>
+    </mat-menu>
 </div>

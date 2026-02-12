@@ -35,6 +35,14 @@
                 <span>Impuestos</span>
                 <span>{{ data.taxes | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</span>
             </div>
+            <div class="total-row igtf" *ngIf="igtfAmountAlt > 0">
+                <span>I.G.T.F. ({{ settingsService.getSettings()?.igtf_percentage }}%)</span>
+                <div style="text-align: right;">
+                    <div style="font-size: 0.9rem; opacity: 0.8;">{{ igtfAmountAlt | currency:'USD':'$
+                        ':settingsService.getDecimalFormat('total') }}</div>
+                    <div>{{ igtfAmount | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</div>
+                </div>
+            </div>
             <div class="total-row main">
                 <span>TOTAL</span>
                 <div style="text-align: right;">

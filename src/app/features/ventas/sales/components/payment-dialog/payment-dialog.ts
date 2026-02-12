@@ -56,6 +56,9 @@ export class PaymentDialogComponent implements OnInit {
   remaining: number = 0;
   remainingAlt: number = 0;
 
+  igtfAmount: number = 0;
+  igtfAmountAlt: number = 0;
+
   constructor(
     public dialogRef: MatDialogRef<PaymentDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: {
@@ -106,8 +109,6 @@ export class PaymentDialogComponent implements OnInit {
     this.isMultiPayment = !this.isMultiPayment;
     if (this.isMultiPayment) {
       // Initialize with current received amount based on selected currency
-      // We don't auto-fill everything, let user type
-      // But if we had a value, we can place it in the respective slot
       if (this.receivedAmount > 0) {
         if (this.selectedCurrency === 'base') {
           this.payments['cash'] = this.receivedAmount;
@@ -152,18 +153,26 @@ export class PaymentDialogComponent implements OnInit {
     // Sum all USD payments
     const totalUsdPaid = Object.values(this.paymentsAlt).reduce((a, b) => a + b, 0);
 
-    // Total Value in Bs = Bs + (USD * Rate)
+    // Calculate IGTF
+    const igtfRate = (s?.igtf_enabled) ? (s.igtf_percentage || 3) / 100 : 0;
+    this.igtfAmountAlt = totalUsdPaid * igtfRate;
+    this.igtfAmount = this.igtfAmountAlt * rate;
+
+    // Total Value PAID in Bs = Bs + (USD * Rate)
     const totalValueInBs = totalBsPaid + (totalUsdPaid * rate);
 
-    // Total Value in USD = USD + (Bs / Rate)
+    // Total Value PAID in USD = USD + (Bs / Rate)
     const totalValueInUsd = totalUsdPaid + (totalBsPaid / rate);
 
     this.receivedAmount = parseFloat(totalValueInBs.toFixed(totalDecimals));
     this.receivedAmountAlt = parseFloat(totalValueInUsd.toFixed(totalDecimals));
 
     // Calculate Change/Remaining
-    const totalDueBs = parseFloat((this.data.totalAlt * rate).toFixed(totalDecimals));
-    const totalDueUsd = this.data.totalAlt;
+    const baseTotalBs = parseFloat((this.data.totalAlt * rate).toFixed(totalDecimals));
+    const baseTotalUsd = this.data.totalAlt;
+
+    const totalDueBs = baseTotalBs + this.igtfAmount;
+    const totalDueUsd = baseTotalUsd + this.igtfAmountAlt;
 
     this.change = Math.max(0, this.receivedAmount - totalDueBs);
     this.changeAlt = Math.max(0, this.receivedAmountAlt - totalDueUsd);
@@ -189,6 +198,17 @@ export class PaymentDialogComponent implements OnInit {
     // Ensure val is a valid number, default to 0 if NaN
     if (isNaN(val)) val = 0;
 
+    // In single mode, we only have one source of payment
+    let totalUsdPaid = 0;
+    if (fromSource === 'alt') {
+      totalUsdPaid = val;
+    }
+
+    // Calculate IGTF
+    const igtfRate = (s?.igtf_enabled) ? (s.igtf_percentage || 3) / 100 : 0;
+    this.igtfAmountAlt = totalUsdPaid * igtfRate;
+    this.igtfAmount = this.igtfAmountAlt * rate;
+
     if (fromSource === 'base') {
       this.receivedAmount = val; // Sync local state
       this.receivedAmountAlt = parseFloat((val / rate).toFixed(priceDecimals));
@@ -197,14 +217,17 @@ export class PaymentDialogComponent implements OnInit {
       this.receivedAmount = parseFloat((val * rate).toFixed(priceDecimals));
     }
 
-    const totalBs = parseFloat((this.data.totalAlt * rate).toFixed(totalDecimals));
-    const totalUsd = this.data.totalAlt;
+    const baseTotalBs = parseFloat((this.data.totalAlt * rate).toFixed(totalDecimals));
+    const baseTotalUsd = this.data.totalAlt;
 
-    this.change = Math.max(0, this.receivedAmount - totalBs);
-    this.changeAlt = Math.max(0, this.receivedAmountAlt - totalUsd);
+    const totalDueBs = baseTotalBs + this.igtfAmount;
+    const totalDueUsd = baseTotalUsd + this.igtfAmountAlt;
 
-    this.remaining = Math.max(0, totalBs - this.receivedAmount);
-    this.remainingAlt = Math.max(0, totalUsd - this.receivedAmountAlt);
+    this.change = Math.max(0, this.receivedAmount - totalDueBs);
+    this.changeAlt = Math.max(0, this.receivedAmountAlt - totalDueUsd);
+
+    this.remaining = Math.max(0, totalDueBs - this.receivedAmount);
+    this.remainingAlt = Math.max(0, totalDueUsd - this.receivedAmountAlt);
 
     // Round change values for display
     this.change = parseFloat(this.change.toFixed(totalDecimals));
@@ -220,6 +243,9 @@ export class PaymentDialogComponent implements OnInit {
     if (type === 'alt' && ['card', 'transfer', 'PagoMovil'].includes(this.selectedMethod)) {
       this.selectedMethod = 'cash';
     }
+
+    // Recalculate with current value
+    this.calculateChange(this.selectedCurrency === 'base' ? this.receivedAmount : this.receivedAmountAlt, this.selectedCurrency);
   }
 
   isMethodDisabled(method: string): boolean {
@@ -250,6 +276,8 @@ export class PaymentDialogComponent implements OnInit {
       exchange_rate: this.data.exchangeRate,
       money_id: this.data.money_id,
       bank_id: this.selectedBankId || null,
+      igtf_amount: this.igtfAmount, // Enviar monto IGTF en Bs
+      igtf_amount_alt: this.igtfAmountAlt, // Enviar monto IGTF en USD
       multiparams: this.isMultiPayment ? {
         payments: this.payments,
         paymentsAlt: this.paymentsAlt

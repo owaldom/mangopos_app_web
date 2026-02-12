@@ -11,6 +11,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { SettingsService, AppSettings } from '../../../core/services/settings.service';
 import { AppConfigService } from '../../../core/services/app-config.service';
+import { WarehouseService } from '../../../core/services/warehouse.service';
+import { Warehouse } from '../../../core/models/warehouse.model';
 import { MoneyInputDirective } from '../../../shared/directives/money-input.directive';
 
 @Component({
@@ -44,23 +46,31 @@ export class SettingsComponent implements OnInit {
         enable_pdf_ticket: false,
         percentage_decimals: 0,
         pos_layout: 'classic',
-        print_server_url: 'http://localhost:3001/api'
+        print_server_url: 'http://localhost:3001/api',
+        igtf_enabled: false,
+        igtf_percentage: 3
     };
 
     currencies: any[] = [];
     loading = true;
 
     currInstallationType: 'factory' | 'pos' = 'pos';
+    warehouses: Warehouse[] = [];
+    selectedWarehouseId: number | null = null;
 
     constructor(
         private settingsService: SettingsService,
         private appConfigService: AppConfigService,
+        private warehouseService: WarehouseService,
         private snackBar: MatSnackBar
     ) { }
 
     ngOnInit(): void {
         this.loadSettings();
-        this.currInstallationType = this.appConfigService.getInstallationType() || 'pos';
+        const config = this.appConfigService.getConfig();
+        this.currInstallationType = config?.installation_type || 'pos';
+        this.selectedWarehouseId = config?.warehouse_id || null;
+        this.loadWarehouses();
     }
 
     async loadSettings() {
@@ -80,6 +90,12 @@ export class SettingsComponent implements OnInit {
     loadCurrencies() {
         this.settingsService.getCurrencies().subscribe(res => {
             this.currencies = res;
+        });
+    }
+
+    loadWarehouses() {
+        this.warehouseService.getAll().subscribe(res => {
+            this.warehouses = res;
         });
     }
 
@@ -103,8 +119,9 @@ export class SettingsComponent implements OnInit {
             this.appConfigService.setConfig({
                 ...this.appConfigService.getConfig(),
                 installation_type: this.currInstallationType,
-                location_name: this.settings.company_name || 'Generic Location'
-            });
+                location_name: this.settings.company_name || 'Generic Location',
+                warehouse_id: this.selectedWarehouseId || undefined
+            } as any);
             this.snackBar.open('Configuración guardada exitosamente', 'Cerrar', { duration: 3000 });
             // Recargar para aplicar cambios en el menú si es necesario
             setTimeout(() => window.location.reload(), 1000);

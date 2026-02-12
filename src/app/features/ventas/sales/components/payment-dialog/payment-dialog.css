@@ -99,6 +99,12 @@
     font-size: 1.1rem;
 }
 
+.total-row.igtf {
+    font-size: 1rem;
+    color: #e02424;
+    font-weight: 500;
+}
+
 .total-row.main {
     font-size: 1.4rem;
     font-weight: 700;

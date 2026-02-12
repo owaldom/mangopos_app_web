@@ -29,7 +29,6 @@ import { Bank } from '../../../core/models/bank.model';
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
-        MatSelectModule,
         MoneyInputDirective,
         LoadingButtonDirective,
         MatSnackBarModule
@@ -53,7 +52,7 @@ export class CxCPaymentDialogComponent implements OnInit {
     amountBs: number = 0;
     amountUsd: number = 0;
     paymentMethod: string = 'cash';
-    numDocument: string = ''; // Used for reference internally or combined? Let's use specific fields.
+    numDocument: string = '';
     bank: string = '';
     selectedBankId: string = '';
     banks: Bank[] = [];
@@ -62,6 +61,9 @@ export class CxCPaymentDialogComponent implements OnInit {
     account: string = '';
     is_pago_movil: boolean = false;
     selectedCurrency: 'base' | 'alt' = 'base';
+
+    igtfAmount: number = 0;
+    igtfAmountAlt: number = 0;
 
     totalFormat: string = '1.2-2';
 
@@ -104,6 +106,7 @@ export class CxCPaymentDialogComponent implements OnInit {
         const rate = this.data.exchangeRate || 1;
         const decimals = this.settingsService.getSettings()?.total_decimals || 2;
         this.amountUsd = parseFloat((value / rate).toFixed(decimals));
+        this.calculateIGTF();
         this.cdr.markForCheck();
     }
 
@@ -111,11 +114,28 @@ export class CxCPaymentDialogComponent implements OnInit {
         const rate = this.data.exchangeRate || 1;
         const decimals = this.settingsService.getSettings()?.total_decimals || 2;
         this.amountBs = parseFloat((value * rate).toFixed(decimals));
+        this.calculateIGTF();
         this.cdr.markForCheck();
+    }
+
+    calculateIGTF(): void {
+        const s = this.settingsService.getSettings();
+        const rate = this.data.exchangeRate || 1;
+        const decimals = s?.total_decimals || 2;
+
+        if (this.selectedCurrency === 'alt') {
+            const igtfRate = (s?.igtf_enabled) ? (s.igtf_percentage || 3) / 100 : 0;
+            this.igtfAmountAlt = parseFloat((this.amountUsd * igtfRate).toFixed(decimals));
+            this.igtfAmount = parseFloat((this.igtfAmountAlt * rate).toFixed(decimals));
+        } else {
+            this.igtfAmountAlt = 0;
+            this.igtfAmount = 0;
+        }
     }
 
     setCurrency(type: 'base' | 'alt'): void {
         this.selectedCurrency = type;
+        this.calculateIGTF();
         this.cdr.markForCheck();
     }
 
@@ -132,7 +152,6 @@ export class CxCPaymentDialogComponent implements OnInit {
         return this.banks;
     }
 
-
     isValid(): boolean {
         return this.amountUsd > 0 && !!this.selectedInvoice;
     }
@@ -144,6 +163,8 @@ export class CxCPaymentDialogComponent implements OnInit {
     onConfirm(): void {
         const paymentData = {
             customer_id: this.data.customer.id,
+            igtf_amount: this.igtfAmount, // Enviar monto IGTF en Bs
+            igtf_amount_alt: this.igtfAmountAlt, // Enviar monto IGTF en USD
             payments: [{
                 method: this.paymentMethod === 'paper' ? 'PagoMovil' : (this.paymentMethod === 'transfer' ? 'transfer' : this.paymentMethod),
                 total: this.selectedCurrency === 'alt' ? this.amountUsd : this.amountBs,

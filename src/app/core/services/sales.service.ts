@@ -47,6 +47,9 @@ export interface SaleRequest {
     exchange_rate?: number;
     notes?: string;
     location_id: number;
+    money_id?: string;
+    igtf_amount?: number;
+    igtf_amount_alt?: number;
 }
 
 export interface TicketState {
@@ -127,24 +130,44 @@ export class SalesService {
         if (!config) return;
 
         this.warehouseService.getAll().subscribe(warehouses => {
-            let match = warehouses.find(w => w.name === config.location_name);
+            let match = null;
 
-            // Fallback for Factory installations: use factory_warehouse_id or first factory warehouse
-            if (!match && config.installation_type === 'factory') {
-                if (config.factory_warehouse_id) {
-                    match = warehouses.find(w => w.id === config.factory_warehouse_id);
-                }
+            // 1. Prioritize explicit warehouse_id
+            if (config.warehouse_id) {
+                match = warehouses.find(w => w.id === config.warehouse_id);
+            }
 
-                if (!match) {
-                    // Default to first 'factory' type warehouse if no specific one is configured
-                    match = warehouses.find(w => w.type === 'factory');
+            // 2. Try match by name (case-insensitive)
+            if (!match) {
+                const searchName = config.location_name?.toLowerCase();
+                match = warehouses.find(w => w.name.toLowerCase() === searchName);
+            }
+
+            // 3. Fallback based on installation type
+            if (!match) {
+                if (config.installation_type === 'factory') {
+                    // Try factory_warehouse_id
+                    if (config.factory_warehouse_id) {
+                        match = warehouses.find(w => w.id === config.factory_warehouse_id);
+                    }
+                    // Try first factory type warehouse
+                    if (!match) {
+                        match = warehouses.find(w => w.type === 'factory');
+                    }
+                } else {
+                    // POS Mode: Try first pos type warehouse
+                    match = warehouses.find(w => w.type === 'pos');
                 }
+            }
+
+            // 4. Global fallback if still no match: use first available warehouse
+            if (!match && warehouses.length > 0) {
+                match = warehouses[0];
             }
 
             if (match) {
                 console.log(`Sales resolved to location: ${match.name} (ID: ${match.id})`);
-                this.currentLocationIdSubject.next(match.id);
-                this.currentLocationNameSubject.next(match.name);
+                this.setCurrentLocation(match.id, match.name);
                 // Also update existing tickets if they don't have location_id
                 this.tickets.forEach(t => {
                     if (!t.location_id) t.location_id = match.id;
@@ -154,6 +177,11 @@ export class SalesService {
                 console.warn(`Could not resolve location for sales. Using default.`);
             }
         });
+    }
+
+    setCurrentLocation(id: number, name: string): void {
+        this.currentLocationIdSubject.next(id);
+        this.currentLocationNameSubject.next(name);
     }
 
     getCatalog(): Observable<SalesCatalog> {
@@ -226,6 +254,14 @@ export class SalesService {
             activeTicketIndex: this.activeTicketIndex
         };
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(state));
+    }
+
+    get currentLocationId(): number | null {
+        return this.currentLocationIdSubject.value;
+    }
+
+    getActiveTicketIndex(): number {
+        return this.activeTicketIndex;
     }
 
     private loadFromStorage() {

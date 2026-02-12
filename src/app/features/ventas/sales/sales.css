@@ -210,6 +210,35 @@
     font-size: 13px;
 }
 
+.modern-layout .location-pill.clickable:hover {
+    background: #dcfce7 !important;
+    border-color: #86efac !important;
+    transform: translateY(-1px);
+    cursor: pointer;
+}
+
+.location-pill .arrow,
+.location-info-classic .arrow {
+    font-size: 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+    margin-left: 2px;
+    opacity: 0.5;
+}
+
+.location-info-classic.clickable {
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 4px 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.location-info-classic.clickable:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
 .modern-layout .search-main {
     flex: 1;
     display: flex;
