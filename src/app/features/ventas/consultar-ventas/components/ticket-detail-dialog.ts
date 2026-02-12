@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
-import { SalesHistoryService, Ticket } from '../../../../core/services/sales-history.service';
+import { SalesHistoryService, Ticket, TaxSummary } from '../../../../core/services/sales-history.service';
 import { PrintService } from '../../../../core/services/print.service';
 import { SettingsService } from '../../../../core/services/settings.service';
 import { SystemDatePipe } from '../../../../shared/pipes/system-date.pipe';
@@ -135,6 +135,14 @@ import { SystemDatePipe } from '../../../../shared/pipes/system-date.pipe';
               <div class="summary-row" *ngFor="let tax of ticket.taxes">
                 <span>IVA ({{ (tax.percentage * 100).toFixed(0) }}%):</span>
                 <strong>Bs. {{ (tax.amount * (ticket.exchange_rate || 1)) | number:'1.2-2' }}</strong>
+              </div>
+              <!-- IGTF Row -->
+              <div class="summary-row" *ngIf="(ticket.igtf_amount || 0) > 0">
+                <span>I.G.T.F. (3%):</span>
+                <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end;">
+                    <small *ngIf="ticket.igtf_amount_alt" style="color: #666;">$ {{ ticket.igtf_amount_alt | number:'1.2-2' }}</small>
+                    <strong>Bs. {{ ((ticket.igtf_amount || 0) * (ticket.exchange_rate || 1)) | number:'1.2-2' }}</strong>
+                </div>
               </div>
               <div class="summary-row total-row">
                 <span>TOTAL:</span>

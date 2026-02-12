@@ -99,7 +99,7 @@ export class MoneyInputDirective implements ControlValueAccessor, OnChanges {
         const decimals = this.getDecimals();
 
         try {
-            const formatted = value.toLocaleString('en-US', {
+            const formatted = value.toLocaleString('es-VE', {
                 minimumFractionDigits: decimals,
                 maximumFractionDigits: decimals
             });

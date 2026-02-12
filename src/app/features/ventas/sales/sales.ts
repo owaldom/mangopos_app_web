@@ -515,7 +515,8 @@ export class SalesComponent implements OnInit, OnDestroy {
         notes: this.salesService.getNotes(),
         location_id: this.salesService.currentLocationId || 1,
         igtf_amount: paymentData.igtf_amount || 0,
-        igtf_amount_alt: paymentData.igtf_amount_alt || 0
+        igtf_amount_alt: paymentData.igtf_amount_alt || 0,
+        change: paymentData.change || 0
       };
 
       const result = await firstValueFrom(this.salesService.createSale(saleRequest));

@@ -288,6 +288,11 @@ export const routes: Routes = [
                 data: { title: 'Reportes de Ventas', description: 'Estadísticas y reportes' }
             },
             {
+                path: 'reportes/facturas-divisas',
+                loadComponent: () => import('./features/reportes/invoices-foreign-currency-report/invoices-foreign-currency-report').then(m => m.InvoicesForeignCurrencyReportComponent),
+                data: { title: 'Facturas en Divisas', description: 'Reporte de facturas con pago en divisas e IGTF' }
+            },
+            {
                 path: 'configuracion',
                 loadComponent: () => import('./features/administracion/settings/settings').then(m => m.SettingsComponent),
                 data: { title: 'Configuración', description: 'Configuración del sistema' }

@@ -52,7 +52,8 @@ export class ReportsComponent implements OnInit {
                 { id: 'sales-book', name: 'Libro de Ventas', hasDates: true },
                 { id: 'sales-utility', name: 'Utilidad en Ventas', hasDates: true },
                 { id: 'sales-discounts', name: 'Descuentos en Ventas', hasDates: true },
-                { id: 'sales-chart', name: 'Gráfico de Ventas', hasDates: true }
+                { id: 'sales-chart', name: 'Gráfico de Ventas', hasDates: true },
+                { id: 'sales-igtf', name: 'Facturas con Divisas (IGTF)', hasDates: true }
             ]
         },
         {
@@ -119,6 +120,7 @@ export class ReportsComponent implements OnInit {
     reportData: any[] = [];
     columns: string[] = [];
     loading = false;
+    reportSummary: any = null; // For IGTF report summary
 
     // Chart properties
     public barChartOptions: ChartConfiguration['options'] = {
@@ -202,6 +204,9 @@ export class ReportsComponent implements OnInit {
             case 'sales-chart':
                 obs = this.reportsService.getSalesChart(startStr, endStr);
                 break;
+            case 'sales-igtf':
+                obs = this.reportsService.getInvoicesWithForeignCurrency(startStr, endStr);
+                break;
             case 'inventory-current':
                 obs = this.reportsService.getInventoryCurrent();
                 break;
@@ -276,6 +281,14 @@ export class ReportsComponent implements OnInit {
                         };
                     } else if (data.length > 0) {
                         this.columns = Object.keys(data[0]);
+                    }
+                    // Handle IGTF report with summary
+                    if (this.selectedReport.id === 'sales-igtf' && data.invoices) {
+                        this.reportData = data.invoices;
+                        this.reportSummary = data.summary;
+                        if (data.invoices.length > 0) {
+                            this.columns = Object.keys(data.invoices[0]);
+                        }
                     }
                     this.loading = false;
                 },
@@ -402,10 +415,50 @@ export class ReportsComponent implements OnInit {
             'discountcat': 'Cat. Descuento',
             'discount_quantity': '% Descuento',
             'pv': 'P.V. Final',
+            // IGTF Report
+            'ticket_number': 'Nro. Ticket',
+            'date': 'Fecha',
+            'customer_name': 'Cliente',
+            'customer_taxid': 'RIF/CI',
+            'total_invoice': 'Total Factura',
+            'total_usd_payments': 'Pagos USD',
+            'total_bs_payments': 'Pagos Bs.',
+            'igtf_usd': 'IGTF USD',
+            'igtf_bs': 'IGTF Bs.',
+            'payment_methods': 'Métodos de Pago',
+            'status': 'Estado',
+            'exchange_rate': 'Tasa Cambio',
             // Otros
             'role': 'Rol',
             'visible': 'Visible'
         };
         return map[key] || key;
+    }
+
+    getPaymentMethods(methods: string[]): string {
+        if (!Array.isArray(methods)) return '';
+        const map: any = {
+            'cash': 'Efectivo',
+            'card': 'Tarjeta',
+            'transfer': 'Transferencia',
+            'paper': 'Pago Móvil',
+            'debt': 'Crédito',
+            'debtpaid': 'Abono Deuda',
+            'PagoMovil': 'Pago Móvil',
+            'Credito': 'Crédito',
+            'Debito': 'Débito',
+            'magcard': 'Tarjeta',
+            'cheque': 'Cheque'
+        };
+        return methods.map(m => map[m] || m).join(', ');
+    }
+
+    getStatus_es(status: string): string {
+        const map: any = {
+            'paid': 'Pagado',
+            'partial': 'Parcial',
+            'pending': 'Pendiente'
+        };
+        return map[status] || status;
     }
 }

@@ -51,6 +51,10 @@ export class CxCPaymentDialogComponent implements OnInit {
     selectedInvoice: any = null;
     amountBs: number = 0;
     amountUsd: number = 0;
+
+    amountReceived: number = 0; // Monto recibido en moneda seleccionada
+    change: number = 0;         // Vuelto calculado en moneda seleccionada
+
     paymentMethod: string = 'cash';
     numDocument: string = '';
     bank: string = '';
@@ -133,9 +137,26 @@ export class CxCPaymentDialogComponent implements OnInit {
         }
     }
 
+    onAmountReceivedChange(value: number): void {
+        let toPay = this.selectedCurrency === 'base' ? this.amountBs : this.amountUsd;
+
+        // Sumar IGTF si aplica
+        if (this.selectedCurrency === 'alt') {
+            toPay += this.igtfAmountAlt;
+        } else {
+            toPay += this.igtfAmount;
+        }
+
+        this.change = Math.max(0, parseFloat((value - toPay).toFixed(2)));
+        this.cdr.markForCheck();
+    }
+
     setCurrency(type: 'base' | 'alt'): void {
         this.selectedCurrency = type;
         this.calculateIGTF();
+        // Reset received and change on currency switch
+        this.amountReceived = 0;
+        this.change = 0;
         this.cdr.markForCheck();
     }
 
@@ -165,6 +186,7 @@ export class CxCPaymentDialogComponent implements OnInit {
             customer_id: this.data.customer.id,
             igtf_amount: this.igtfAmount, // Enviar monto IGTF en Bs
             igtf_amount_alt: this.igtfAmountAlt, // Enviar monto IGTF en USD
+            change: this.change, // Enviar vuelto calculado
             payments: [{
                 method: this.paymentMethod === 'paper' ? 'PagoMovil' : (this.paymentMethod === 'transfer' ? 'transfer' : this.paymentMethod),
                 total: this.selectedCurrency === 'alt' ? this.amountUsd : this.amountBs,

@@ -61,6 +61,21 @@
                         number:totalFormat}} Bs.</strong>
                 </span>
             </div>
+
+            <!-- Vuelto / Cambio -->
+            <div class="change-section" style="margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px;"
+                *ngIf="paymentMethod === 'cash'">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Monto Recibido ({{selectedCurrency === 'base' ? 'Bs.' : 'USD'}})</mat-label>
+                    <input matInput [(ngModel)]="amountReceived" (ngModelChange)="onAmountReceivedChange($event)"
+                        appMoneyInput>
+                </mat-form-field>
+
+                <div class="change-display" *ngIf="change > 0"
+                    style="text-align: right; color: green; font-weight: bold; font-size: 1.1rem;">
+                    Vuelto: {{ change | number:totalFormat }} {{selectedCurrency === 'base' ? 'Bs.' : 'USD'}}
+                </div>
+            </div>
         </div>
 
         <div class="payment-methods">

@@ -86,6 +86,9 @@
                         <div class="amount-usd" *ngIf="p.amount !== p.amountBs">
                             $ {{p.amount | number:settingsService.getDecimalFormat('total')}}
                         </div>
+                        <div class="igtf-info" *ngIf="p.igtfAmount > 0">
+                            <small>IGTF: {{p.igtfAmount | number:settingsService.getDecimalFormat('total')}} Bs.</small>
+                        </div>
                     </td>
                 </ng-container>
 

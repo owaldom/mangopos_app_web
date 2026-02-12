@@ -69,6 +69,33 @@
 
             <mat-card class="report-results" *ngIf="reportData.length > 0 && selectedReport.id !== 'sales-chart'">
                 <mat-card-content>
+                    <!-- IGTF Report Summary -->
+                    <div class="igtf-summary" *ngIf="selectedReport.id === 'sales-igtf' && reportSummary">
+                        <h3>Resumen</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="label">Total Facturas:</span>
+                                <span class="value">{{ reportSummary.total_invoices }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Total Ventas USD:</span>
+                                <span class="value">$ {{ reportSummary.total_sales_usd | number:'1.2-2' }}</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="label">Total Ventas Bs.:</span>
+                                <span class="value">Bs. {{ reportSummary.total_sales_bs | number:'1.2-2' }}</span>
+                            </div>
+                            <div class="summary-item highlight">
+                                <span class="label">Total IGTF USD:</span>
+                                <span class="value">$ {{ reportSummary.total_igtf_usd | number:'1.2-2' }}</span>
+                            </div>
+                            <div class="summary-item highlight">
+                                <span class="label">Total IGTF Bs.:</span>
+                                <span class="value">Bs. {{ reportSummary.total_igtf_bs | number:'1.2-2' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="table-container">
                         <table mat-table [dataSource]="reportData">
                             <ng-container *ngFor="let column of columns" [matColumnDef]="column">
@@ -90,6 +117,22 @@
                                         <span *ngSwitchCase="'tax_rate'">{{ element[column] | percent:'1.0-2' }}</span>
                                         <span *ngSwitchCase="'first_sale'">{{ element[column] | date:'short' }}</span>
                                         <span *ngSwitchCase="'last_sale'">{{ element[column] | date:'short' }}</span>
+                                        <!-- IGTF Report specific formatting -->
+                                        <span *ngSwitchCase="'total_usd'">$ {{ element[column] | number:'1.2-2'
+                                            }}</span>
+                                        <span *ngSwitchCase="'total_bs'">Bs. {{ element[column] | number:'1.2-2'
+                                            }}</span>
+                                        <span *ngSwitchCase="'igtf_usd'" class="igtf-value">$ {{ element[column] |
+                                            number:'1.2-2' }}</span>
+                                        <span *ngSwitchCase="'igtf_bs'" class="igtf-value">Bs. {{ element[column] |
+                                            number:'1.2-2' }}</span>
+                                        <span *ngSwitchCase="'date'">{{ element[column] | date:'dd/MM/yyyy HH:mm'
+                                            }}</span>
+                                        <span *ngSwitchCase="'exchange_rate'">{{ element[column] | number:'1.2-2'
+                                            }}</span>
+                                        <span *ngSwitchCase="'payment_methods'">{{
+                                            getPaymentMethods(element[column]) }}</span>
+                                        <span *ngSwitchCase="'status'">{{ getStatus_es(element[column]) }}</span>
                                         <span *ngSwitchDefault>{{ element[column] }}</span>
                                     </ng-container>
                                 </td>

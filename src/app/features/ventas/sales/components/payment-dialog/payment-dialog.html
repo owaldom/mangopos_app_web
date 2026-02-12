@@ -32,11 +32,12 @@
                 <span>{{ data.subtotal | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</span>
             </div>
             <div class="total-row">
-                <span>Impuestos</span>
+                <span>IVA ({{ getTaxPercentage() }}%)</span>
                 <span>{{ data.taxes | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</span>
             </div>
-            <div class="total-row igtf" *ngIf="igtfAmountAlt > 0">
-                <span>I.G.T.F. ({{ settingsService.getSettings()?.igtf_percentage }}%)</span>
+            <div class="total-row igtf"
+                *ngIf="settingsService.getSettings()?.igtf_enabled && (selectedCurrency === 'alt' || isMultiPayment)">
+                <span>I.G.T.F. ({{ settingsService.getSettings()?.igtf_percentage || 3 }}%)</span>
                 <div style="text-align: right;">
                     <div style="font-size: 0.9rem; opacity: 0.8;">{{ igtfAmountAlt | currency:'USD':'$
                         ':settingsService.getDecimalFormat('total') }}</div>
