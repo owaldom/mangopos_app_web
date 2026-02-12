@@ -109,6 +109,7 @@ export const MENU_CATEGORIES: MenuCategory[] = [
             { name: 'Registrar Gastos', route: '/dashboard/admin-gastos', icon: 'monetization_on', permission: 'admin.expenses' },
             { name: 'Habladores de Precio', route: '/dashboard/admin-habladores', icon: 'label', permission: 'admin.habladores' },
             { name: 'Reportes por Módulos', route: '/dashboard/reportes', icon: 'analytics' },
+            { name: 'Facturas Divisas (IGTF)', route: '/dashboard/reportes/facturas-divisas', icon: 'currency_exchange' },
             { name: 'Configuración General', route: '/dashboard/configuracion', icon: 'settings' }
         ]
     },

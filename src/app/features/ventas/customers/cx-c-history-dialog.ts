@@ -131,7 +131,7 @@ export class CxCHistoryDialogComponent implements OnInit {
                     ${p.cedula ? `<div class="row"><span>Cédula:</span> <span>${p.cedula}</span></div>` : ''}
                 </div>
 
-                <div class="row" style="font-size: 14px;">
+                    <div class="row" style="font-size: 14px;">
                     <span class="bold">MONTO PAGADO:</span>
                     <span class="bold">${this.decimalPipe.transform(p.amountBs, this.settingsService.getDecimalFormat('total'))} Bs.</span>
                 </div>
@@ -139,6 +139,12 @@ export class CxCHistoryDialogComponent implements OnInit {
                     <div class="row" style="font-size: 12px; font-style: italic; color: #555;">
                         <span>Equivalente:</span>
                         <span>$ ${this.decimalPipe.transform(p.amount, this.settingsService.getDecimalFormat('total'))}</span>
+                    </div>
+                ` : ''}
+                ${p.igtfAmount > 0 ? `
+                    <div class="row" style="font-size: 12px; color: #d32f2f;">
+                        <span>I.G.T.F. (3%):</span>
+                        <span>${this.decimalPipe.transform(p.igtfAmount, this.settingsService.getDecimalFormat('total'))} Bs.</span>
                     </div>
                 ` : ''}
 
@@ -172,6 +178,7 @@ export class CxCHistoryDialogComponent implements OnInit {
                 <td style="text-align: right; font-weight: bold;">
                     ${this.decimalPipe.transform(p.amountBs, this.settingsService.getDecimalFormat('total'))} Bs.
                     ${p.amount !== p.amountBs ? `<br><small style="color: #666;">$ ${this.decimalPipe.transform(p.amount, this.settingsService.getDecimalFormat('total'))}</small>` : ''}
+                    ${p.igtfAmount > 0 ? `<br><small style="color: #d32f2f;">IGTF: ${this.decimalPipe.transform(p.igtfAmount, this.settingsService.getDecimalFormat('total'))} Bs.</small>` : ''}
                 </td>
             </tr>
         `).join('');

@@ -266,6 +266,13 @@ export class PaymentDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
+  getTaxPercentage(): number {
+    if (this.data.subtotal > 0 && this.data.taxes > 0) {
+      return Math.round((this.data.taxes / this.data.subtotal) * 100);
+    }
+    return 16; // Default IVA percentage
+  }
+
   onConfirm(): void {
     const paymentData = {
       method: this.isMultiPayment ? 'mixed' : this.selectedMethod,

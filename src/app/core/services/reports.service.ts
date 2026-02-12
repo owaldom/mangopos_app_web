@@ -40,6 +40,12 @@ export class ReportsService {
         return this.http.get<any[]>(`${this.apiUrl}/sales/chart`, { params: { startDate, endDate } });
     }
 
+    getInvoicesWithForeignCurrency(startDate: string, endDate: string, customerId?: string): Observable<any> {
+        const params: any = { startDate, endDate };
+        if (customerId) params.customerId = customerId;
+        return this.http.get<any>(`${this.apiUrl}/sales/invoices-with-foreign-currency`, { params });
+    }
+
     // Inventario
     getInventoryCurrent(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/inventory/current`);

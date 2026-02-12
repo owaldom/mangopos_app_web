@@ -64,6 +64,8 @@ export interface Ticket {
     notes?: string;
     globalDiscount?: number;
     globalDiscountType?: 'PERCENT' | 'FIXED' | 'FIXED_VES';
+    igtf_amount?: number;
+    igtf_amount_alt?: number;
 }
 
 export interface SalesHistoryFilters {

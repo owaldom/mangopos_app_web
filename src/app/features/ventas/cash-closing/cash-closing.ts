@@ -210,13 +210,6 @@ import { MoneyInputDirective } from '../../../shared/directives/money-input.dire
                     </div>
                     <div class="physical-field">
                         <mat-form-field appearance="outline" class="full-width">
-                            <mat-label>Transferencia (Bs.)</mat-label>
-                            <input matInput type="text" [(ngModel)]="countedAmounts.transfer_ves" appMoneyInput decimalType="total" placeholder="0.00">
-                            <span matPrefix>Bs. &nbsp;</span>
-                        </mat-form-field>
-                    </div>
-                    <div class="physical-field">
-                        <mat-form-field appearance="outline" class="full-width">
                             <mat-label>Pago Móvil (Bs.)</mat-label>
                             <input matInput type="text" [(ngModel)]="countedAmounts.pagomovil_ves" appMoneyInput decimalType="total" placeholder="0.00">
                             <span matPrefix>Bs. &nbsp;</span>
@@ -233,6 +226,13 @@ import { MoneyInputDirective } from '../../../shared/directives/money-input.dire
                         <mat-form-field appearance="outline" class="full-width">
                             <mat-label>Crédito (Bs.)</mat-label>
                             <input matInput type="text" [(ngModel)]="countedAmounts.debt_ves" appMoneyInput decimalType="total" placeholder="0.00">
+                            <span matPrefix>Bs. &nbsp;</span>
+                        </mat-form-field>
+                    </div>
+                    <div class="physical-field">
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Transferencia (Bs.)</mat-label>
+                            <input matInput type="text" [(ngModel)]="countedAmounts.transfer_ves" appMoneyInput decimalType="total" placeholder="0.00">
                             <span matPrefix>Bs. &nbsp;</span>
                         </mat-form-field>
                     </div>
@@ -469,13 +469,20 @@ export class CashClosingComponent implements OnInit {
     const expected = this.getExpectedCash();
     const findExpected = (label: string) => expected.find(e => e.label === label)?.amount || 0;
 
+    const getDiff = (counted: any, label: string) => {
+      const expectedVal = findExpected(label);
+      const roundedExpected = Math.round(expectedVal * 100) / 100;
+      const roundedCounted = Math.round(Number(counted) * 100) / 100;
+      return Math.abs(roundedCounted - roundedExpected);
+    };
+
     const diffs = [
-      { name: 'Efectivo en Bs.', diff: Math.abs(Number(this.countedAmounts.cash_ves) - findExpected('Efectivo en Bs.')) },
-      { name: 'Efectivo en USD', diff: Math.abs(Number(this.countedAmounts.cash_usd) - findExpected('Efectivo en USD')) },
-      { name: 'Transferencia en Bs.', diff: Math.abs(Number(this.countedAmounts.transfer_ves) - findExpected('Transferencia en Bs.')) },
-      { name: 'Pago Móvil en Bs.', diff: Math.abs(Number(this.countedAmounts.pagomovil_ves) - findExpected('Pago Móvil en Bs.')) },
-      { name: 'Tarjeta en Bs.', diff: Math.abs(Number(this.countedAmounts.card_ves) - findExpected('Tarjeta en Bs.')) },
-      { name: 'Crédito en Bs.', diff: Math.abs(Number(this.countedAmounts.debt_ves) - findExpected('Crédito en Bs.')) }
+      { name: 'Efectivo en Bs.', diff: getDiff(this.countedAmounts.cash_ves, 'Efectivo en Bs.') },
+      { name: 'Efectivo en USD', diff: getDiff(this.countedAmounts.cash_usd, 'Efectivo en USD') },
+      { name: 'Transferencia en Bs.', diff: getDiff(this.countedAmounts.transfer_ves, 'Transferencia en Bs.') },
+      { name: 'Pago Móvil en Bs.', diff: getDiff(this.countedAmounts.pagomovil_ves, 'Pago Móvil en Bs.') },
+      { name: 'Tarjeta en Bs.', diff: getDiff(this.countedAmounts.card_ves, 'Tarjeta en Bs.') },
+      { name: 'Crédito en Bs.', diff: getDiff(this.countedAmounts.debt_ves, 'Crédito en Bs.') }
     ].filter(d => d.diff > 0.01);
 
     if (diffs.length > 0) {

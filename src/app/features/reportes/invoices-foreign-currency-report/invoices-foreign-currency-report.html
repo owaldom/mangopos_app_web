@@ -1,0 +1,152 @@
+<div class="report-container">
+    <div class="header-section">
+        <h1>Reporte de Facturas en Divisas (IGTF)</h1>
+        <p class="subtitle">Consulta de facturas pagadas en moneda extranjera y desglose de IGTF</p>
+    </div>
+
+    <mat-card class="filter-card">
+        <mat-card-content class="filter-content">
+            <mat-form-field appearance="outline">
+                <mat-label>Desde</mat-label>
+                <input matInput [matDatepicker]="pickerStart" [(ngModel)]="startDate">
+                <mat-datepicker-toggle matSuffix [for]="pickerStart"></mat-datepicker-toggle>
+                <mat-datepicker #pickerStart></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Hasta</mat-label>
+                <input matInput [matDatepicker]="pickerEnd" [(ngModel)]="endDate">
+                <mat-datepicker-toggle matSuffix [for]="pickerEnd"></mat-datepicker-toggle>
+                <mat-datepicker #pickerEnd></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="customer-field">
+                <mat-label>Cliente (Opcional)</mat-label>
+                <input matInput [formControl]="customerControl" [matAutocomplete]="auto"
+                    placeholder="Buscar cliente...">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayCustomer"
+                    (optionSelected)="onCustomerSelected($event)">
+                    <mat-option *ngFor="let customer of filteredCustomers" [value]="customer">
+                        {{ customer.name }} ({{ customer.taxid }})
+                    </mat-option>
+                </mat-autocomplete>
+                <button mat-icon-button matSuffix *ngIf="selectedCustomer" (click)="clearCustomer()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </mat-form-field>
+
+            <div class="actions">
+                <button mat-raised-button color="primary" (click)="generateReport()" [disabled]="loading">
+                    <mat-icon>search</mat-icon> GENERAR
+                </button>
+                <button mat-stroked-button color="accent" (click)="exportToExcel()" [disabled]="data.length === 0">
+                    <mat-icon>file_download</mat-icon> EXCEL
+                </button>
+            </div>
+        </mat-card-content>
+    </mat-card>
+
+    <div class="results-container" *ngIf="!loading && data.length > 0">
+        <div class="summary-cards">
+            <mat-card class="kpi-card">
+                <mat-card-content>
+                    <div class="kpi-label">Total Facturas</div>
+                    <div class="kpi-value">{{ summary.total_invoices }}</div>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="kpi-card">
+                <mat-card-content>
+                    <div class="kpi-label">Total Ventas (USD)</div>
+                    <div class="kpi-value">$ {{ summary.total_sales_usd | number:'1.2-2' }}</div>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="kpi-card highlight">
+                <mat-card-content>
+                    <div class="kpi-label">Total IGTF (USD)</div>
+                    <div class="kpi-value">$ {{ summary.total_igtf_usd | number:'1.2-2' }}</div>
+                </mat-card-content>
+            </mat-card>
+
+            <mat-card class="kpi-card highlight">
+                <mat-card-content>
+                    <div class="kpi-label">Total IGTF (Bs)</div>
+                    <div class="kpi-value">Bs. {{ summary.total_igtf_bs | number:'1.2-2' }}</div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+
+        <table mat-table [dataSource]="data" class="mat-elevation-z2 report-table">
+            <!-- Ticket Column -->
+            <ng-container matColumnDef="ticket_number">
+                <th mat-header-cell *matHeaderCellDef> Factura </th>
+                <td mat-cell *matCellDef="let element"> #{{ element.ticket_number }} </td>
+            </ng-container>
+
+            <!-- Date Column -->
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef> Fecha </th>
+                <td mat-cell *matCellDef="let element"> {{ element.date | systemDate }} </td>
+            </ng-container>
+
+            <!-- Customer Column -->
+            <ng-container matColumnDef="customer">
+                <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                <td mat-cell *matCellDef="let element">
+                    <div class="customer-info">
+                        <span>{{ element.customer_name }}</span>
+                        <small *ngIf="element.customer_taxid">{{ element.customer_taxid }}</small>
+                    </div>
+                </td>
+            </ng-container>
+
+            <!-- Total USD Column -->
+            <ng-container matColumnDef="total_usd">
+                <th mat-header-cell *matHeaderCellDef class="numeric-cell"> Total USD </th>
+                <td mat-cell *matCellDef="let element" class="numeric-cell"> $ {{ element.total_usd | number:'1.2-2' }}
+                </td>
+            </ng-container>
+
+            <!-- Total Bs Column -->
+            <ng-container matColumnDef="total_bs">
+                <th mat-header-cell *matHeaderCellDef class="numeric-cell"> Total Bs </th>
+                <td mat-cell *matCellDef="let element" class="numeric-cell"> Bs. {{ element.total_bs | number:'1.2-2' }}
+                </td>
+            </ng-container>
+
+            <!-- IGTF USD Column -->
+            <ng-container matColumnDef="igtf_usd">
+                <th mat-header-cell *matHeaderCellDef class="numeric-cell text-warn"> IGTF USD </th>
+                <td mat-cell *matCellDef="let element" class="numeric-cell text-warn"> $ {{ element.igtf_usd |
+                    number:'1.2-2' }} </td>
+            </ng-container>
+
+            <!-- IGTF Bs Column -->
+            <ng-container matColumnDef="igtf_bs">
+                <th mat-header-cell *matHeaderCellDef class="numeric-cell text-warn"> IGTF Bs </th>
+                <td mat-cell *matCellDef="let element" class="numeric-cell text-warn"> Bs. {{ element.igtf_bs |
+                    number:'1.2-2' }} </td>
+            </ng-container>
+
+            <!-- Payments Column -->
+            <ng-container matColumnDef="payments">
+                <th mat-header-cell *matHeaderCellDef> Métodos </th>
+                <td mat-cell *matCellDef="let element"> {{ getPaymentMethods(element.payment_methods) }} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </div>
+
+    <div class="no-data" *ngIf="!loading && data.length === 0">
+        <mat-icon>info</mat-icon>
+        <p>No se encontraron datos para el rango seleccionado.</p>
+    </div>
+
+    <div class="spinner-container" *ngIf="loading">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Generando reporte...</p>
+    </div>
+</div>
