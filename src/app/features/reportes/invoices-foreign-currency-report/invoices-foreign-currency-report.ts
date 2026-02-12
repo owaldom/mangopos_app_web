@@ -58,7 +58,7 @@ export class InvoicesForeignCurrencyReportComponent {
     data: any[] = [];
     summary: any = {};
 
-    displayedColumns: string[] = ['ticket_number', 'date', 'customer', 'total_usd', 'total_bs', 'igtf_usd', 'igtf_bs', 'payments'];
+    displayedColumns: string[] = ['ticket_number', 'date', 'customer', 'exchange_rate', 'total_usd', 'total_bs', 'igtf_usd', 'igtf_bs', 'payments', 'status'];
 
     constructor() {
         this.startDate.setDate(1); // First day of current month
@@ -113,18 +113,20 @@ export class InvoicesForeignCurrencyReportComponent {
 
     exportToExcel() {
         // CSV Export fallback since xlsx is not available
-        const headers = ['Nro. Ticket', 'Fecha', 'Cliente', 'RIF/CI', 'Total USD', 'Total Bs', 'IGTF USD', 'IGTF Bs', 'Métodos de Pago'];
+        const headers = ['Nro. Ticket', 'Fecha', 'Cliente', 'RIF/CI', 'Tasa Cambio', 'Total USD', 'Total Bs', 'IGTF USD', 'IGTF Bs', 'Métodos de Pago', 'Estado'];
 
         const rows = this.data.map(item => [
             item.ticket_number,
             this.datePipe.transform(item.date, 'dd/MM/yyyy HH:mm'),
             item.customer_name,
             item.customer_taxid,
+            Number(item.exchange_rate).toFixed(2),
             Number(item.total_usd).toFixed(2),
             Number(item.total_bs).toFixed(2),
             Number(item.igtf_usd).toFixed(2),
             Number(item.igtf_bs).toFixed(2),
-            this.getPaymentMethods(item.payment_methods)
+            this.getPaymentMethods(item.payment_methods),
+            this.getStatus_es(item.status)
         ]);
 
         // Summary row
@@ -133,10 +135,12 @@ export class InvoicesForeignCurrencyReportComponent {
             '',
             '',
             '',
+            '',
             (this.summary.total_sales_usd || 0).toFixed(2),
             (this.summary.total_sales_bs || 0).toFixed(2),
             (this.summary.total_igtf_usd || 0).toFixed(2),
             (this.summary.total_igtf_bs || 0).toFixed(2),
+            '',
             ''
         ]);
 
@@ -164,8 +168,23 @@ export class InvoicesForeignCurrencyReportComponent {
             'card': 'Tarjeta',
             'transfer': 'Transferencia',
             'paper': 'Pago Móvil',
-            'debt': 'Crédito'
+            'debt': 'Crédito',
+            'debtpaid': 'Abono Deuda',
+            'PagoMovil': 'Pago Móvil',
+            'Credito': 'Crédito',
+            'Debito': 'Débito',
+            'magcard': 'Tarjeta',
+            'cheque': 'Cheque'
         };
         return methods.map(m => map[m] || m).join(', ');
+    }
+
+    getStatus_es(status: string): string {
+        const map: any = {
+            'paid': 'Pagado',
+            'partial': 'Parcial',
+            'pending': 'Pendiente'
+        };
+        return map[status] || status;
     }
 }

@@ -128,6 +128,11 @@
                                             number:'1.2-2' }}</span>
                                         <span *ngSwitchCase="'date'">{{ element[column] | date:'dd/MM/yyyy HH:mm'
                                             }}</span>
+                                        <span *ngSwitchCase="'exchange_rate'">{{ element[column] | number:'1.2-2'
+                                            }}</span>
+                                        <span *ngSwitchCase="'payment_methods'">{{
+                                            getPaymentMethods(element[column]) }}</span>
+                                        <span *ngSwitchCase="'status'">{{ getStatus_es(element[column]) }}</span>
                                         <span *ngSwitchDefault>{{ element[column] }}</span>
                                     </ng-container>
                                 </td>

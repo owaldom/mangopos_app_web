@@ -427,10 +427,38 @@ export class ReportsComponent implements OnInit {
             'igtf_bs': 'IGTF Bs.',
             'payment_methods': 'Métodos de Pago',
             'status': 'Estado',
+            'exchange_rate': 'Tasa Cambio',
             // Otros
             'role': 'Rol',
             'visible': 'Visible'
         };
         return map[key] || key;
+    }
+
+    getPaymentMethods(methods: string[]): string {
+        if (!Array.isArray(methods)) return '';
+        const map: any = {
+            'cash': 'Efectivo',
+            'card': 'Tarjeta',
+            'transfer': 'Transferencia',
+            'paper': 'Pago Móvil',
+            'debt': 'Crédito',
+            'debtpaid': 'Abono Deuda',
+            'PagoMovil': 'Pago Móvil',
+            'Credito': 'Crédito',
+            'Debito': 'Débito',
+            'magcard': 'Tarjeta',
+            'cheque': 'Cheque'
+        };
+        return methods.map(m => map[m] || m).join(', ');
+    }
+
+    getStatus_es(status: string): string {
+        const map: any = {
+            'paid': 'Pagado',
+            'partial': 'Parcial',
+            'pending': 'Pendiente'
+        };
+        return map[status] || status;
     }
 }
