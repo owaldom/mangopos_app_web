@@ -59,9 +59,20 @@ export class CatalogComponent implements OnInit {
 
   refresh(): void {
     this.salesService.getCatalog().subscribe(data => {
-      this.categories = data.categories;
-      this.products = data.products;
+      this.categories = this.deduplicate(data.categories);
+      this.products = this.deduplicate(data.products);
       this.updateDisplay();
+    });
+  }
+
+  private deduplicate(arr: any[]): any[] {
+    if (!arr) return [];
+    const seen = new Set();
+    return arr.filter(item => {
+      if (!item.id) return true; // Keep items without ID as they might be special or one-offs
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
     });
   }
 

@@ -47,7 +47,7 @@ export class ProductSearchDialogComponent implements OnInit {
 
         // To ensure fresh data, we fetch. It's fast enough usually.
         this.salesService.getCatalog().subscribe((res: any) => {
-            this.products = res.products;
+            this.products = this.deduplicate(res.products);
             // Initially show nothing or popular?
             // Let's show nothing or recent? User request: "busqueda".
             this.filteredProducts = [];
@@ -55,6 +55,17 @@ export class ProductSearchDialogComponent implements OnInit {
 
         this.salesService.exchangeRate$.subscribe((rate: number) => {
             this.exchangeRate = rate;
+        });
+    }
+
+    private deduplicate(arr: any[]): any[] {
+        if (!arr) return [];
+        const seen = new Set();
+        return arr.filter(item => {
+            if (!item.id) return true;
+            if (seen.has(item.id)) return false;
+            seen.add(item.id);
+            return true;
         });
     }
 
