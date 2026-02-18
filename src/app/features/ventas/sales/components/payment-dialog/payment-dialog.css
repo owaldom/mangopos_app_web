@@ -1,44 +1,49 @@
 .payment-container {
-    padding: 16px 24px;
-    max-width: 1000px;
-    width: 95%;
-    max-height: 95vh;
+    padding: 6px 12px;
+    max-width: 800px;
+    width: 90%;
+    max-height: 98vh;
     display: flex;
     flex-direction: column;
+    background: #ffffff;
 }
 
 .scrollable-content {
     flex: 1;
     overflow-y: auto;
-    padding-right: 8px;
-    margin-bottom: 16px;
+    padding: 2px 4px;
+    margin-bottom: 4px;
 }
 
 .title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-    color: #333;
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 2px;
+    color: #2c3e50;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .totals-summary {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    background-color: #fcfcfc;
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px 16px;
+    border: 1px solid #eef2f7;
+    margin-bottom: 4px;
 }
 
 .customer-credit-info {
-    background: linear-gradient(135deg, #f0f7ff 0%, #e1effe 100%);
-    border: 1px solid #c3ddfd;
-    padding: 12px 16px;
-    border-radius: 12px;
+    background: #f0f7ff;
+    border: 1px solid #d1e9ff;
+    padding: 4px 10px;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 5px;
+    gap: 2px;
+    margin-bottom: 4px;
 }
 
 .customer-name {
@@ -96,7 +101,8 @@
 .total-row {
     display: flex;
     justify-content: space-between;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
+    color: #555;
 }
 
 .total-row.igtf {
@@ -106,12 +112,13 @@
 }
 
 .total-row.main {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 800;
     color: #3875D5;
-    border-top: 1px solid #ddd;
-    padding-top: 12px;
-    margin-top: 4px;
+    grid-column: span 2;
+    border-top: 1px solid #eaedf2;
+    padding-top: 3px;
+    margin-top: 0;
 }
 
 .input-section {
@@ -149,9 +156,10 @@
 
 .currency-tabs button {
     flex: 1;
-    height: 40px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    font-size: 0.85rem;
     background: white;
     cursor: pointer;
     font-weight: 600;
@@ -168,10 +176,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
-    background-color: #e8f5e9;
-    border-radius: 8px;
-    color: #2e7d32;
+    padding: 4px 10px;
+    background-color: #f6ffed;
+    border-radius: 4px;
+    color: #389e0d;
+    margin-top: 4px;
+    border: 1px solid #b7eb8f;
 }
 
 .change-label {
@@ -180,27 +190,28 @@
 }
 
 .change-value {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 800;
     font-family: 'Roboto Mono', monospace;
 }
 
 .methods-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 8px;
 }
 
 .method-btn {
-    height: 80px;
+    height: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    border: 1px solid #dadce0;
-    background: white;
-    border-radius: 12px;
+    gap: 2px;
+    border: 1px solid #e2e8f0;
+    background: #fafafa;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -217,9 +228,14 @@
 }
 
 .method-btn mat-icon {
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.method-btn span {
+    font-size: 11px;
+    font-weight: 500;
 }
 
 .actions {
@@ -234,8 +250,16 @@
 
 .btn-confirm {
     flex: 2;
-    background-color: #4caf50;
+    background-color: #52c41a;
     color: white;
+    height: 34px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.btn-cancel {
+    height: 34px;
+    font-size: 0.85rem;
 }
 
 /* New Material Layout Styles */
@@ -245,15 +269,16 @@
 
 .multi-row-mat {
     display: grid;
-    grid-template-columns: 32px 80px repeat(5, minmax(0, 1fr));
+    grid-template-columns: 28px 75px repeat(5, minmax(0, 1fr));
     align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
+    gap: 6px;
+    padding: 4px 10px;
     background: #f8fafc;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid #e2e8f0;
     width: 100%;
     box-sizing: border-box;
+    margin-bottom: 2px;
 }
 
 .method-icon {

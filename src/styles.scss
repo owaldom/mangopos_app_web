@@ -52,6 +52,10 @@ html {
       typography: Roboto,
       density: 0,
     ));
+
+  @media (max-width: 1400px) or (max-height: 800px) {
+    font-size: 14px;
+  }
 }
 
 body {

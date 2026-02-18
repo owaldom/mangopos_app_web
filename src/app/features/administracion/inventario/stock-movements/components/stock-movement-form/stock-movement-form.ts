@@ -16,7 +16,9 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { of, Subject } from 'rxjs';
 
-import { StockService, MovementReason, LocationInfo } from '../../../../../../core/services/stock.service';
+import { StockService, MovementReason } from '../../../../../../core/services/stock.service';
+import { WarehouseService } from '../../../../../../core/services/warehouse.service';
+import { Warehouse } from '../../../../../../core/models/warehouse.model';
 import { SettingsService } from '../../../../../../core/services/settings.service';
 import { ProductService, Product } from '../../../../../../core/services/product.service';
 import { ProductSelectorComponent } from '../product-selector/product-selector';
@@ -172,7 +174,7 @@ import { AppConfigService } from '../../../../../../core/services/app-config.ser
 })
 export class StockMovementFormComponent implements OnInit, OnDestroy {
   form: FormGroup;
-  locations: LocationInfo[] = [];
+  locations: Warehouse[] = [];
   reasons = MovementReason.getAll();
   filteredProducts: Product[] = [];
   selectedProduct: Product | null = null;
@@ -181,6 +183,7 @@ export class StockMovementFormComponent implements OnInit, OnDestroy {
   private stockService = inject(StockService);
   private productService = inject(ProductService);
   public dialogRef = inject(MatDialogRef<StockMovementFormComponent>);
+  private warehouseService = inject(WarehouseService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
   public settingsService = inject(SettingsService);
@@ -204,19 +207,18 @@ export class StockMovementFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.stockService.getLocations().subscribe(locs => {
-      const config = this.configService.getConfig();
+    this.warehouseService.getAll().subscribe({
+      next: (locs: Warehouse[]) => {
+        console.log('Warehouses loaded in StockMovementForm:', locs?.length);
+        this.locations = locs || [];
 
-      if (config?.installation_type === 'pos') {
-        // In POS mode, only show the warehouse that matches the configured location name
-        this.locations = locs.filter(l => l.name === config.location_name);
-      } else {
-        // In Factory mode, show only 'factory' type warehouses for stock movements
-        this.locations = locs.filter(l => l.type === 'factory');
-      }
-
-      if (this.locations.length > 0) {
-        this.form.patchValue({ location: this.locations[0].id });
+        if (this.locations.length > 0 && !this.form.get('location')?.value) {
+          this.form.patchValue({ location: this.locations[0].id });
+        }
+      },
+      error: (err) => {
+        console.error('Error loading warehouses in StockMovementForm:', err);
+        this.snackBar.open('Error al cargar almacenes', 'Cerrar', { duration: 5000 });
       }
     });
 

@@ -61,7 +61,7 @@
                 <button [class.active]="selectedCurrency === 'base'" (click)="setCurrency('base')">Bs.</button>
                 <button [class.active]="selectedCurrency === 'alt'" (click)="setCurrency('alt')">$ USD</button>
             </div>
-            <div class="payment-mode-toggle" style="margin-top: 10px; text-align: center; margin-bottom: 1rem;">
+            <div class="payment-mode-toggle" style="margin-top: 6px; text-align: center; margin-bottom: 0.5rem;">
                 <button mat-stroked-button color="primary" (click)="toggleMultiPayment()">
                     <mat-icon>{{ isMultiPayment ? 'arrow_back' : 'layers' }}</mat-icon>
                     {{ isMultiPayment ? 'Volver a Pago Simple' : 'Activar Pago Mixto' }}
@@ -70,21 +70,23 @@
 
             <!-- Single Payment Mode -->
             <ng-container *ngIf="!isMultiPayment">
-                <div *ngIf="selectedCurrency === 'base'" class="single-input-wrapper">
-                    <mat-form-field appearance="outline" class="full-width">
+                <div *ngIf="selectedCurrency === 'base'" class="single-input-wrapper" style="margin-top: 4px;">
+                    <mat-form-field appearance="outline" class="full-width" density="compact">
                         <mat-label>Monto Recibido</mat-label>
-                        <span matTextPrefix>Bs. &nbsp;</span>
+                        <span matTextPrefix style="font-size: 0.85rem;">Bs. &nbsp;</span>
                         <input matInput appMoneyInput [(ngModel)]="receivedAmount"
-                            (ngModelChange)="calculateChange($event, 'base')" autocomplete="off">
+                            (ngModelChange)="calculateChange($event, 'base')" autocomplete="off"
+                            style="font-size: 1.15rem; height: 28px; font-weight: 700;">
                     </mat-form-field>
                 </div>
 
-                <div *ngIf="selectedCurrency === 'alt'" class="single-input-wrapper">
-                    <mat-form-field appearance="outline" class="full-width">
+                <div *ngIf="selectedCurrency === 'alt'" class="single-input-wrapper" style="margin-top: 4px;">
+                    <mat-form-field appearance="outline" class="full-width" density="compact">
                         <mat-label>Monto Recibido</mat-label>
-                        <span matTextPrefix>$ &nbsp;</span>
+                        <span matTextPrefix style="font-size: 0.85rem;">$ &nbsp;</span>
                         <input matInput appMoneyInput [(ngModel)]="receivedAmountAlt"
-                            (ngModelChange)="calculateChange($event, 'alt')" autocomplete="off">
+                            (ngModelChange)="calculateChange($event, 'alt')" autocomplete="off"
+                            style="font-size: 1.15rem; height: 28px; font-weight: 700;">
                     </mat-form-field>
                 </div>
 
