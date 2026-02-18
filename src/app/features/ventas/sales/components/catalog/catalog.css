@@ -173,6 +173,13 @@
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
 }
 
+@media (max-width: 1400px) {
+    .modern-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+        gap: 8px !important;
+    }
+}
+
 .modern-product-card {
     background: white;
     border-radius: 16px;
@@ -186,6 +193,13 @@
     /* FIXED HEIGHT */
 }
 
+@media (max-height: 800px) {
+    .modern-product-card {
+        height: 180px !important;
+        border-radius: 12px;
+    }
+}
+
 .modern-product-card .image-area {
     height: 120px !important;
     background: #f8fafc;
@@ -194,6 +208,12 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
+}
+
+@media (max-height: 800px) {
+    .modern-product-card .image-area {
+        height: 80px !important;
+    }
 }
 
 .modern-product-card .image-area img {

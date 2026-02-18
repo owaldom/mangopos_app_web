@@ -115,6 +115,13 @@
     background-color: #f0f2f5;
 }
 
+@media (max-width: 1400px) or (max-height: 800px) {
+    .sales-container {
+        padding: 8px;
+        gap: 8px;
+    }
+}
+
 /* MODERN SALES LAYOUT */
 .modern-layout {
     background: #f8fafc !important;
@@ -133,6 +140,16 @@
     padding: 0 20px;
     margin-bottom: 16px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-height: 800px) {
+    .modern-layout .sales-top-bar {
+        height: 48px;
+        margin-bottom: 8px;
+        border-radius: 12px;
+        padding: 0 12px;
+        gap: 12px;
+    }
 }
 
 .modern-layout .customer-pill {
@@ -396,6 +413,13 @@
     min-height: 0;
 }
 
+@media (max-width: 1400px) {
+    .modern-layout .ticket-sidebar {
+        width: 320px;
+        gap: 8px;
+    }
+}
+
 .modern-layout .ticket-scroll {
     flex: 1;
     overflow-y: auto;
@@ -415,6 +439,14 @@
     flex-direction: column;
     gap: 12px;
     flex-shrink: 0;
+}
+
+@media (max-height: 800px) {
+    .modern-layout .modern-totals {
+        padding: 12px;
+        gap: 8px;
+        border-radius: 16px;
+    }
 }
 
 .modern-layout .modern-totals .total-row {
@@ -479,6 +511,14 @@
     transition: all 0.2s;
     margin-top: auto;
     width: 100%;
+}
+
+@media (max-height: 800px) {
+    .modern-layout .btn-pay.modern {
+        height: 48px;
+        font-size: 16px;
+        border-radius: 12px;
+    }
 }
 
 .modern-layout .btn-pay.modern:hover {
