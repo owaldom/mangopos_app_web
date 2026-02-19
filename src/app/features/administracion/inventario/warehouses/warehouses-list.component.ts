@@ -54,6 +54,16 @@ import { WarehouseFormComponent } from './components/warehouse-form/warehouse-fo
               <td mat-cell *matCellDef="let element"> {{element.address || '-'}} </td>
             </ng-container>
 
+            <!-- Type Column -->
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef> Tipo </th>
+              <td mat-cell *matCellDef="let element">
+                <span class="badge" [ngClass]="element.type">
+                  {{element.type === 'factory' ? 'Fábrica' : 'Punto de Venta'}}
+                </span>
+              </td>
+            </ng-container>
+
             <!-- Actions Column -->
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef> Acciones </th>

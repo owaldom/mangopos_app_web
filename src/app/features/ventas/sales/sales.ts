@@ -409,9 +409,10 @@ export class SalesComponent implements OnInit, OnDestroy {
 
     const total = this.salesService.getTotal();
     const dialogRef = this.dialog.open(PaymentDialogComponent, {
-      width: '1000px',
+      width: 'auto',
       maxWidth: '95vw',
-      height: '95vh',
+      height: 'auto',
+      maxHeight: '98vh',
       data: {
         total,
         subtotal: this.subtotal,
@@ -735,7 +736,8 @@ export class SalesComponent implements OnInit, OnDestroy {
     // Manejo de Balanza
     if (product.isscale && units === undefined) {
       const dialogRef = this.dialog.open(ScaleWeightDialogComponent, {
-        width: '400px',
+        width: 'auto',
+        height: 'auto',
         data: { product }
       });
 

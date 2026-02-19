@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, OnInit, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -28,7 +28,8 @@ import { MoneyInputDirective } from '../../../shared/directives/money-input.dire
         MoneyInputDirective
     ],
     templateUrl: './cxp-payment-dialog.html',
-    styleUrl: './cxp-payment-dialog.css'
+    styleUrl: './cxp-payment-dialog.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CxPPaymentDialogComponent implements OnInit {
     private supplierService = inject(SupplierService);
@@ -62,6 +63,7 @@ export class CxPPaymentDialogComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
+        this.totalFormat = this.settingsService.getDecimalFormat('total');
         this.loadInvoices();
         this.loadBanks();
     }
@@ -79,10 +81,15 @@ export class CxPPaymentDialogComponent implements OnInit {
         });
     }
 
-    selectMethod(method: string): void {
+    setPaymentMethod(method: string): void {
         this.paymentMethod = method;
         this.is_pago_movil = (method === 'paper' || method === 'PagoMovil');
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
+    }
+
+    setCurrency(type: 'base' | 'alt'): void {
+        this.selectedCurrency = type;
+        this.cdr.markForCheck();
     }
 
     getFilteredBanks(): Bank[] {
@@ -93,8 +100,13 @@ export class CxPPaymentDialogComponent implements OnInit {
     }
 
     onInvoiceChange(invoice: any): void {
-        this.amountUsd = invoice.balance;
-        this.onAmountUsdChange(this.amountUsd);
+        if (invoice) {
+            this.amountUsd = invoice.balance;
+            this.onAmountUsdChange(this.amountUsd);
+        } else {
+            this.selectedInvoice = null;
+        }
+        this.cdr.markForCheck();
     }
 
     onAmountBsChange(value: number): void {
@@ -123,7 +135,7 @@ export class CxPPaymentDialogComponent implements OnInit {
     }
 
     isValid(): boolean {
-        return this.amountBs > 0 && !!this.selectedInvoice;
+        return this.amountUsd > 0.01;
     }
 
     onCancel(): void {
@@ -144,7 +156,7 @@ export class CxPPaymentDialogComponent implements OnInit {
                 reference: this.reference,
                 account_number: this.account,
                 is_pago_movil: this.is_pago_movil,
-                invoice_number: this.selectedInvoice.numberInvoice,
+                invoice_number: this.selectedInvoice?.numberInvoice || '',
                 amount_base: this.amountBs,
                 currency_id: this.selectedCurrency === 'base' ? 1 : 2,
                 exchange_rate: this.data.exchangeRate

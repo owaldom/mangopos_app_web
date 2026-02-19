@@ -1,116 +1,104 @@
 <div class="payment-container">
-    <h2 mat-dialog-title>Abono/Pago de Deuda - {{data.supplier.name}}</h2>
+    <h2 mat-dialog-title>Abono de Deuda (CXP)</h2>
 
-    <mat-dialog-content>
-        <div class="totals-summary">
-            <div class="total-item">
-                <label>Deuda Total (USD)</label>
-                <span class="value-usd">{{data.supplier.balance | number:settingsService.getDecimalFormat('total')}}
-                    Bs.</span>
-            </div>
-            <div class="total-item" *ngIf="data.exchangeRate">
-                <label>Equivalente en Bs.</label>
-                <span class="value-bs">{{(data.supplier.balance * data.exchangeRate) |
-                    number:settingsService.getDecimalFormat('total')}} Bs.</span>
-            </div>
+    <div class="totals-summary" style="margin-bottom: 8px; padding: 6px;">
+        <div class="total-item">
+            <label style="font-size: 9px;">Deuda (USD)</label>
+            <span style="font-size: 1rem;" class="value-usd">$ {{data.supplier.balance | number:totalFormat}}</span>
+        </div>
+        <div class="total-item" *ngIf="data.exchangeRate">
+            <label style="font-size: 9px;">Monto en Bs.</label>
+            <span style="font-size: 1rem;" class="value-bs">{{(data.supplier.balance * data.exchangeRate) |
+                number:totalFormat}} Bs.</span>
+        </div>
+    </div>
+
+    <div class="zen-details-container invoice-row-container" style="margin-bottom: 8px;">
+        <div class="zen-detail-row">
+            <label>Factura</label>
+            <mat-select [(ngModel)]="selectedInvoice" (selectionChange)="onInvoiceChange($event.value)"
+                class="zen-mat-select micro-detail-input" placeholder="Opcional: Seleccione factura...">
+                <mat-option [value]="null">Abono General (Sin Factura)</mat-option>
+                <mat-option *ngFor="let inv of invoices" [value]="inv">
+                    {{inv.dateInvoices}} - $ {{inv.balance | number:totalFormat}} ({{inv.numberInvoice}})
+                </mat-option>
+            </mat-select>
+        </div>
+    </div>
+
+    <div class="currency-tabs" style="margin-bottom: 8px;">
+        <div class="tab-btn" [class.active]="selectedCurrency === 'base'" (click)="setCurrency('base')">Bs.</div>
+        <div class="tab-btn" [class.active]="selectedCurrency === 'alt'" (click)="setCurrency('alt')">$ USD</div>
+    </div>
+
+    <div class="zen-details-container" style="margin-bottom: 8px;">
+        <div class="zen-detail-row">
+            <label>Monto a Pagar</label>
+            <input type="text" class="micro-detail-input" style="font-size: 1.05rem; font-weight: 700; color: #3f51b5;"
+                *ngIf="selectedCurrency === 'base'" [(ngModel)]="amountBs" (ngModelChange)="onAmountBsChange($event)"
+                appMoneyInput placeholder="0,00 Bs.">
+            <input type="text" class="micro-detail-input" style="font-size: 1.05rem; font-weight: 700; color: #3f51b5;"
+                *ngIf="selectedCurrency === 'alt'" [(ngModel)]="amountUsd" (ngModelChange)="onAmountUsdChange($event)"
+                appMoneyInput placeholder="0,00 $">
         </div>
 
-        <div class="invoice-selection">
-            <mat-form-field appearance="outline">
-                <mat-label>Seleccionar Factura de Compra (Saldo en USD)</mat-label>
-                <mat-select [(ngModel)]="selectedInvoice" (selectionChange)="onInvoiceChange($event.value)">
-                    <mat-option *ngFor="let inv of invoices" [value]="inv">
-                        {{inv.dateInvoices}} - Saldo: $ {{inv.balance |
-                        number:settingsService.getDecimalFormat('total')}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+        <div class="exchange-rate-details" *ngIf="data.exchangeRate" style="padding: 4px 10px; margin-bottom: 4px;">
+            <span class="equivalent-hint" *ngIf="selectedCurrency === 'base'">Paga: <strong>$ {{amountUsd |
+                    number:totalFormat}}</strong></span>
+            <span class="equivalent-hint" *ngIf="selectedCurrency === 'alt'">Paga: <strong>{{amountBs |
+                    number:totalFormat}} Bs.</strong></span>
+            <span class="rate-label">Tasa: <strong>{{data.exchangeRate | number:'1.2-2'}}</strong></span>
         </div>
+    </div>
 
-        <div class="payment-amount">
-            <div class="currency-tabs">
-                <button [class.active]="selectedCurrency === 'base'" (click)="selectedCurrency = 'base'">Bs.</button>
-                <button [class.active]="selectedCurrency === 'alt'" (click)="selectedCurrency = 'alt'">$ USD</button>
-            </div>
-
-            <mat-form-field appearance="outline" *ngIf="selectedCurrency === 'base'">
-                <mat-label>Monto a Pagar (Bs)</mat-label>
-                <span matTextPrefix>Bs. &nbsp;</span>
-                <input matInput [(ngModel)]="amountBs" (ngModelChange)="onAmountBsChange($event)" appMoneyInput>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" *ngIf="selectedCurrency === 'alt'">
-                <mat-label>Monto a Pagar (USD)</mat-label>
-                <span matTextPrefix>$ &nbsp;</span>
-                <input matInput [(ngModel)]="amountUsd" (ngModelChange)="onAmountUsdChange($event)" appMoneyInput>
-            </mat-form-field>
-
-            <div class="exchange-rate-details" *ngIf="data.exchangeRate">
-                <span class="rate-label">Tasa: <strong>{{data.exchangeRate | number:'1.2-2'}}</strong></span>
-                <span class="equivalent-hint" *ngIf="selectedCurrency === 'base'">Equivale a: <strong>$ {{amountUsd |
-                        number:totalFormat}}</strong></span>
-                <span class="equivalent-hint" *ngIf="selectedCurrency === 'alt'">Equivale a: <strong>{{amountBs |
-                        number:totalFormat}} Bs.</strong></span>
-            </div>
+    <div class="payment-methods" style="margin-bottom: 10px;">
+        <div class="custom-method-btn" [class.active]="paymentMethod === 'cash'" (click)="setPaymentMethod('cash')">
+            <mat-icon>payments</mat-icon>
+            <span>Efectivo</span>
         </div>
-
-
-        <div class="payment-methods">
-            <button type="button" mat-stroked-button color="primary" class="method-btn"
-                [class.active]="paymentMethod === 'cash'" (click)="selectMethod('cash')">
-                <mat-icon>payments</mat-icon>
-                Efectivo
-            </button>
-            <button type="button" mat-stroked-button color="primary" class="method-btn"
-                [class.active]="paymentMethod === 'card'" (click)="selectMethod('card')">
-                <mat-icon>credit_card</mat-icon>
-                Tarjeta
-            </button>
-            <button type="button" mat-stroked-button color="primary" class="method-btn"
-                [class.active]="paymentMethod === 'paper'" (click)="selectMethod('paper')">
-                <mat-icon>smartphone</mat-icon>
-                Pago Móvil
-            </button>
-            <button type="button" mat-stroked-button color="primary" class="method-btn"
-                [class.active]="paymentMethod === 'transfer'" (click)="selectMethod('transfer')">
-                <mat-icon>account_balance</mat-icon>
-                Transferencia
-            </button>
+        <div class="custom-method-btn" [class.active]="paymentMethod === 'card'" (click)="setPaymentMethod('card')">
+            <mat-icon>credit_card</mat-icon>
+            <span>Tarjeta</span>
         </div>
-
-        <div class="payment-details" [hidden]="paymentMethod === 'cash'">
-            <mat-form-field appearance="outline" [hidden]="paymentMethod !== 'paper'"
-                style="width: 100%; margin-bottom: 8px;">
-                <mat-label>Cédula/Telf (Pago Móvil)</mat-label>
-                <input matInput [(ngModel)]="cedula" placeholder="V-12345678 / 0412...">
-            </mat-form-field>
-            <mat-form-field appearance="outline" [hidden]="paymentMethod !== 'transfer'"
-                style="width: 100%; margin-bottom: 8px;">
-                <mat-label>Cuenta de Destino</mat-label>
-                <input matInput [(ngModel)]="account" placeholder="Últimos 4 dígitos o cuenta completa">
-            </mat-form-field>
-            <div style="display: flex; gap: 8px;">
-                <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>Referencia</mat-label>
-                    <input matInput [(ngModel)]="reference" placeholder="Ref #">
-                </mat-form-field>
-                <mat-form-field appearance="outline" style="flex: 1;">
-                    <mat-label>Banco</mat-label>
-                    <mat-select [(ngModel)]="selectedBankId">
-                        <mat-option value="">Ninguno</mat-option>
-                        <mat-option *ngFor="let bank of getFilteredBanks()" [value]="bank.id">
-                            {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
+        <div class="custom-method-btn" [class.active]="paymentMethod === 'paper'" (click)="setPaymentMethod('paper')">
+            <mat-icon>smartphone</mat-icon>
+            <span>Pago Móvil</span>
         </div>
-    </mat-dialog-content>
+        <div class="custom-method-btn" [class.active]="paymentMethod === 'transfer'"
+            (click)="setPaymentMethod('transfer')">
+            <mat-icon>sync_alt</mat-icon>
+            <span>Transf.</span>
+        </div>
+    </div>
 
-    <mat-dialog-actions class="actions">
-        <button mat-button (click)="onCancel()">Cancelar</button>
-        <button mat-raised-button color="primary" [disabled]="!isValid()" (click)="onConfirm()">
-            Confirmar Pago
+    <div class="zen-details-container" *ngIf="paymentMethod !== 'cash'" style="margin-bottom: 6px;">
+        <div class="zen-detail-row">
+            <label>Referencia</label>
+            <input type="text" class="micro-detail-input" [(ngModel)]="reference" placeholder="Ref #">
+        </div>
+        <div class="zen-detail-row">
+            <label>Banco</label>
+            <mat-select [(ngModel)]="selectedBankId" class="zen-mat-select micro-detail-input">
+                <mat-option value="">Ninguno</mat-option>
+                <mat-option *ngFor="let bank of getFilteredBanks()" [value]="bank.id">
+                    {{ bank.name }} ({{ bank.currency }})
+                </mat-option>
+            </mat-select>
+        </div>
+        <div class="zen-detail-row" *ngIf="paymentMethod === 'paper'">
+            <label>Cédula/ID</label>
+            <input type="text" class="micro-detail-input" [(ngModel)]="cedula" placeholder="V-123...">
+        </div>
+        <div class="zen-detail-row" *ngIf="paymentMethod === 'transfer'">
+            <label>Cta. Destino</label>
+            <input type="text" class="micro-detail-input" [(ngModel)]="account" placeholder="Últimos 4...">
+        </div>
+    </div>
+
+    <div class="actions">
+        <button mat-button class="btn-cancel" (click)="onCancel()">CANCELAR</button>
+        <button mat-raised-button class="btn-confirm" [disabled]="!isValid()" (click)="onConfirm()">
+            CONFIRMAR PAGO
         </button>
-    </mat-dialog-actions>
+    </div>
 </div>

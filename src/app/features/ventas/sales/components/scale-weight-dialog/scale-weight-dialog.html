@@ -1,54 +1,58 @@
 <div class="scale-dialog">
-    <header class="dialog-header">
+    <div class="zen-header">
         <div class="header-main">
             <mat-icon color="primary">scale</mat-icon>
-            <h2>Pesa el Producto</h2>
+            <span class="title">Balanza de Pesaje</span>
         </div>
         <div class="scale-status" [class.online]="scaleStatus.connected">
             <span class="status-dot"></span>
-            {{ scaleStatus.connected ? 'Balanza Conectada' : 'Balanza Desconectada' }}
+            {{ scaleStatus.connected ? 'En Línea' : 'Desconectada' }}
         </div>
-    </header>
-
-    <div class="product-info">
-        <!--<span class="label">Producto:</span>-->
-        <span class="value">{{ productName }}</span>
     </div>
 
-    <div class="display-container">
+    <div class="zen-details-container" style="margin-bottom: 8px;">
+        <div class="zen-detail-row">
+            <label>Producto</label>
+            <span class="micro-detail-input product-name-display">{{ productName }}</span>
+        </div>
+    </div>
+
+    <div class="display-wrapper">
         <div class="weight-display-card" [class.stable]="scaleStatus.isStable">
             <div class="stability-light" [class.active]="scaleStatus.isStable" matTooltip="Peso Estable"></div>
             <div class="weight-value">{{ weightStr }}</div>
-            <!--<div class="unit">KG/LTR</div>-->
+            <div class="unit-label">KG</div>
         </div>
-        <button mat-stroked-button color="primary" class="btn-connect" (click)="toggleScaleConnection()">
+        <button class="zen-connect-btn" tabindex="-1" [class.connected]="scaleStatus.connected"
+            (click)="toggleScaleConnection()">
             <mat-icon>{{ scaleStatus.connected ? 'link_off' : 'usb' }}</mat-icon>
-            {{ scaleStatus.connected ? 'Desconectar' : 'Conectar Balanza' }}
+            <span>{{ scaleStatus.connected ? 'Desconectar' : 'Vincular Balanza' }}</span>
         </button>
     </div>
 
     <div class="manual-input-section">
-        <p class="subtitle">Ingreso Manual</p>
-        <div class="numpad">
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('1')">1</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('2')">2</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('3')">3</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('4')">4</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('5')">5</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('6')">6</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('7')">7</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('8')">8</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('9')">9</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('.')">.</button>
-            <button type="button" [disabled]="scaleStatus.connected" (click)="addDigit('0')">0</button>
-            <button type="button" class="btn-clear" [disabled]="scaleStatus.connected" (click)="clear()">C</button>
+        <div class="numpad-grid">
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('1')">1</button>
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('2')">2</button>
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('3')">3</button>
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('4')">4</button>
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('5')">5</button>
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('6')">6</button>
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('7')">7</button>
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('8')">8</button>
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('9')">9</button>
+            <button type="button" class="num-btn dot-btn" [disabled]="scaleStatus.connected"
+                (click)="addDigit('.')">.</button>
+            <button type="button" class="num-btn" [disabled]="scaleStatus.connected" (click)="addDigit('0')">0</button>
+            <button type="button" class="num-btn clear-btn" [disabled]="scaleStatus.connected"
+                (click)="clear()">C</button>
         </div>
     </div>
 
-    <footer class="actions">
-        <button mat-button (click)="onCancel()">CANCELAR</button>
-        <button mat-raised-button color="primary" class="btn-confirm" (click)="onConfirm()" [disabled]="weight <= 0">
+    <div class="actions">
+        <button mat-button class="btn-cancel" (click)="onCancel()">CANCELAR</button>
+        <button mat-raised-button class="btn-confirm" (click)="onConfirm()" [disabled]="weight <= 0">
             CONFIRMAR PESO
         </button>
-    </footer>
+    </div>
 </div>

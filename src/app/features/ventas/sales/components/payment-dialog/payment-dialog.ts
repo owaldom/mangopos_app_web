@@ -51,6 +51,8 @@ export class PaymentDialogComponent implements OnInit {
   };
 
   banks: Bank[] = [];
+  filteredBanks: Bank[] = [];
+  filteredPagoMovilBanks: Bank[] = [];
   selectedBankId: string = '';
 
   remaining: number = 0;
@@ -75,9 +77,18 @@ export class PaymentDialogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Initialize with the total in foreign currency (Alt) and calculate the local currency (Base)
-    this.receivedAmountAlt = this.data.totalAlt;
-    this.calculateChange(this.receivedAmountAlt, 'alt');
+    const s = this.settingsService.getSettings();
+    const totalDecimals = s?.total_decimals || 2;
+    const rate = this.data.exchangeRate || 1;
+
+    // Initialize based on selected currency to avoid unwanted IGTF on load
+    if (this.selectedCurrency === 'base') {
+      this.receivedAmount = parseFloat((this.data.totalAlt * rate).toFixed(totalDecimals));
+      this.calculateChange(this.receivedAmount, 'base');
+    } else {
+      this.receivedAmountAlt = this.data.totalAlt;
+      this.calculateChange(this.receivedAmountAlt, 'alt');
+    }
 
     // Load active banks
     this.loadBanks();
@@ -87,6 +98,8 @@ export class PaymentDialogComponent implements OnInit {
     this.banksService.getBanks(true).subscribe({
       next: (banks) => {
         this.banks = banks;
+        this.filteredBanks = [...banks];
+        this.filteredPagoMovilBanks = banks.filter(b => b.allows_pago_movil);
       },
       error: (error) => {
         console.error('Error loading banks:', error);
@@ -95,14 +108,12 @@ export class PaymentDialogComponent implements OnInit {
   }
 
   requiresBank(method: string): boolean {
-    return ['card', 'transfer', 'Debito', 'Credito', 'PagoMovil'].includes(method);
+    return ['card', 'transfer', 'Debito', 'PagoMovil'].includes(method);
   }
 
-  getFilteredBanks(method: string): Bank[] {
-    if (method === 'PagoMovil') {
-      return this.banks.filter(b => b.allows_pago_movil);
-    }
-    return this.banks;
+  getBankList(method: string): Bank[] {
+    if (method === 'PagoMovil') return this.filteredPagoMovilBanks;
+    return this.filteredBanks;
   }
 
   toggleMultiPayment(): void {

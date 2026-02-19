@@ -1,14 +1,88 @@
 .payment-container {
-    padding: 20px;
+    padding: 6px 12px;
+    /* Smoothed padding */
+    width: auto;
+    min-width: 440px;
+    max-width: 600px;
+    max-height: 98vh;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
-.totals-summary {
-    background: #f5f5f5;
-    padding: 15px;
+/* Zen Details Styles */
+.zen-details-container {
+    padding: 6px 10px;
+    /* Reduced padding */
+    background: #fdfdfd;
+    border: 1px solid #f1f5f9;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
+    /* Compact */
+}
+
+.zen-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* Reduced gap */
+    margin-bottom: 4px;
+    /* Very tight */
+    border-bottom: 1px solid #f8faff;
+    padding-bottom: 2px;
+}
+
+.zen-detail-row:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.zen-detail-row label {
+    font-size: 10px;
+    /* Smaller label */
+    font-weight: 700;
+    color: #94a3b8;
+    width: 80px;
+    /* Thinner label area */
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.micro-detail-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    /* Balanced size */
+    padding: 2px 0;
+    color: #1e293b;
+    font-weight: 600;
+    width: 100%;
+}
+
+.micro-detail-input:focus {
+    outline: none;
+    color: #3f51b5;
+}
+
+.micro-detail-input::placeholder {
+    color: #cbd5e1;
+    font-weight: 400;
+}
+
+/* Totals Summary */
+.totals-summary {
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-around;
+    border: 1px solid #f1f5f9;
 }
 
 .total-item {
@@ -17,153 +91,202 @@
 
 .total-item label {
     display: block;
-    font-size: 0.8rem;
-    color: #666;
+    font-size: 10px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .total-item span {
-    font-size: 1.25rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 700;
     display: block;
 }
 
 .value-usd {
-    color: #d32f2f;
+    color: #0f172a;
 }
 
 .value-bs {
-    color: #555;
-    font-size: 1.1rem !important;
+    color: #64748b;
+    font-size: 0.95rem !important;
 }
 
+/* Invoices Selection */
 .invoice-selection {
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 }
 
-.payment-amount-section {
-    margin: 20px 0;
-    padding: 16px;
-    background: #f9f9fb;
-    border: 1px solid #eef0f2;
-    border-radius: 8px;
-}
-
+/* Currency Tabs */
 .currency-tabs {
     display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 6px;
+    margin-bottom: 10px;
 }
 
 .tab-btn {
     flex: 1;
-    height: 40px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background: white;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
     cursor: pointer;
+    font-size: 12px;
     font-weight: 600;
+    color: #64748b;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
-    color: #666;
+    transition: all 0.2s ease;
 }
 
 .tab-btn.active {
-    background: #3f51b5;
+    background: #1e293b;
     color: white;
-    border-color: #3f51b5;
+    border-color: #1e293b;
 }
 
+/* Main Input */
+.input-wrapper {
+    margin-bottom: 8px;
+}
+
+/* Rate & IGTF */
 .exchange-rate-details {
-    margin-top: 12px;
+    margin-bottom: 12px;
     display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-top: 12px;
-    border-top: 1px dashed #ddd;
+    justify-content: space-between;
+    /* Align items to extremes */
+    align-items: center;
+    padding: 8px 10px;
+    background: #f0fdf4;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #166534;
 }
 
 .rate-label {
-    font-size: 0.85rem;
-    color: #3f51b5;
+    font-weight: 600;
 }
 
-.equivalent-hint {
-    font-size: 0.9rem;
-    color: #2e7d32;
+.igtf-warning {
+    color: #991b1b;
+    background: #fef2f2;
 }
 
+/* Payment Methods Grid */
 .payment-methods {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 24px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
 }
 
 .custom-method-btn {
-    height: 70px;
+    height: 54px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: 1px solid #ddd;
-    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
     cursor: pointer;
     background: white;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     gap: 4px;
-    color: #555;
+    color: #64748b;
 }
 
 .custom-method-btn mat-icon {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 .custom-method-btn span {
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
 .custom-method-btn:hover {
-    background: #f0f2f5;
+    background: #f8fafc;
+    border-color: #cbd5e1;
 }
 
 .custom-method-btn.active {
     background: #3f51b5;
     color: white;
     border-color: #3f51b5;
-    box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
-    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(63, 81, 181, 0.2);
+    transform: translateY(-1px);
 }
 
+/* Mat-Select Zen Override */
+::ng-deep .zen-mat-select .mat-mdc-select-trigger {
+    height: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-form-field-infix {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    min-height: 20px !important;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-text-field-wrapper {
+    padding: 0 !important;
+    background-color: transparent !important;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-form-field-focus-indicator {
+    display: none;
+}
+
+/* Fix for broken select appearance in screenshoot */
+.invoice-row-container {
+    padding-top: 4px;
+    margin-bottom: 10px;
+}
+
+/* Actions */
 .actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    padding: 16px 24px !important;
+    gap: 8px;
+    padding: 10px 0 0 0 !important;
 }
 
-mat-form-field {
-    width: 100%;
+.btn-cancel {
+    font-size: 11px;
+    height: 34px;
+    color: #64748b;
 }
 
-.payment-details {
-    margin-bottom: 16px;
-    animation: fadeIn 0.3s ease-out;
+.btn-confirm {
+    font-size: 11px;
+    font-weight: 700;
+    height: 34px;
+    background: #1e293b !important;
+    color: white !important;
+    padding: 0 20px;
+    border-radius: 6px;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(5px);
-    }
+mat-dialog-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-height: none !important;
+}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+h2[mat-dialog-title] {
+    margin: 0 0 12px 0;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 8px;
 }

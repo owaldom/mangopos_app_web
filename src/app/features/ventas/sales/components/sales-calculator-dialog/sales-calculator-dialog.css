@@ -11,30 +11,30 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 24px;
+    padding: 6px 12px;
     background-color: #f5f5f5;
     border-bottom: 1px solid #e0e0e0;
 }
 
 .dialog-header h2 {
     margin: 0;
-    font-size: 1.25rem;
-    font-weight: 500;
+    font-size: 0.95rem;
+    font-weight: 600;
     color: #333;
 }
 
 .dialog-content {
     flex: 1;
-    padding: 24px;
+    padding: 6px 12px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 4px;
 }
 
 .search-section {
     display: flex;
-    gap: 16px;
+    gap: 8px;
     align-items: flex-start;
 }
 
@@ -47,12 +47,12 @@
     align-items: center;
     background: #f0f2f5;
     border-radius: 4px;
-    padding: 4px 12px;
+    padding: 2px 8px;
     border: 1px solid #ccc;
-    height: 52px;
-    /* Match standard mat-form-field height approx */
+    height: 42px;
+    /* Ultra compact */
     box-sizing: border-box;
-    width: 200px;
+    width: 140px;
 }
 
 .barcode-container:focus-within {
@@ -77,16 +77,16 @@
 .product-info-card {
     background-color: #e3f2fd;
     border: 1px solid #bbdefb;
-    border-radius: 8px;
-    padding: 16px;
+    border-radius: 6px;
+    padding: 8px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 4px;
 }
 
 .product-name {
-    font-size: 1.1rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
     color: #0d47a1;
 }
 
@@ -108,7 +108,7 @@
 }
 
 .info-value {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 600;
     color: #263238;
 }
@@ -116,10 +116,10 @@
 .calculation-section {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 6px;
     background-color: #fafafa;
-    padding: 16px;
-    border-radius: 8px;
+    padding: 8px;
+    border-radius: 6px;
     border: 1px solid #eee;
 }
 
@@ -134,12 +134,13 @@
 }
 
 .currency-toggle button {
-    padding: 8px 24px;
+    padding: 4px 12px;
     border: none;
     background: #fff;
     cursor: pointer;
     font-weight: 500;
     transition: all 0.2s;
+    font-size: 12px;
 }
 
 .currency-toggle button.active {
@@ -158,9 +159,9 @@
 }
 
 .calculated-result {
-    margin-top: 16px;
+    margin-top: 8px;
     text-align: center;
-    padding: 16px;
+    padding: 8px;
     background: #e8f5e9;
     border-radius: 8px;
     border: 1px solid #c8e6c9;
@@ -168,24 +169,30 @@
 
 .result-label {
     display: block;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #2e7d32;
-    margin-bottom: 8px;
+    margin-bottom: 2px;
 }
 
 .result-value {
-    font-size: 2rem;
+    font-size: 1.3rem;
     font-weight: bold;
     color: #1b5e20;
 }
 
 .dialog-actions {
-    padding: 16px 24px;
+    padding: 4px 12px;
     background-color: #f5f5f5;
     border-top: 1px solid #e0e0e0;
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
+    gap: 6px;
+}
+
+.dialog-actions button {
+    height: 32px;
+    line-height: 32px;
+    font-size: 12px;
 }
 
 .spacer {

@@ -1,14 +1,80 @@
 .payment-container {
-    padding: 20px;
+    padding: 6px 12px;
+    width: auto;
+    min-width: 440px;
+    max-width: 600px;
+    max-height: 98vh;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
-.totals-summary {
-    background: #f5f5f5;
-    padding: 15px;
+/* Zen Details Styles */
+.zen-details-container {
+    padding: 6px 10px;
+    background: #fdfdfd;
+    border: 1px solid #f1f5f9;
     border-radius: 8px;
-    margin-bottom: 20px;
+    margin-bottom: 8px;
+}
+
+.zen-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #f8faff;
+    padding-bottom: 2px;
+}
+
+.zen-detail-row:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.zen-detail-row label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    width: 80px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.micro-detail-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    padding: 2px 0;
+    color: #1e293b;
+    font-weight: 600;
+    width: 100%;
+}
+
+.micro-detail-input:focus {
+    outline: none;
+    color: #3f51b5;
+}
+
+.micro-detail-input::placeholder {
+    color: #cbd5e1;
+    font-weight: 400;
+}
+
+/* Totals Summary */
+.totals-summary {
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 12px;
     display: flex;
     justify-content: space-around;
+    border: 1px solid #f1f5f9;
 }
 
 .total-item {
@@ -17,105 +83,179 @@
 
 .total-item label {
     display: block;
-    font-size: 0.8rem;
-    color: #666;
+    font-size: 10px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .total-item span {
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 700;
+    display: block;
 }
 
 .value-usd {
-    color: #d32f2f;
+    color: #0f172a;
 }
 
 .value-bs {
-    color: #555;
-    font-size: 1.1rem !important;
+    color: #64748b;
+    font-size: 0.95rem !important;
 }
 
-.invoice-selection {
-    margin-bottom: 20px;
-}
-
-.payment-methods {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-top: 24px;
-    margin-bottom: 20px;
-}
-
-.method-btn {
-    height: 60px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.method-btn.active {
-    background-color: #3f51b5 !important;
-    color: white !important;
-}
-
-.actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-.exchange-rate-details {
-    margin-top: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-top: 12px;
-    border-top: 1px dashed #ddd;
-}
-
-.rate-label {
-    font-size: 0.85rem;
-    color: #3f51b5;
-}
-
-.equivalent-hint {
-    font-size: 0.9rem;
-    color: #2e7d32;
-}
-
-mat-form-field {
-    width: 100%;
-}
-
+/* Currency Tabs */
 .currency-tabs {
     display: flex;
     gap: 6px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
-.currency-tabs button {
+.tab-btn {
     flex: 1;
-    height: 40px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    background: white;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
     cursor: pointer;
+    font-size: 12px;
     font-weight: 600;
-    transition: all 0.2s;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
 }
 
-.currency-tabs button.active {
-    background: #3875D5;
+.tab-btn.active {
+    background: #1e293b;
     color: white;
-    border-color: #3875D5;
+    border-color: #1e293b;
 }
 
-.payment-amount {
-    margin: 20px 0;
-    padding: 16px;
-    background: #f9f9fb;
-    border: 1px solid #eef0f2;
+/* Rate */
+.exchange-rate-details {
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    background: #f0fdf4;
+    border-radius: 6px;
+    font-size: 11px;
+    color: #166534;
+}
+
+.rate-label {
+    font-weight: 600;
+}
+
+/* Payment Methods Grid */
+.payment-methods {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.custom-method-btn {
+    height: 54px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
     border-radius: 8px;
+    cursor: pointer;
+    background: white;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 4px;
+    color: #64748b;
+}
+
+.custom-method-btn mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.custom-method-btn span {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.custom-method-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.custom-method-btn.active {
+    background: #3f51b5;
+    color: white;
+    border-color: #3f51b5;
+    box-shadow: 0 4px 12px rgba(63, 81, 181, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Mat-Select Zen Override */
+::ng-deep .zen-mat-select .mat-mdc-select-trigger {
+    height: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-form-field-infix {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    min-height: 20px !important;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-text-field-wrapper {
+    padding: 0 !important;
+    background-color: transparent !important;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-form-field-focus-indicator {
+    display: none;
+}
+
+.invoice-row-container {
+    padding-top: 4px;
+    margin-bottom: 10px;
+}
+
+/* Actions */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 10px 0 0 0 !important;
+}
+
+.btn-cancel {
+    font-size: 11px;
+    height: 34px;
+    color: #64748b;
+}
+
+.btn-confirm {
+    font-size: 11px;
+    font-weight: 700;
+    height: 34px;
+    background: #1e293b !important;
+    color: white !important;
+    padding: 0 20px;
+    border-radius: 6px;
+}
+
+h2[mat-dialog-title] {
+    margin: 0 0 12px 0;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1e293b;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 8px;
 }

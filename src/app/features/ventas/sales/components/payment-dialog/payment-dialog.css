@@ -1,44 +1,58 @@
+:host {
+    display: block;
+    max-width: 630px;
+    margin: 0 auto;
+}
+
 .payment-container {
-    padding: 16px 24px;
-    max-width: 1000px;
-    width: 95%;
-    max-height: 95vh;
+    padding: 8px 14px;
+    width: auto;
+    min-width: 450px;
+    max-width: 630px;
+    max-height: 96vh;
     display: flex;
     flex-direction: column;
+    background: #ffffff;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
 .scrollable-content {
     flex: 1;
     overflow-y: auto;
-    padding-right: 8px;
-    margin-bottom: 16px;
+    padding: 2px 4px;
+    margin-bottom: 4px;
 }
 
 .title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0;
-    color: #333;
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 2px;
+    color: #2c3e50;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .totals-summary {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    background-color: #fcfcfc;
+    padding: 6px 12px;
+    border-radius: 6px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px 16px;
+    border: 1px solid #eef2f7;
+    margin-bottom: 4px;
 }
 
 .customer-credit-info {
-    background: linear-gradient(135deg, #f0f7ff 0%, #e1effe 100%);
-    border: 1px solid #c3ddfd;
-    padding: 12px 16px;
-    border-radius: 12px;
+    background: #f0f7ff;
+    border: 1px solid #d1e9ff;
+    padding: 4px 10px;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 5px;
+    gap: 2px;
+    margin-bottom: 4px;
 }
 
 .customer-name {
@@ -96,7 +110,8 @@
 .total-row {
     display: flex;
     justify-content: space-between;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
+    color: #555;
 }
 
 .total-row.igtf {
@@ -106,12 +121,13 @@
 }
 
 .total-row.main {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 800;
     color: #3875D5;
-    border-top: 1px solid #ddd;
-    padding-top: 12px;
-    margin-top: 4px;
+    grid-column: span 2;
+    border-top: 1px solid #eaedf2;
+    padding-top: 3px;
+    margin-top: 0;
 }
 
 .input-section {
@@ -149,9 +165,10 @@
 
 .currency-tabs button {
     flex: 1;
-    height: 40px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    font-size: 0.85rem;
     background: white;
     cursor: pointer;
     font-weight: 600;
@@ -168,10 +185,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px;
-    background-color: #e8f5e9;
-    border-radius: 8px;
-    color: #2e7d32;
+    padding: 4px 10px;
+    background-color: #f6ffed;
+    border-radius: 4px;
+    color: #389e0d;
+    margin-top: 4px;
+    border: 1px solid #b7eb8f;
 }
 
 .change-label {
@@ -180,27 +199,28 @@
 }
 
 .change-value {
-    font-size: 1.4rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 800;
     font-family: 'Roboto Mono', monospace;
 }
 
 .methods-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 8px;
 }
 
 .method-btn {
-    height: 80px;
+    height: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    border: 1px solid #dadce0;
-    background: white;
-    border-radius: 12px;
+    gap: 2px;
+    border: 1px solid #e2e8f0;
+    background: #fafafa;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -217,9 +237,14 @@
 }
 
 .method-btn mat-icon {
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.method-btn span {
+    font-size: 11px;
+    font-weight: 500;
 }
 
 .actions {
@@ -234,46 +259,230 @@
 
 .btn-confirm {
     flex: 2;
-    background-color: #4caf50;
+    background-color: #52c41a;
     color: white;
+    height: 34px;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
-/* New Material Layout Styles */
-.single-input-wrapper {
-    margin-top: 10px;
+.btn-cancel {
+    height: 34px;
+    font-size: 0.85rem;
 }
 
-.multi-row-mat {
+/* Zen Mixed Pro (V16) Styles */
+.multi-payment-grid {
     display: grid;
-    grid-template-columns: 32px 80px repeat(5, minmax(0, 1fr));
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: #f8fafc;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    width: 100%;
-    box-sizing: border-box;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-top: 4px;
 }
 
-.method-icon {
+.payment-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-card.active {
+    border-color: #3875D5;
+    background: #f8fbff;
+    box-shadow: 0 2px 4px rgba(56, 117, 213, 0.05);
+}
+
+.card-header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 6px;
 }
 
-.method-name {
-    font-weight: 600;
-    font-size: 13px;
+.card-header mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #64748b;
+}
+
+.card-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.card-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.micro-input-group {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 2px 6px;
+    flex: 1;
+    min-width: 80px;
+}
+
+.micro-input-group .prefix {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-right: 4px;
+}
+
+.micro-input-group input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    outline: none;
+    padding: 2px 0;
+    text-align: right;
+}
+
+.details-toggle {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+    margin-top: 2px;
+    animation: fadeInSlide 0.2s ease-out;
+}
+
+.details-toggle.full {
+    flex-wrap: wrap;
+}
+
+.details-toggle input,
+.details-toggle select {
+    flex: 1;
+    height: 24px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 0 6px;
+    font-size: 0.75rem;
     color: #334155;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    background: #fff;
+    outline: none;
 }
 
-/* Material Field Overrides for Mixed Mode */
-::ng-deep .multi-payment-list .mat-mdc-text-field-wrapper {
-    background-color: #fff !important;
+.details-toggle input:focus,
+.details-toggle select:focus {
+    border-color: #3875D5;
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Zen Details (V17) - Shared & Unified */
+.zen-details-container {
+    margin-top: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.zen-detail-row {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+}
+
+.micro-detail-input {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 1px 6px;
+    height: 24px;
+}
+
+.micro-detail-input .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-right: 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.micro-detail-input input,
+.micro-detail-input select,
+.micro-detail-input .zen-mat-select {
+    border: none;
+    background: transparent;
+    width: 100%;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #334155;
+    outline: none;
+    padding: 0;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Mat-Select Zen Override */
+::ng-deep .zen-mat-select .mat-mdc-select-trigger {
+    height: 22px;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-select-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #334155 !important;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-select-arrow-wrapper {
+    height: 22px;
+    align-items: center;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-select-arrow {
+    width: 8px;
+    height: 4px;
+    color: #94a3b8;
+}
+
+/* Remove standard mat-form-field under the hood if it was used,
+   but here we are using standalone mat-select */
+/* Mixed Mode refinements to match */
+.details-toggle input,
+.details-toggle select {
+    height: 22px;
+    font-size: 0.75rem;
+    border-color: #cbd5e1;
 }
 
 .full-width {

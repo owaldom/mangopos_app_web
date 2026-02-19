@@ -373,8 +373,10 @@ export class PurchasesComponent implements OnInit, OnDestroy {
 
         const { PurchasePaymentDialogComponent } = await import('./components/purchase-payment-dialog/purchase-payment-dialog');
         const dialogRef = this.dialog.open(PurchasePaymentDialogComponent, {
-            width: '1000px',
+            width: 'auto',
             maxWidth: '95vw',
+            height: 'auto',
+            maxHeight: '98vh',
             data: {
                 total: this.total,
                 subtotal: this.subtotal,

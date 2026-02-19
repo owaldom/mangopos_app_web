@@ -18,7 +18,9 @@ import { AppConfigService } from '../../../../core/services/app-config.service';
 import { Subject, takeUntil } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
-import { StockService, MovementReason, LocationInfo } from '../../../../core/services/stock.service';
+import { StockService, MovementReason } from '../../../../core/services/stock.service';
+import { WarehouseService } from '../../../../core/services/warehouse.service';
+import { Warehouse } from '../../../../core/models/warehouse.model';
 import { ProductSelectorComponent } from '../stock-movements/components/product-selector/product-selector';
 import { ProductService, Product } from '../../../../core/services/product.service';
 import { MoneyInputDirective } from '../../../../shared/directives/money-input.directive';
@@ -239,7 +241,7 @@ interface StockMovementLine {
 })
 export class StockManagementComponent implements OnInit {
     headerForm: FormGroup;
-    locations: LocationInfo[] = [];
+    locations: Warehouse[] = [];
     reasons = MovementReason.getAll();
     lines: StockMovementLine[] = [];
     displayedColumns: string[] = ['product', 'units', 'price', 'subtotal', 'actions'];
@@ -256,6 +258,7 @@ export class StockManagementComponent implements OnInit {
     private fb = inject(FormBuilder);
     private stockService = inject(StockService);
     private productService = inject(ProductService);
+    private warehouseService = inject(WarehouseService);
     private dialog = inject(MatDialog);
     private snackBar = inject(MatSnackBar);
     public settingsService = inject(SettingsService);
@@ -270,20 +273,18 @@ export class StockManagementComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.stockService.getLocations().subscribe((locs: any[]) => {
-            const config = this.configService.getConfig();
+        this.warehouseService.getAll().subscribe({
+            next: (locs: Warehouse[]) => {
+                console.log('Warehouses loaded in StockManagement:', locs?.length);
+                this.locations = locs || [];
 
-            if (config?.installation_type === 'pos') {
-                // In POS mode, only show the warehouse that matches the configured location name
-                this.locations = locs.filter(l => l.name === config.location_name);
-            } else {
-                // In Factory mode, show only 'factory' type warehouses for mass movements
-                // (Optional: adjust this if they should see all)
-                this.locations = locs.filter(l => l.type === 'factory');
-            }
-
-            if (this.locations.length > 0) {
-                this.headerForm.patchValue({ location: this.locations[0].id });
+                if (this.locations.length > 0 && !this.headerForm.get('location')?.value) {
+                    this.headerForm.patchValue({ location: this.locations[0].id });
+                }
+            },
+            error: (err) => {
+                console.error('Error loading warehouses in StockManagement:', err);
+                this.snackBar.open('Error al cargar almacenes', 'Cerrar', { duration: 5000 });
             }
         });
 

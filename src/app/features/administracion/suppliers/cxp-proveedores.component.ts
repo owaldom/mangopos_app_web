@@ -314,8 +314,10 @@ export class CxPProveedoresComponent implements OnInit {
       const rate = usd ? usd.exchange_rate : 1;
 
       const dialogRef = this.dialog.open(CxPPaymentDialogComponent, {
-        width: '650px',
+        width: 'auto',
+        height: 'auto',
         maxWidth: '95vw',
+        maxHeight: '98vh',
         data: {
           supplier,
           exchangeRate: rate

@@ -103,6 +103,18 @@
     color: white;
 }
 
+@media (max-height: 800px) {
+    .category-chip {
+        padding: 4px 12px;
+        font-size: 12px;
+        border-radius: 6px;
+    }
+
+    .modern-layout .catalog-header {
+        margin-bottom: 4px;
+    }
+}
+
 /* CLASSIC LAYOUT SPECIFIC HEADER (BREADCRUMB) */
 .breadcrumb {
     display: flex;
@@ -173,6 +185,13 @@
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
 }
 
+@media (max-width: 1400px) {
+    .modern-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
+        gap: 6px !important;
+    }
+}
+
 .modern-product-card {
     background: white;
     border-radius: 16px;
@@ -186,6 +205,15 @@
     /* FIXED HEIGHT */
 }
 
+@media (max-height: 800px) {
+    .modern-product-card {
+        height: 135px !important;
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    }
+}
+
 .modern-product-card .image-area {
     height: 120px !important;
     background: #f8fafc;
@@ -194,6 +222,17 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
+}
+
+@media (max-height: 800px) {
+    .modern-product-card .image-area {
+        height: 65px !important;
+    }
+
+    .modern-product-card .info-area {
+        padding: 4px 6px;
+        gap: 2px;
+    }
 }
 
 .modern-product-card .image-area img {
@@ -211,27 +250,28 @@
 }
 
 .modern-product-card .info-area .name {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
     color: #334155;
     line-height: 1.2;
-    height: 32px;
+    height: 26px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin-bottom: 2px;
 }
 
 .modern-product-card .price-badge {
     position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 4px 8px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 12px;
+    bottom: 4px;
+    right: 4px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 11px;
     color: #1e293b;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

@@ -115,12 +115,27 @@
     background-color: #f0f2f5;
 }
 
+@media (max-width: 1400px) or (max-height: 800px) {
+    .sales-container {
+        padding: 8px;
+        gap: 8px;
+    }
+}
+
 /* MODERN SALES LAYOUT */
 .modern-layout {
     background: #f8fafc !important;
     padding: 16px !important;
-    height: 100vh !important;
+    height: 100% !important;
+    /* Changed from 100vh for cleaner shell integration */
     overflow: hidden;
+}
+
+@media (max-width: 1400px) or (max-height: 800px) {
+    .modern-layout {
+        padding: 8px !important;
+        /* Ultra-Minimalist padding */
+    }
 }
 
 .modern-layout .sales-top-bar {
@@ -133,6 +148,16 @@
     padding: 0 20px;
     margin-bottom: 16px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-height: 800px) {
+    .modern-layout .sales-top-bar {
+        height: 34px;
+        margin-bottom: 4px;
+        border-radius: 6px;
+        padding: 0 8px;
+        gap: 6px;
+    }
 }
 
 .modern-layout .customer-pill {
@@ -148,6 +173,18 @@
 
 .modern-layout .customer-pill:hover {
     background: #e2e8f0;
+}
+
+@media (max-height: 800px) {
+    .modern-layout .customer-pill {
+        padding: 4px 10px;
+        gap: 6px;
+        border-radius: 8px;
+    }
+
+    .modern-layout .customer-pill .name {
+        font-size: 13px;
+    }
 }
 
 .modern-layout .customer-pill mat-icon {
@@ -203,6 +240,14 @@
     width: 18px;
     height: 18px;
     color: #22c55e;
+}
+
+@media (max-height: 800px) {
+    .modern-layout .location-pill {
+        padding: 4px 10px;
+        gap: 6px;
+        border-radius: 8px;
+    }
 }
 
 .modern-layout .location-pill .name {
@@ -382,7 +427,7 @@
 .modern-layout .main-split {
     display: flex;
     flex: 1;
-    gap: 20px;
+    gap: 12px;
     min-height: 0;
     height: auto;
 }
@@ -396,6 +441,13 @@
     min-height: 0;
 }
 
+@media (max-width: 1400px) {
+    .modern-layout .ticket-sidebar {
+        width: 300px;
+        gap: 8px;
+    }
+}
+
 .modern-layout .ticket-scroll {
     flex: 1;
     overflow-y: auto;
@@ -404,6 +456,13 @@
     padding: 10px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     min-height: 0;
+}
+
+@media (max-height: 800px) {
+    .modern-layout .ticket-scroll {
+        border-radius: 12px;
+        padding: 6px;
+    }
 }
 
 .modern-layout .modern-totals {
@@ -415,6 +474,14 @@
     flex-direction: column;
     gap: 12px;
     flex-shrink: 0;
+}
+
+@media (max-height: 800px) {
+    .modern-layout .modern-totals {
+        padding: 4px 10px;
+        gap: 2px;
+        border-radius: 8px;
+    }
 }
 
 .modern-layout .modern-totals .total-row {
@@ -432,7 +499,7 @@
 
 .modern-layout .modern-totals .final-total {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 12px;
+    padding-top: 4px;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
@@ -451,7 +518,7 @@
 
 .modern-layout .modern-totals .final-total .bs {
     display: block;
-    font-size: 28px;
+    font-size: 19px;
     font-weight: 900;
 }
 
@@ -479,6 +546,16 @@
     transition: all 0.2s;
     margin-top: auto;
     width: 100%;
+}
+
+@media (max-height: 800px) {
+    .modern-layout .btn-pay.modern {
+        height: 34px;
+        font-size: 13px;
+        border-radius: 6px;
+        margin-top: 2px;
+        box-shadow: 0 4px 8px rgba(16, 185, 129, 0.2);
+    }
 }
 
 .modern-layout .btn-pay.modern:hover {

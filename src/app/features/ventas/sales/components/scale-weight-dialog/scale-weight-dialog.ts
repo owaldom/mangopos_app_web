@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, Inject, OnInit, HostListener, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -12,7 +12,8 @@ import { Subscription } from 'rxjs';
     standalone: true,
     imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule, MatButtonModule],
     templateUrl: './scale-weight-dialog.html',
-    styleUrl: './scale-weight-dialog.css'
+    styleUrl: './scale-weight-dialog.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScaleWeightDialogComponent implements OnInit, OnDestroy {
     weightStr: string = '0';
@@ -24,7 +25,8 @@ export class ScaleWeightDialogComponent implements OnInit, OnDestroy {
     constructor(
         public dialogRef: MatDialogRef<ScaleWeightDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: { product: any },
-        private scaleService: ScaleService
+        private scaleService: ScaleService,
+        private cdr: ChangeDetectorRef
     ) {
         this.productName = data.product.name;
     }
@@ -34,6 +36,7 @@ export class ScaleWeightDialogComponent implements OnInit, OnDestroy {
             this.scaleService.weight$.subscribe((w: number) => {
                 if (this.scaleStatus.connected) {
                     this.weightStr = w.toFixed(3);
+                    this.cdr.markForCheck();
                 }
             })
         );
@@ -41,6 +44,7 @@ export class ScaleWeightDialogComponent implements OnInit, OnDestroy {
         this.subscription.add(
             this.scaleService.status$.subscribe((s: ScaleStatus) => {
                 this.scaleStatus = s;
+                this.cdr.markForCheck();
             })
         );
     }
@@ -55,6 +59,7 @@ export class ScaleWeightDialogComponent implements OnInit, OnDestroy {
         } else {
             await this.scaleService.connect();
         }
+        this.cdr.markForCheck();
     }
 
     @HostListener('window:keydown', ['$event'])
@@ -70,6 +75,7 @@ export class ScaleWeightDialogComponent implements OnInit, OnDestroy {
                 this.weightStr = '0';
             }
         } else if (event.key === 'Enter') {
+            event.preventDefault();
             this.onConfirm();
         } else if (event.key === 'Escape') {
             this.onCancel();
@@ -97,10 +103,12 @@ export class ScaleWeightDialogComponent implements OnInit, OnDestroy {
         } else {
             this.weightStr += digit;
         }
+        this.cdr.markForCheck();
     }
 
     clear(): void {
         this.weightStr = '0';
+        this.cdr.markForCheck();
     }
 
     get weight(): number {

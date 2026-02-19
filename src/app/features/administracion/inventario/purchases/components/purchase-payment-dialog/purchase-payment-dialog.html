@@ -1,294 +1,186 @@
 <div class="payment-container">
     <h2 class="title">Finalizar Compra</h2>
 
-    <div class="scrollable-content">
-        <div class="supplier-info" *ngIf="data.supplier">
-            <div class="supplier-name">
-                <mat-icon>person</mat-icon>
-                <span>{{ data.supplier.name }}</span>
-            </div>
-            <div class="credit-details">
-                <div class="credit-stat">
-                    <span class="label">Saldo Actual:</span>
-                    <span class="value debt">{{ (data.supplier.balance || 0) | currency:'VES':'Bs.
-                        ':settingsService.getDecimalFormat('total') }}</span>
-                </div>
-            </div>
+    <div class="supplier-info" *ngIf="data.supplier">
+        <div class="supplier-name">
+            <mat-icon>person</mat-icon>
+            <span>{{ data.supplier.name }}</span>
         </div>
-
-        <div class="totals-summary">
-            <div class="total-row">
-                <span>Subtotal</span>
-                <span>{{ data.subtotal | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</span>
-            </div>
-            <div class="total-row">
-                <span>Impuestos</span>
-                <span>{{ data.taxes | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</span>
-            </div>
-            <div class="total-row main">
-                <span>TOTAL</span>
-                <div style="text-align: right;">
-                    <div style="font-size: 0.9rem; opacity: 0.8;">{{ data.totalUSD | currency:'USD':'$
-                        ':settingsService.getDecimalFormat('total') }}</div>
-                    <div>{{ data.total | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="input-section">
-            <div class="currency-tabs">
-                <button [class.active]="selectedCurrency === 'base'" (click)="setCurrency('base')">Bs.</button>
-                <button [class.active]="selectedCurrency === 'alt'" (click)="setCurrency('alt')">$ USD</button>
-            </div>
-            <div class="payment-mode-toggle" style="margin-top: 10px; text-align: center; margin-bottom: 0.5rem;">
-                <button mat-stroked-button color="primary" (click)="toggleMultiPayment()">
-                    <mat-icon>{{ isMultiPayment ? 'arrow_back' : 'layers' }}</mat-icon>
-                    {{ isMultiPayment ? 'Volver de Pago Mixto' : 'Activar Pago Mixto' }}
-                </button>
-            </div>
-
-            <!-- Single Payment Mode -->
-            <ng-container *ngIf="!isMultiPayment">
-                <div *ngIf="selectedCurrency === 'base'" class="single-input-wrapper">
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Monto Pagado</mat-label>
-                        <span matTextPrefix>Bs. &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="receivedAmount"
-                            (ngModelChange)="calculateChange($event, 'base')" autocomplete="off">
-                    </mat-form-field>
-                </div>
-
-                <div *ngIf="selectedCurrency === 'alt'" class="single-input-wrapper">
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Monto Pagado</mat-label>
-                        <span matTextPrefix>$ &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="receivedAmountAlt"
-                            (ngModelChange)="calculateChange($event, 'alt')" autocomplete="off">
-                    </mat-form-field>
-                </div>
-
-                <!-- Extra Fields for Single Mode -->
-                <div *ngIf="requiresBank(selectedMethod)" style="margin-top: 12px; display: flex; gap: 8px;">
-                    <mat-form-field appearance="outline" density="compact" *ngIf="selectedMethod === 'paper'"
-                        style="flex: 1;">
-                        <mat-label>Cédula/Telf (PM)</mat-label>
-                        <input matInput [(ngModel)]="paymentDetails['paper'].cedula" placeholder="V-12345678 / 0412...">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact" *ngIf="selectedMethod === 'transfer'"
-                        style="flex: 1;">
-                        <mat-label>Cuenta</mat-label>
-                        <input matInput [(ngModel)]="paymentDetails['transfer'].account" placeholder="Últimos 4 o full">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact" style="flex: 1;">
-                        <mat-label>Referencia</mat-label>
-                        <input matInput [(ngModel)]="paymentDetails[selectedMethod].reference" placeholder="Ref #">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact" style="flex: 1;">
-                        <mat-label>Banco</mat-label>
-                        <mat-select [(ngModel)]="selectedBankId">
-                            <mat-option value="">Ninguno</mat-option>
-                            <mat-option *ngFor="let bank of getFilteredBanks(selectedMethod)" [value]="bank.id">
-                                {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-            </ng-container>
-
-            <!-- Multi Payment Mode -->
-            <div *ngIf="isMultiPayment" class="multi-payment-list">
-
-                <!-- Cash -->
-                <div class="multi-row-mat">
-                    <div class="method-icon"><mat-icon>payments</mat-icon></div>
-                    <div class="method-name">Efectivo</div>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>Bs. &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="payments['cash']"
-                            (ngModelChange)="updateMultiPayment('cash', $event, 'base')" placeholder="0,00">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>$ &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="paymentsAlt['cash']"
-                            (ngModelChange)="updateMultiPayment('cash', $event, 'alt')" placeholder="0.00">
-                    </mat-form-field>
-                    <!-- Placeholders for Ref/Bank/Cedula -->
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-
-                <!-- Card -->
-                <div class="multi-row-mat">
-                    <div class="method-icon"><mat-icon>credit_card</mat-icon></div>
-                    <div class="method-name">Tarjeta</div>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>Bs. &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="payments['card']"
-                            (ngModelChange)="updateMultiPayment('card', $event, 'base')" placeholder="0,00">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>$ &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="paymentsAlt['card']"
-                            (ngModelChange)="updateMultiPayment('card', $event, 'alt')" placeholder="0.00">
-                    </mat-form-field>
-
-                    <!-- Placeholder for Cedula -->
-
-                    <mat-form-field appearance="outline" density="compact">
-                        <mat-label>Referencia</mat-label>
-                        <input matInput [(ngModel)]="paymentDetails['card'].reference" placeholder="Ref #">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <mat-label>Banco</mat-label>
-                        <mat-select [(ngModel)]="paymentDetails['card'].bank_id">
-                            <mat-option value="">Ninguno</mat-option>
-                            <mat-option *ngFor="let bank of banks" [value]="bank.id">
-                                {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <!-- Pago Móvil -->
-                <div class="multi-row-mat">
-                    <div class="method-icon"><mat-icon>smartphone</mat-icon></div>
-                    <div class="method-name">Pago Móvil</div>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>Bs. &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="payments['paper']"
-                            (ngModelChange)="updateMultiPayment('paper', $event, 'base')" placeholder="0,00">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>$ &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="paymentsAlt['paper']"
-                            (ngModelChange)="updateMultiPayment('paper', $event, 'alt')" placeholder="0.00">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <mat-label>Cédula/Telf</mat-label>
-                        <input matInput [(ngModel)]="paymentDetails['paper'].cedula" placeholder="V-12345678">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <mat-label>Referencia</mat-label>
-                        <input matInput [(ngModel)]="paymentDetails['paper'].reference" placeholder="Ref #">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <mat-label>Banco</mat-label>
-                        <mat-select [(ngModel)]="paymentDetails['paper'].bank_id">
-                            <mat-option value="">Ninguno</mat-option>
-                            <mat-option *ngFor="let bank of getFilteredBanks('paper')" [value]="bank.id">
-                                {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <!-- Transferencia -->
-                <div class="multi-row-mat">
-                    <div class="method-icon"><mat-icon>account_balance</mat-icon></div>
-                    <div class="method-name">Transferencia</div>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>Bs. &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="payments['transfer']"
-                            (ngModelChange)="updateMultiPayment('transfer', $event, 'base')" placeholder="0,00">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>$ &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="paymentsAlt['transfer']"
-                            (ngModelChange)="updateMultiPayment('transfer', $event, 'alt')" placeholder="0.00">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <mat-label>Cuenta</mat-label>
-                        <input matInput [(ngModel)]="paymentDetails['transfer'].account" placeholder="Cuenta">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <mat-label>Referencia</mat-label>
-                        <input matInput [(ngModel)]="paymentDetails['transfer'].reference" placeholder="Ref #">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <mat-label>Banco</mat-label>
-                        <mat-select [(ngModel)]="paymentDetails['transfer'].bank_id">
-                            <mat-option value="">Ninguno</mat-option>
-                            <mat-option *ngFor="let bank of banks" [value]="bank.id">
-                                {{ bank.name }} - {{ bank.account_type_name }} ({{ bank.currency }})
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <!-- Crédito (CxP) -->
-                <div class="multi-row-mat" *ngIf="data.supplier">
-                    <div class="method-icon"><mat-icon>request_quote</mat-icon></div>
-                    <div class="method-name">Crédito</div>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>Bs. &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="payments['Credito']"
-                            (ngModelChange)="updateMultiPayment('Credito', $event, 'base')" placeholder="0,00">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" density="compact">
-                        <span matTextPrefix>$ &nbsp;</span>
-                        <input matInput appMoneyInput [(ngModel)]="paymentsAlt['Credito']"
-                            (ngModelChange)="updateMultiPayment('Credito', $event, 'alt')" placeholder="0.00">
-                    </mat-form-field>
-                    <!-- Placeholders for Ref/Bank/Cedula -->
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-
-            </div>
-
-            <div class="methods-grid" *ngIf="!isMultiPayment">
-                <div class="method-btn" [class.active]="selectedMethod === 'cash'" (click)="selectedMethod = 'cash'">
-                    <mat-icon>payments</mat-icon>
-                    <span>Efectivo</span>
-                </div>
-                <div class="method-btn" [class.active]="selectedMethod === 'card'" (click)="selectedMethod = 'card'">
-                    <mat-icon>credit_card</mat-icon>
-                    <span>Tarjeta</span>
-                </div>
-                <div class="method-btn" [class.active]="selectedMethod === 'paper'" (click)="selectedMethod = 'paper'">
-                    <mat-icon>smartphone</mat-icon>
-                    <span>Pago Móvil</span>
-                </div>
-                <div class="method-btn" [class.active]="selectedMethod === 'transfer'"
-                    (click)="selectedMethod = 'transfer'">
-                    <mat-icon>account_balance</mat-icon>
-                    <span>Transferencia</span>
-                </div>
-                <div class="method-btn" [class.active]="selectedMethod === 'Credito'"
-                    (click)="selectedMethod = 'Credito'" [class.disabled]="!data.supplier">
-                    <mat-icon>request_quote</mat-icon>
-                    <span>Crédito</span>
-                </div>
+        <div class="credit-details">
+            <div class="credit-stat">
+                <span class="label">Saldo:</span>
+                <span class="value debt">{{ (data.supplier.balance || 0) | currency:'VES':'Bs.
+                    ':settingsService.getDecimalFormat('total') }}</span>
             </div>
         </div>
     </div>
 
-    <div class="change-display">
-        <!-- Change Display (if overpaid) -->
-        <span class="change-label" *ngIf="remaining <= 0">Vuelto:</span>
-        <div style="text-align: right;" *ngIf="remaining <= 0">
-            <div style="font-size: 0.9rem; opacity: 0.8;">{{ changeAlt | currency:'USD':'$
-                ':settingsService.getDecimalFormat('total') }}</div>
-            <div class="change-value">{{ change | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}
+    <div class="totals-summary">
+        <div class="total-row">
+            <span>Subtotal</span>
+            <span>{{ data.subtotal | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</span>
+        </div>
+        <div class="total-row">
+            <span>Impuestos</span>
+            <span>{{ data.taxes | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</span>
+        </div>
+        <div class="total-row main">
+            <span>TOTAL COMPRA</span>
+            <div>
+                <div>{{ data.totalUSD | currency:'USD':'$ ':settingsService.getDecimalFormat('total') }}</div>
+                <div>{{ data.total | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="currency-tabs">
+        <button [class.active]="selectedCurrency === 'base'" (click)="setCurrency('base')">Bs. BOLÍVARES</button>
+        <button [class.active]="selectedCurrency === 'alt'" (click)="setCurrency('alt')">$ DÓLARES (USD)</button>
+    </div>
+
+    <div style="margin-bottom: 8px; text-align: center;">
+        <button mat-stroked-button color="primary" (click)="toggleMultiPayment()"
+            style="height: 30px; line-height: 28px; font-size: 11px; border-radius: 6px; font-weight: 700; width: 100%;">
+            <mat-icon style="font-size: 16px; width: 16px; height: 16px;">{{ isMultiPayment ? 'arrow_back' : 'layers'
+                }}</mat-icon>
+            {{ isMultiPayment ? 'VOLVER A PAGO SIMPLE' : 'ACTIVAR PAGO MIXTO' }}
+        </button>
+    </div>
+
+    <!-- Single Payment Mode -->
+    <ng-container *ngIf="!isMultiPayment">
+        <div class="zen-details-container">
+            <div class="zen-detail-row">
+                <label>Monto Pagado</label>
+                <input type="text" class="micro-detail-input"
+                    style="font-size: 1.1rem; font-weight: 700; color: #3f51b5;" *ngIf="selectedCurrency === 'base'"
+                    [(ngModel)]="receivedAmount" (ngModelChange)="calculateChange($event, 'base')" appMoneyInput
+                    placeholder="0,00 Bs.">
+                <input type="text" class="micro-detail-input"
+                    style="font-size: 1.1rem; font-weight: 700; color: #3f51b5;" *ngIf="selectedCurrency === 'alt'"
+                    [(ngModel)]="receivedAmountAlt" (ngModelChange)="calculateChange($event, 'alt')" appMoneyInput
+                    placeholder="0,00 $">
+            </div>
+
+            <div *ngIf="requiresBank(selectedMethod)" style="margin-top: 6px;">
+                <div class="zen-detail-row">
+                    <label>Referencia</label>
+                    <input type="text" class="micro-detail-input" [(ngModel)]="paymentDetails[selectedMethod].reference"
+                        placeholder="N° Ref / Documento">
+                </div>
+                <div class="zen-detail-row">
+                    <label>Banco</label>
+                    <mat-select [(ngModel)]="selectedBankId" class="zen-mat-select micro-detail-input"
+                        placeholder="Seleccione Banco...">
+                        <mat-option value="">Ninguno</mat-option>
+                        <mat-option *ngFor="let bank of getFilteredBanks(selectedMethod)" [value]="bank.id">
+                            {{ bank.name }} ({{ bank.currency }})
+                        </mat-option>
+                    </mat-select>
+                </div>
+                <div class="zen-detail-row" *ngIf="selectedMethod === 'paper'">
+                    <label>Teléfono/ID</label>
+                    <input type="text" class="micro-detail-input" [(ngModel)]="paymentDetails['paper'].cedula"
+                        placeholder="0412... / V-12...">
+                </div>
+                <div class="zen-detail-row" *ngIf="selectedMethod === 'transfer'">
+                    <label>Cta. Destino</label>
+                    <input type="text" class="micro-detail-input" [(ngModel)]="paymentDetails['transfer'].account"
+                        placeholder="Últimos 4 dígitos">
+                </div>
             </div>
         </div>
 
-        <!-- Remaining Display (if underpaid) -->
-        <span class="change-label" *ngIf="remaining > 0" style="color: #ef4444;">Faltante:</span>
-        <div style="text-align: right;" *ngIf="remaining > 0">
-            <div style="font-size: 0.9rem; opacity: 0.8; color: #ef4444;">{{ remainingAlt | currency:'USD':'$
-                ':settingsService.getDecimalFormat('total') }}</div>
-            <div class="change-value" style="color: #ef4444;">{{ remaining | currency:'VES':'Bs.
-                ':settingsService.getDecimalFormat('total') }}</div>
+        <div class="methods-grid">
+            <div class="method-btn" [class.active]="selectedMethod === 'cash'" (click)="selectedMethod = 'cash'">
+                <mat-icon>payments</mat-icon>
+                <span>Efectivo</span>
+            </div>
+            <div class="method-btn" [class.active]="selectedMethod === 'card'" (click)="selectedMethod = 'card'">
+                <mat-icon>credit_card</mat-icon>
+                <span>Tarjeta</span>
+            </div>
+            <div class="method-btn" [class.active]="selectedMethod === 'paper'" (click)="selectedMethod = 'paper'">
+                <mat-icon>smartphone</mat-icon>
+                <span>P. Móvil</span>
+            </div>
+            <div class="method-btn" [class.active]="selectedMethod === 'transfer'"
+                (click)="selectedMethod = 'transfer'">
+                <mat-icon>account_balance</mat-icon>
+                <span>Transf.</span>
+            </div>
+            <div class="method-btn" [class.active]="selectedMethod === 'Credito'" (click)="selectedMethod = 'Credito'"
+                [class.disabled]="!data.supplier">
+                <mat-icon>request_quote</mat-icon>
+                <span>Crédito</span>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Multi Payment Mode (Mixed) -->
+    <div *ngIf="isMultiPayment" class="multi-payment-list">
+        <!-- Reusing the Sales Zen Mix Row Pattern -->
+        <ng-container *ngFor="let m of ['cash', 'card', 'paper', 'transfer', 'Credito']">
+            <div class="mixed-method-row" *ngIf="m !== 'Credito' || data.supplier">
+                <div class="mixed-header">
+                    <mat-icon>{{ m === 'cash' ? 'payments' : m === 'card' ? 'credit_card' : m === 'paper' ? 'smartphone'
+                        : m === 'transfer' ? 'account_balance' : 'request_quote' }}</mat-icon>
+                    <span>{{ m === 'cash' ? 'Efectivo' : m === 'card' ? 'Tarjeta' : m === 'paper' ? 'Pago Móvil' : m ===
+                        'transfer' ? 'Transferencia' : 'A Crédito' }}</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <div class="micro-labeled-row" style="flex: 1;">
+                        <div class="micro-label">Bs.</div>
+                        <div class="micro-input-wrapper">
+                            <input type="text" [(ngModel)]="payments[m]"
+                                (ngModelChange)="updateMultiPayment(m, $event, 'base')" appMoneyInput
+                                placeholder="0,00">
+                        </div>
+                    </div>
+                    <div class="micro-labeled-row" style="flex: 1;">
+                        <div class="micro-label">$</div>
+                        <div class="micro-input-wrapper">
+                            <input type="text" [(ngModel)]="paymentsAlt[m]"
+                                (ngModelChange)="updateMultiPayment(m, $event, 'alt')" appMoneyInput placeholder="0,00">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conditional Zen Details for Mixed Row -->
+                <div class="zen-details-container" style="margin-top: 6px; padding: 4px 8px;"
+                    *ngIf="(payments[m] > 0 || paymentsAlt[m] > 0) && requiresBank(m)">
+                    <div class="zen-detail-row">
+                        <label>Referencia</label>
+                        <input type="text" class="micro-detail-input" [(ngModel)]="paymentDetails[m].reference"
+                            placeholder="Ref #">
+                    </div>
+                    <div class="zen-detail-row">
+                        <label>Banco</label>
+                        <mat-select [(ngModel)]="paymentDetails[m].bank_id" class="zen-mat-select micro-detail-input"
+                            placeholder="Sel. Banco">
+                            <mat-option value="">Ninguno</mat-option>
+                            <mat-option *ngFor="let bank of getFilteredBanks(m)" [value]="bank.id">{{ bank.name
+                                }}</mat-option>
+                        </mat-select>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+
+    <div class="change-display">
+        <span class="change-label">{{ remaining > 0.05 ? 'Faltante' : 'Vuelto' }}</span>
+        <div>
+            <div [class.text-danger]="remaining > 0.05">{{ (remaining > 0.05 ? remainingAlt : changeAlt) |
+                currency:'USD':'$ ':settingsService.getDecimalFormat('total') }}</div>
+            <div class="change-value" [class.text-danger]="remaining > 0.05">{{ (remaining > 0.05 ? remaining : change)
+                | currency:'VES':'Bs. ':settingsService.getDecimalFormat('total') }}</div>
         </div>
     </div>
 
     <div class="actions">
-        <button mat-stroked-button class="btn-cancel" (click)="onCancel()">CANCELAR</button>
-        <button mat-raised-button color="primary" class="btn-confirm" (click)="onConfirm()"
-            [disabled]="remaining > 0.05">
+        <button mat-button class="btn-cancel" (click)="onCancel()">CANCELAR</button>
+        <button mat-raised-button class="btn-confirm" (click)="onConfirm()" [disabled]="remaining > 0.05">
             PROCESAR COMPRA
         </button>
     </div>
