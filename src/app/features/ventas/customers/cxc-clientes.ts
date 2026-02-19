@@ -315,8 +315,10 @@ export class CxCClientesComponent implements OnInit {
       const rate = usd ? usd.exchange_rate : 1;
 
       const dialogRef = this.dialog.open(CxCPaymentDialogComponent, {
-        width: '650px',
+        width: 'auto',
         maxWidth: '95vw',
+        height: 'auto',
+        maxHeight: '98vh',
         data: {
           customer,
           exchangeRate: rate

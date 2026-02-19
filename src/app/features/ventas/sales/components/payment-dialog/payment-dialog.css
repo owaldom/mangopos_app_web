@@ -1,11 +1,20 @@
+:host {
+    display: block;
+    max-width: 630px;
+    margin: 0 auto;
+}
+
 .payment-container {
-    padding: 6px 12px;
-    max-width: 800px;
-    width: 90%;
-    max-height: 98vh;
+    padding: 8px 14px;
+    width: auto;
+    min-width: 450px;
+    max-width: 630px;
+    max-height: 96vh;
     display: flex;
     flex-direction: column;
     background: #ffffff;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
 .scrollable-content {
@@ -262,43 +271,218 @@
     font-size: 0.85rem;
 }
 
-/* New Material Layout Styles */
-.single-input-wrapper {
-    margin-top: 10px;
-}
-
-.multi-row-mat {
+/* Zen Mixed Pro (V16) Styles */
+.multi-payment-grid {
     display: grid;
-    grid-template-columns: 28px 75px repeat(5, minmax(0, 1fr));
-    align-items: center;
+    grid-template-columns: repeat(2, 1fr);
     gap: 6px;
-    padding: 4px 10px;
-    background: #f8fafc;
-    border-radius: 6px;
-    border: 1px solid #e2e8f0;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 2px;
+    margin-top: 4px;
 }
 
-.method-icon {
+.payment-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-card.active {
+    border-color: #3875D5;
+    background: #f8fbff;
+    box-shadow: 0 2px 4px rgba(56, 117, 213, 0.05);
+}
+
+.card-header {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 6px;
 }
 
-.method-name {
-    font-weight: 600;
-    font-size: 13px;
+.card-header mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #64748b;
+}
+
+.card-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.card-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.micro-input-group {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 2px 6px;
+    flex: 1;
+    min-width: 80px;
+}
+
+.micro-input-group .prefix {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-right: 4px;
+}
+
+.micro-input-group input {
+    border: none;
+    background: transparent;
+    width: 100%;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    outline: none;
+    padding: 2px 0;
+    text-align: right;
+}
+
+.details-toggle {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+    margin-top: 2px;
+    animation: fadeInSlide 0.2s ease-out;
+}
+
+.details-toggle.full {
+    flex-wrap: wrap;
+}
+
+.details-toggle input,
+.details-toggle select {
+    flex: 1;
+    height: 24px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 0 6px;
+    font-size: 0.75rem;
     color: #334155;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    background: #fff;
+    outline: none;
 }
 
-/* Material Field Overrides for Mixed Mode */
-::ng-deep .multi-payment-list .mat-mdc-text-field-wrapper {
-    background-color: #fff !important;
+.details-toggle input:focus,
+.details-toggle select:focus {
+    border-color: #3875D5;
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Zen Details (V17) - Shared & Unified */
+.zen-details-container {
+    margin-top: 6px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.zen-detail-row {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+}
+
+.micro-detail-input {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 1px 6px;
+    height: 24px;
+}
+
+.micro-detail-input .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-right: 6px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.micro-detail-input input,
+.micro-detail-input select,
+.micro-detail-input .zen-mat-select {
+    border: none;
+    background: transparent;
+    width: 100%;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #334155;
+    outline: none;
+    padding: 0;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/* Mat-Select Zen Override */
+::ng-deep .zen-mat-select .mat-mdc-select-trigger {
+    height: 22px;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-select-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #334155 !important;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-select-arrow-wrapper {
+    height: 22px;
+    align-items: center;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-select-arrow {
+    width: 8px;
+    height: 4px;
+    color: #94a3b8;
+}
+
+/* Remove standard mat-form-field under the hood if it was used,
+   but here we are using standalone mat-select */
+/* Mixed Mode refinements to match */
+.details-toggle input,
+.details-toggle select {
+    height: 22px;
+    font-size: 0.75rem;
+    border-color: #cbd5e1;
 }
 
 .full-width {

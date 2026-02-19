@@ -1,74 +1,75 @@
 .payment-container {
-    padding: 16px 24px;
-    max-width: 1000px;
-    width: 95%;
-    background: #fff;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    max-height: 95vh;
+    padding: 6px 14px;
+    width: auto;
+    min-width: 450px;
+    max-width: 630px;
+    max-height: 98vh;
     display: flex;
     flex-direction: column;
+    background: #ffffff;
+    margin: 0 auto;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-.scrollable-content {
-    flex: 1;
-    overflow-y: auto;
-    padding-right: 8px;
-    margin-bottom: 16px;
-}
-
-.title {
-    margin: 0 0 12px;
-    font-size: 20px;
+h2.title {
+    margin: 0 0 8px 0;
+    padding: 0 0 6px 0;
+    font-size: 16px;
     font-weight: 700;
     color: #1a1a1a;
-    text-align: center;
+    text-align: left;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-/* Supplier Info */
+/* Supplier Info Compact */
 .supplier-info {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 8px 12px;
+    padding: 6px 10px;
     background: #f8fafc;
     border-radius: 8px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     border: 1px solid #e2e8f0;
 }
 
 .supplier-name {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-weight: 600;
+    gap: 6px;
+    font-weight: 700;
     color: #334155;
+    font-size: 13px;
 }
 
 .supplier-name mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
     color: #64748b;
 }
 
 .credit-details {
     display: flex;
-    gap: 24px;
+    gap: 12px;
 }
 
 .credit-stat {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: center;
+    gap: 6px;
 }
 
 .credit-stat .label {
-    font-size: 12px;
-    color: #64748b;
+    font-size: 10px;
+    font-weight: 600;
+    color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 0.025em;
 }
 
 .credit-stat .value {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 700;
     color: #1e293b;
 }
 
@@ -76,14 +77,15 @@
     color: #ef4444;
 }
 
-/* Totals Summary */
+/* Totals Summary Zen */
 .totals-summary {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e2e8f0;
+    gap: 2px;
+    margin-bottom: 8px;
+    padding: 8px;
+    background: #f1f5f9;
+    border-radius: 10px;
 }
 
 .total-row {
@@ -91,198 +93,353 @@
     justify-content: space-between;
     align-items: center;
     color: #64748b;
-    font-size: 14px;
+    font-size: 12px;
+    font-weight: 500;
 }
 
 .total-row.main {
     margin-top: 4px;
-    padding-top: 8px;
-    border-top: 2px dashed #e2e8f0;
+    padding-top: 4px;
+    border-top: 1px dashed #cbd5e1;
 }
 
 .total-row.main span:first-child {
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 700;
     color: #1a1a1a;
+    text-transform: uppercase;
 }
 
 .total-row.main div:last-child {
-    font-size: 20px;
-    font-weight: 800;
-    color: #2563eb;
+    text-align: right;
 }
 
-/* Currency Tabs */
+.total-row.main div:last-child div:first-child {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.total-row.main div:last-child div:last-child {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1.1;
+}
+
+/* Currency Tabs Zen */
 .currency-tabs {
     display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
+    gap: 6px;
+    margin-bottom: 8px;
 }
 
 .currency-tabs button {
     flex: 1;
-    padding: 10px;
+    height: 32px;
     border: 1px solid #e2e8f0;
-    background: #fff;
-    border-radius: 8px;
+    background: #f8fafc;
+    border-radius: 6px;
     font-weight: 600;
+    font-size: 12px;
     color: #64748b;
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .currency-tabs button.active {
-    background: #2563eb;
+    background: #1e293b;
     color: #fff;
-    border-color: #2563eb;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    border-color: #1e293b;
 }
 
-/* Payment Layouts */
+/* Zen Implementation Patterns */
+.zen-details-container {
+    padding: 6px 10px;
+    background: #fdfdfd;
+    border: 1px solid #f1f5f9;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.zen-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #f8faff;
+    padding-bottom: 2px;
+}
+
+.zen-detail-row:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.zen-detail-row label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    width: 80px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.micro-detail-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    padding: 2px 0;
+    color: #1e293b;
+    font-weight: 600;
+    width: 100%;
+}
+
+.micro-detail-input:focus {
+    outline: none;
+    color: #3f51b5;
+}
+
+.micro-detail-input::placeholder {
+    color: #cbd5e1;
+    font-weight: 400;
+}
+
+/* Micro-Labeled Row (For Mixed Payment) */
+.micro-labeled-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.micro-label {
+    width: 32px;
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-align: right;
+}
+
+.micro-input-wrapper {
+    flex: 1;
+    display: flex;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 2px 8px;
+    align-items: center;
+}
+
+.micro-input-wrapper span {
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+    margin-right: 4px;
+}
+
+.micro-input-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e293b;
+    padding: 4px 0;
+}
+
+.micro-input-wrapper input:focus {
+    outline: none;
+}
+
+/* Mixed Payment Grid Zen */
 .multi-payment-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 4px;
+    margin-bottom: 8px;
 }
 
-.multi-row-mat {
-    display: grid;
-    grid-template-columns: 32px 80px repeat(5, minmax(0, 1fr));
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: #f8fafc;
+.mixed-method-row {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f1f5f9;
     border-radius: 8px;
-    border: 1px solid #e2e8f0;
-    width: 100%;
-    box-sizing: border-box;
+    padding: 6px;
+    background: #fff;
 }
 
-.multi-row-mat mat-form-field {
-    width: 100%;
-    min-width: 0;
-}
-
-.method-icon {
-    height: 32px;
-    width: 32px;
+.mixed-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: #fff;
-    border-radius: 8px;
-    color: #2563eb;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    gap: 8px;
+    margin-bottom: 4px;
 }
 
-.method-icon mat-icon {
-    font-size: 20px;
-    height: 20px;
-    width: 20px;
+.mixed-header mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #3f51b5;
 }
 
-.method-name {
-    font-weight: 600;
-    font-size: 13px;
-    color: #334155;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.mixed-header span {
+    font-size: 11px;
+    font-weight: 700;
+    color: #475569;
+    text-transform: uppercase;
 }
 
-/* Methods Grid (Single Payment) */
+/* Methods Grid Zen */
 .methods-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin-bottom: 12px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
 }
 
 .method-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 16px;
+    justify-content: center;
+    gap: 4px;
+    height: 52px;
     background: #fff;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #64748b;
+}
+
+.method-btn mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+}
+
+.method-btn span {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
 .method-btn:hover:not(.disabled) {
-    background: #f1f5f9;
+    background: #f8fafc;
     border-color: #cbd5e1;
 }
 
 .method-btn.active {
-    background: #eff6ff;
-    border-color: #2563eb;
-    color: #2563eb;
+    background: #3f51b5;
+    border-color: #3f51b5;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(63, 81, 181, 0.2);
+    transform: translateY(-1px);
 }
 
 .method-btn.disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
-    background: #f8fafc;
+    filter: grayscale(1);
 }
 
-.method-btn mat-icon {
-    font-size: 28px;
-    height: 28px;
-    width: 28px;
-}
-
-.method-btn span {
-    font-size: 13px;
-    font-weight: 600;
-}
-
-/* Change/Remaining Display */
+/* Change Display Zen */
 .change-display {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #1e293b;
-    padding: 12px 20px;
-    border-radius: 12px;
-    margin-bottom: 16px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
     color: #fff;
 }
 
 .change-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+}
+
+.change-display div:last-child {
+    text-align: right;
+}
+
+.change-display div:last-child div:first-child {
+    font-size: 10px;
     font-weight: 600;
     color: #94a3b8;
 }
 
 .change-value {
-    font-size: 24px;
+    font-size: 1.4rem;
     font-weight: 800;
+    line-height: 1;
 }
 
-/* Actions */
+.text-danger {
+    color: #f87171 !important;
+}
+
+/* Actions Zen */
 .actions {
     display: flex;
-    gap: 12px;
+    gap: 8px;
 }
 
 .btn-cancel {
     flex: 1;
-    height: 48px !important;
-    border-radius: 10px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
 }
 
 .btn-confirm {
     flex: 2;
-    height: 48px !important;
-    border-radius: 10px !important;
-    font-weight: 700 !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+    background: #1e293b !important;
+    color: #fff !important;
 }
 
-/* Shared Material Overrides for clean background in rows */
-::ng-deep .multi-payment-list .mat-mdc-text-field-wrapper,
-::ng-deep .compact-single-details .mat-mdc-text-field-wrapper {
-    background-color: #fff !important;
+/* Mat-Select Zen Override */
+::ng-deep .zen-mat-select .mat-mdc-select-trigger {
+    height: 18px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-form-field-infix {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: 18px !important;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-text-field-wrapper {
+    padding: 0 !important;
+    background-color: transparent !important;
+}
+
+::ng-deep .zen-mat-select .mat-mdc-form-field-focus-indicator {
+    display: none;
+}
+
+.scrollable-content {
+    flex: 1;
+    overflow: visible;
+}
+
+@media (max-height: 700px) {
+    .scrollable-content {
+        overflow-y: auto;
+        padding-right: 4px;
+    }
 }

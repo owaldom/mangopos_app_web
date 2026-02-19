@@ -138,7 +138,8 @@ export class CxCPaymentDialogComponent implements OnInit {
     }
 
     onAmountReceivedChange(value: number): void {
-        let toPay = this.selectedCurrency === 'base' ? this.amountBs : this.amountUsd;
+        const selectedVal = Number(value) || 0;
+        let toPay = this.selectedCurrency === 'base' ? Number(this.amountBs) : Number(this.amountUsd);
 
         // Sumar IGTF si aplica
         if (this.selectedCurrency === 'alt') {
@@ -147,7 +148,7 @@ export class CxCPaymentDialogComponent implements OnInit {
             toPay += this.igtfAmount;
         }
 
-        this.change = Math.max(0, parseFloat((value - toPay).toFixed(2)));
+        this.change = Math.max(0, parseFloat((selectedVal - toPay).toFixed(2)));
         this.cdr.markForCheck();
     }
 
@@ -174,7 +175,8 @@ export class CxCPaymentDialogComponent implements OnInit {
     }
 
     isValid(): boolean {
-        return this.amountUsd > 0 && !!this.selectedInvoice;
+        // En CXC permitimos abonos generales aunque no se seleccione factura específica
+        return this.amountUsd > 0.01;
     }
 
     onCancel(): void {
@@ -197,7 +199,7 @@ export class CxCPaymentDialogComponent implements OnInit {
                 reference: this.reference,
                 account_number: this.account,
                 is_pago_movil: this.is_pago_movil,
-                invoice_number: this.selectedInvoice.numberInvoice,
+                invoice_number: this.selectedInvoice?.numberInvoice || '',
                 amount_base: this.amountBs
             }],
             exchange_rate: this.data.exchangeRate,
